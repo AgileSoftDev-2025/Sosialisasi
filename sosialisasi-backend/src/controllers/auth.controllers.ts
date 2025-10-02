@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import * as Yup from "yup";
 import UserModel from "../models/users.models";
+import { encrypt } from "../utils/encryption";
 
 type TRegister = {
-  fullname: string;
+  fullName: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -15,7 +16,7 @@ type TLogin = {
 };
 
 const registerValidateSchema = Yup.object({
-  fullname: Yup.string().required(),
+  fullName: Yup.string().required(),
   email: Yup.string().required(),
   password: Yup.string()
     .required()
@@ -45,19 +46,19 @@ const registerValidateSchema = Yup.object({
 
 export default {
   async register(req: Request, res: Response) {
-    const { fullname, email, password, confirmPassword } =
+    const { fullName, email, password, confirmPassword } =
       req.body as unknown as TRegister;
 
     try {
       await registerValidateSchema.validate({
-        fullname,
+        fullName,
         email,
         password,
         confirmPassword,
       });
 
       const result = await UserModel.create({
-        fullname,
+        fullName,
         email,
         password,
       });
@@ -86,6 +87,15 @@ export default {
       if (!user) {
         return res.status(403).json({
           message: "Pengguna tidak ditemukan",
+          data: null,
+        });
+      }
+
+      const encryptedPassword = encrypt(password) === user.password;
+
+      if (!encryptedPassword) {
+        return res.status(403).json({
+          message: "Password is incorrect",
           data: null,
         });
       }
