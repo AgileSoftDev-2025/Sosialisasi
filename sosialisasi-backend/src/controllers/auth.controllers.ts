@@ -26,6 +26,7 @@ const registerValidateSchema = Yup.object({
       (value) => {
         if (!value) return false;
         const regex = /^(?=.*[A-Z])/;
+        return regex.test(value);
       }
     )
     .test(
@@ -34,6 +35,7 @@ const registerValidateSchema = Yup.object({
       (value) => {
         if (!value) return false;
         const regex = /^(?=.*[0-9])/;
+        return regex.test(value);
       }
     ),
   confirmPassword: Yup.string()
