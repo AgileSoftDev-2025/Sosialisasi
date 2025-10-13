@@ -2,8 +2,10 @@ import { Request, Response } from "express";
 import * as Yup from "yup";
 import UserModel from "../models/users.models";
 import { encrypt } from "../utils/encryption";
+import { IReqUser } from "../middlewares/auth.middleware";
 
 type TRegister = {
+  userName: string;
   fullName: string;
   email: string;
   password: string;
@@ -16,6 +18,7 @@ type TLogin = {
 };
 
 const registerValidateSchema = Yup.object({
+  userName: Yup.string().required(),
   fullName: Yup.string().required(),
   email: Yup.string().required(),
   password: Yup.string()
@@ -46,11 +49,12 @@ const registerValidateSchema = Yup.object({
 
 export default {
   async register(req: Request, res: Response) {
-    const { fullName, email, password, confirmPassword } =
+    const { userName, fullName, email, password, confirmPassword } =
       req.body as unknown as TRegister;
 
     try {
       await registerValidateSchema.validate({
+        userName,
         fullName,
         email,
         password,
@@ -58,6 +62,7 @@ export default {
       });
 
       const result = await UserModel.create({
+        userName,
         fullName,
         email,
         password,
@@ -99,6 +104,51 @@ export default {
           data: null,
         });
       }
+    } catch (error) {
+      const err = error as unknown as Error;
+      res.status(400).json({
+        message: err.message,
+        data: null,
+      });
+    }
+  },
+
+  async me(req: IReqUser, res: Response) {
+    try {
+      const user = req.user;
+      const result = await UserModel.findById(user?.id);
+
+      res.status(200).json({
+        message: "Success get user profile",
+        data: result,
+      });
+    } catch (error) {
+      const err = error as unknown as Error;
+      res.status(400).json({
+        message: err.message,
+        data: null,
+      });
+    }
+  },
+
+  async activation(req: Request, res: Response) {
+    const { code } = req.body as { code: string };
+    try {
+      const user = await UserModel.findOneAndUpdate(
+        {
+          activationCode: code,
+        },
+        {
+          isActive: true,
+        },
+        {
+          new: true,
+        }
+      );
+      return res.status(200).json({
+        message: "Account activated successfully",
+        data: user,
+      });
     } catch (error) {
       const err = error as unknown as Error;
       res.status(400).json({

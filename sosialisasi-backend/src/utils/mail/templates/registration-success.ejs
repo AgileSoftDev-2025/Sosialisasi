@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+      .header {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 0;
+        text-align: center;
+      }
+      .content {
+        padding: 20px;
+      }
+      .footer {
+        background-color: #ddd;
+        color: #333;
+        text-align: center;
+        padding: 10px 0;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        margin-top: 20px;
+        font-size: 16px;
+        color: white;
+        background-color: #4caf50;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+      @media (max-width: 600px) {
+        .content {
+          padding: 10px;
+        }
+        .button {
+          width: 100%;
+          box-sizing: border-box;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Selamat Datang!</h1>
+    </div>
+    <div class="content">
+      <p>Halo <%= userName %></p>
+      <p>
+        Terima kasih telah mendaftar di platform kami. Berikut adalah informasi
+        akun Anda:
+      </p>
+      <ul>
+        <li><strong>Nama:</strong> <%= fullName %></li>
+        <li><strong>Email:</strong> <%= email %></li>
+        <li><strong>Tanggal Pendaftaran:</strong> <%= createdAt %></li>
+      </ul>
+      <p>Untuk memulai, silahkan klik tombol di bawah ini:</p>
+      <a href="<%= activationLink %>" class="button">Aktivasi Akun</a>
+      <p>Jika Anda memiliki pertanyaan, jangan ragu untuk menghubungi kami.</p>
+      <p>Salam,</p>
+      <p>Tim Kami</p>
+    </div>
+    <div class="footer">
+      <p>&copy; 2024 Tim Kami. Semua hak dilindungi.</p>
+    </div>
+  </body>
+</html>
