@@ -1,11 +1,20 @@
 import { useState } from "react";
-import { Form, Input, Checkbox, Button } from "@heroui/react";
+import { Form, Input, Checkbox, Button, Spinner } from "@heroui/react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import Link from "next/link";
-import useRegister from "../Register/useRegister";
+import useLogin from "../Login/useLogin";
+import { Controller } from "react-hook-form";
 
 const Login = () => {
-  const { visiblePassword, handleVisiblePassword } = useRegister();
+  const {
+    visiblePassword,
+    handleVisiblePassword,
+    control,
+    handleSubmit,
+    handleLogin,
+    isPendingLogin,
+    errors,
+  } = useLogin();
 
   return (
     <div className="grid h-screen w-full lg:grid-cols-5">
@@ -15,42 +24,65 @@ const Login = () => {
         </h1>
         <p className="text-base text-white">Please login to continue</p>
         <div className="w-full">
-          <Form className="w-full items-center justify-center space-y-4">
+          <Form
+            onSubmit={handleSubmit(handleLogin)}
+            className="w-full items-center justify-center space-y-4"
+          >
             <div className="flex w-full flex-col gap-4">
-              <Input
-                isRequired
-                label="Email"
-                labelPlacement="inside"
+              <Controller
                 name="email"
-                placeholder="Enter your email"
-                type="email"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    isRequired
+                    label="Email"
+                    labelPlacement="inside"
+                    placeholder="Enter your email"
+                    type="email"
+                    isInvalid={errors.email !== undefined}
+                    errorMessage={errors.email?.message}
+                  />
+                )}
               />
 
-              <Input
-                isRequired
-                label="Password"
-                labelPlacement="inside"
+              <Controller
                 name="password"
-                placeholder="Enter your password"
-                type={visiblePassword.password ? "text" : "password"}
-                endContent={
-                  <button
-                    className="focus:outline-none"
-                    type="button"
-                    onClick={() => handleVisiblePassword("password")}
-                  >
-                    {visiblePassword.password ? (
-                      <FaRegEye className="text-default-400 pointer-events-none text-xl" />
-                    ) : (
-                      <FaRegEyeSlash className="text-default-400 pointer-events-none text-xl" />
-                    )}
-                  </button>
-                }
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    isRequired
+                    label="Password"
+                    labelPlacement="inside"
+                    placeholder="Enter your password"
+                    type={visiblePassword.password ? "text" : "password"}
+                    isInvalid={errors.password !== undefined}
+                    errorMessage={errors.password?.message}
+                    endContent={
+                      <button
+                        className="focus:outline-none"
+                        type="button"
+                        onClick={() => handleVisiblePassword("password")}
+                      >
+                        {visiblePassword.password ? (
+                          <FaRegEye className="text-default-400 pointer-events-none text-xl" />
+                        ) : (
+                          <FaRegEyeSlash className="text-default-400 pointer-events-none text-xl" />
+                        )}
+                      </button>
+                    }
+                  />
+                )}
               />
 
               <div className="flex gap-4 pt-2">
                 <Button className="w-full bg-[#CEB07E]" type="submit">
-                  Login
+                  {isPendingLogin ? (
+                    <Spinner color="white" size="sm"></Spinner>
+                  ) : (
+                    "Login"
+                  )}
                 </Button>
               </div>
             </div>

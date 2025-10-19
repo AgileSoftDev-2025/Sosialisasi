@@ -2,14 +2,12 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { IRegister } from "@/types/Auth";
+import { ILogin } from "@/types/Auth";
 import authServices from "@/services/auth";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 
-const registerSchema = yup.object().shape({
-  userName: yup.string().required("Please input your username"),
-  fullName: yup.string().required("Please input your fullname"),
+const loginSchema = yup.object().shape({
   email: yup
     .string()
     .email("Email format not valid")
@@ -34,13 +32,9 @@ const registerSchema = yup.object().shape({
         return /[0-9]/.test(value);
       },
     ),
-  confirmPassword: yup
-    .string()
-    .oneOf([yup.ref("password"), ""], "Password not match")
-    .required("Please input your confirmation password"),
 });
 
-const useRegister = () => {
+const useLogin = () => {
   const router = useRouter();
   const [visiblePassword, setVissiblePassword] = useState({
     password: false,
@@ -61,40 +55,40 @@ const useRegister = () => {
     reset,
     setError,
   } = useForm({
-    resolver: yupResolver(registerSchema),
+    resolver: yupResolver(loginSchema),
     mode: "onTouched",
     reValidateMode: "onChange",
   });
 
-  const registerService = async (payload: IRegister) => {
-    const result = await authServices.register(payload);
+  const loginService = async (payload: ILogin) => {
+    const result = await authServices.login(payload);
     return result;
   };
 
-  const { mutate: mutateRegister, isPending: isPendingRegister } = useMutation({
-    mutationFn: registerService,
+  const { mutate: mutateLogin, isPending: isPendingLogin } = useMutation({
+    mutationFn: loginService,
     onError(error) {
       setError("root", {
         message: error.message,
       });
     },
     onSuccess: () => {
-      router.push("/auth/login");
+      router.push("/dashboard");
       reset();
     },
   });
 
-  const handleRegister = (data: IRegister) => mutateRegister(data);
+  const handleLogin = (data: ILogin) => mutateLogin(data);
 
   return {
     visiblePassword,
     handleVisiblePassword,
     control,
     handleSubmit,
-    handleRegister,
-    isPendingRegister,
+    handleLogin,
+    isPendingLogin,
     errors,
   };
 };
 
-export default useRegister;
+export default useLogin;
