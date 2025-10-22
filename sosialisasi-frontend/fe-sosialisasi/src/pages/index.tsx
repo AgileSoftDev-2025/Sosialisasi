@@ -12,12 +12,3 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
-export default function Home() {
-  return (
-    <main className="flex flex-col items-center justify-between p-24">
-      <PageHead />
-      <Button color="primary">Button</Button>
-    </main>
-  );
-}
