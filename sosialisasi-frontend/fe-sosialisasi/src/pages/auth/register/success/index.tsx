@@ -1,10 +1,10 @@
 import AuthLayout from "@/components/layouts/AuthLayout";
-import Login from "@/components/views/Auth/Login";
+import RegisterSuccess from "@/components/views/Auth/RegisterSuccess";
 
 const RegisterPage = () => {
   return (
-    <AuthLayout title="Sosialisasi | Login">
-      <Login />
+    <AuthLayout title="Sosialisasi | Register Success">
+      <RegisterSuccess />
     </AuthLayout>
   );
 };

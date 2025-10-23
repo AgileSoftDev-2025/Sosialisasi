@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import * as Yup from "yup";
 import UserModel from "../models/users.models";
 import { encrypt } from "../utils/encryption";
+import { generateToken } from "../utils/jwt";
 import { IReqUser } from "../middlewares/auth.middleware";
 
 type TRegister = {
@@ -96,14 +97,23 @@ export default {
         });
       }
 
-      const encryptedPassword = encrypt(password) === user.password;
+      const validatePassword: boolean = encrypt(password) === user.password;
 
-      if (!encryptedPassword) {
+      if (!validatePassword) {
         return res.status(403).json({
-          message: "Password is incorrect",
+          message: "User not found",
           data: null,
         });
       }
+      const token = generateToken({
+        id: user._id,
+        role: user.role,
+      });
+
+      res.status(200).json({
+        message: "Login success",
+        data: token,
+      });
     } catch (error) {
       const err = error as unknown as Error;
       res.status(400).json({
@@ -132,8 +142,8 @@ export default {
   },
 
   async activation(req: Request, res: Response) {
-    const { code } = req.body as { code: string };
     try {
+      const { code } = req.body as { code: string };
       const user = await UserModel.findOneAndUpdate(
         {
           activationCode: code,

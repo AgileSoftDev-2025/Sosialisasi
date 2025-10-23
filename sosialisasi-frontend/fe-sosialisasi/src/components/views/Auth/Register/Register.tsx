@@ -30,7 +30,7 @@ const Register = () => {
             onSubmit={handleSubmit(handleRegister)}
             className="w-full items-center justify-center space-y-4"
           >
-            <div className="flex w-full flex-col gap-4">
+            <div className="flex w-full flex-col gap-3">
               <Controller
                 name="userName"
                 control={control}

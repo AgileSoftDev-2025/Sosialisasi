@@ -21,8 +21,16 @@ export default (req: Request, res: Response, next: NextFunction) => {
       data: null,
     });
   }
+  const user = getUserData(token);
 
-  (req as IReqUser).user = getUserData(token);
+  if (!user) {
+    return res.status(403).json({
+      message: "Unauthhorized",
+      data: null,
+    });
+  }
+
+  (req as IReqUser).user = user;
 
   next();
 };
