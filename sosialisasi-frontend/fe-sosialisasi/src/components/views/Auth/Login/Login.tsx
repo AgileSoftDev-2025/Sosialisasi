@@ -7,8 +7,8 @@ import { Controller } from "react-hook-form";
 
 const Login = () => {
   const {
-    visiblePassword,
-    handleVisiblePassword,
+    isVisible,
+    toggleVisibility,
     control,
     handleSubmit,
     handleLogin,
@@ -56,16 +56,16 @@ const Login = () => {
                     label="Password"
                     labelPlacement="inside"
                     placeholder="Enter your password"
-                    type={visiblePassword.password ? "text" : "password"}
+                    type={isVisible ? "text" : "password"}
                     isInvalid={errors.password !== undefined}
                     errorMessage={errors.password?.message}
                     endContent={
                       <button
                         className="focus:outline-none"
                         type="button"
-                        onClick={() => handleVisiblePassword("password")}
+                        onClick={toggleVisibility}
                       >
-                        {visiblePassword.password ? (
+                        {isVisible ? (
                           <FaRegEye className="text-default-400 pointer-events-none text-xl" />
                         ) : (
                           <FaRegEyeSlash className="text-default-400 pointer-events-none text-xl" />

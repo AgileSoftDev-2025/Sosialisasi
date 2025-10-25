@@ -6,6 +6,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Head from "next/head";
+import { SessionProvider } from "next-auth/react";
 
 const jakartaPlusSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -23,29 +24,34 @@ const queryClient = new QueryClient({
   },
 });
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppProps) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <HeroUIProvider>
-        <Head>
-          <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-            integrity="sha512-p+cGpCzR6v4DLYDW7sSY+5KqMw9vM7e5wKZkSaLJgRjC5B5V2lb3+1Q6BB7pN7YB4dzQfkn07hHj6lZgHkeFeg=="
-            crossOrigin="anonymous"
-            referrerPolicy="no-referrer"
-          />
-        </Head>
+    <SessionProvider session={session}>
+      <QueryClientProvider client={queryClient}>
+        <HeroUIProvider>
+          <Head>
+            <link
+              rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+              integrity="sha512-p+cGpCzR6v4DLYDW7sSY+5KqMw9vM7e5wKZkSaLJgRjC5B5V2lb3+1Q6BB7pN7YB4dzQfkn07hHj6lZgHkeFeg=="
+              crossOrigin="anonymous"
+              referrerPolicy="no-referrer"
+            />
+          </Head>
 
-        <main
-          className={cn(
-            jakartaPlusSans.className,
-            "flex min-h-screen min-w-full flex-col items-center justify-center gap-10",
-          )}
-        >
-          <Component {...pageProps} />
-        </main>
-      </HeroUIProvider>
-    </QueryClientProvider>
+          <main
+            className={cn(
+              jakartaPlusSans.className,
+              "flex min-h-screen min-w-full flex-col items-center justify-center gap-10",
+            )}
+          >
+            <Component {...pageProps} />
+          </main>
+        </HeroUIProvider>
+      </QueryClientProvider>
+    </SessionProvider>
   );
 }
