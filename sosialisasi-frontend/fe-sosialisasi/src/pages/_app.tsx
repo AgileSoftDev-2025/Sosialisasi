@@ -1,5 +1,5 @@
 import "@/styles/globals.css";
-import { cn } from "./utils/cn";
+import { cn } from "../utils/cn";
 import { HeroUIProvider } from "@heroui/react";
 import type { AppProps } from "next/app";
 import { Plus_Jakarta_Sans } from "next/font/google";
@@ -42,12 +42,7 @@ export default function App({
             />
           </Head>
 
-          <main
-            className={cn(
-              jakartaPlusSans.className,
-              "flex min-h-screen min-w-full flex-col items-center justify-center gap-10",
-            )}
-          >
+          <main className={cn(jakartaPlusSans.className)}>
             <Component {...pageProps} />
           </main>
         </HeroUIProvider>

@@ -21,9 +21,15 @@ const Activation = (props: PropTypes) => {
         </p>
         <Button
           className="mt-6 w-fit bg-[#CEB07E]"
-          onPress={() => router.push("/login")}
+          onPress={() => {
+            if (status === "success") {
+              router.push("/auth/login");
+            } else {
+              router.push("/");
+            }
+          }}
         >
-          Login
+          {status === "success" ? "Login" : "Back to Home"}
         </Button>
       </div>
       <div className="hidden h-full w-full overflow-hidden lg:col-span-3 lg:block">
