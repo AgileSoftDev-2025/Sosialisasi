@@ -1,5 +1,5 @@
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import Home from "@/components/views/Home/Home";
+import Home from "@/components/views/Dashboard/Home";
 
 const HomePage = () => {
   return (

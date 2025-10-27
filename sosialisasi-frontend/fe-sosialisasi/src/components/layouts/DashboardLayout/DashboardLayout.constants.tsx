@@ -1,56 +1,26 @@
-import {
-  LuHouse,
-  LuCompass,
-  LuMessageSquare,
-  LuPresentation,
-  LuPlus,
-  LuUser,
-  LuCog,
-} from "react-icons/lu";
-
-const SIDEBAR_USER = [
+export const SIDEBAR_ITEMS = [
   {
     key: "home",
     label: "Home",
     href: "/home",
-    icon: <LuHouse />,
-  },
-  {
-    key: "discover",
-    label: "Discover",
-    href: "/discover",
-    icon: <LuCompass />,
+    icon: "fa-solid fa-home",
   },
   {
     key: "messages",
     label: "Messages",
     href: "/messages",
-    icon: <LuMessageSquare />,
-  },
-  {
-    key: "miniClass",
-    label: "Mini Class",
-    href: "/mini-class",
-    icon: <LuPresentation />,
-  },
-  {
-    key: "createPost",
-    label: "Create Post",
-    href: "/create-post",
-    icon: <LuPlus />,
+    icon: "fa-solid fa-message",
   },
   {
     key: "profile",
     label: "Profile",
     href: "/profile",
-    icon: <LuUser />,
+    icon: "fa-solid fa-user",
   },
   {
-    key: "settings",
-    label: "Settings",
+    key: "pengaturan",
+    label: "Pengaturan",
     href: "/settings",
-    icon: <LuCog />,
+    icon: "fa-solid fa-gear",
   },
 ];
-
-export { SIDEBAR_USER };

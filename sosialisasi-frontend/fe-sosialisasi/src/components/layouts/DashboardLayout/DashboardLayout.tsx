@@ -1,44 +1,28 @@
-import PageHead from "@/components/commons/PageHead";
-import { ReactNode, useState } from "react";
-import DashboardLayoutSidebar from "./DashboardLayoutSidebar.tsx";
-import { SIDEBAR_USER } from "./DashboardLayout.constants";
-import { Navbar, NavbarMenuToggle } from "@heroui/react";
+import React from "react";
+import DashboardLayoutNavbar from "./DashboardLayoutNavbar";
+import DashboardLayoutSidebar from "./DashboardLayoutSidebar";
 
-interface PropTypes {
-  children: ReactNode;
-  description?: string;
-  title?: string;
-  type?: string;
+interface IPropTypes {
+  children: React.ReactNode;
+  showSearch?: boolean;
+  showCreatePostCard?: boolean;
 }
 
-const DashboardLayout = (props: PropTypes) => {
-  const { children, description, title, type } = props;
-  const [open, setOpen] = useState(false);
-
+const DashboardLayout = ({
+  children,
+  showSearch,
+  showCreatePostCard,
+}: IPropTypes) => {
   return (
-    <>
-      <PageHead title={title} />
-      <div className="max-w-screen-3xl 3xl:container flex">
-        <DashboardLayoutSidebar sidebarItems={SIDEBAR_USER} isOpen={open} />
-        <div className="h-screen w-full overflow-y-auto p-8">
-          <Navbar
-            className="flex justify-between bg-transparent px-0"
-            isBlurred={false}
-            classNames={{ wrapper: "p-0" }}
-            position="static"
-          >
-            <h1 className="text-3xl font-bold">{title}</h1>
-            <NavbarMenuToggle
-              aria-label={open ? "Close Menu" : "Open Menu"}
-              onClick={() => setOpen(!open)}
-              className="lg:hidden"
-            />
-          </Navbar>
-          <p className="text-small mb-4">{description}</p>
+    <main className="h-screen w-screen overflow-x-hidden bg-[#FAFAFF]">
+      <DashboardLayoutNavbar showSearch={showSearch} />
+      <div className="flex flex-1 flex-row">
+        <DashboardLayoutSidebar showCreatePostCard={showCreatePostCard} />
+        <section className="flex h-full w-4/5 flex-col items-center overflow-y-auto">
           {children}
-        </div>
+        </section>
       </div>
-    </>
+    </main>
   );
 };
 
