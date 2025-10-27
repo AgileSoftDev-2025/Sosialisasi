@@ -1,108 +1,390 @@
-import React from "react";
+import Image from "next/image";
 
 const Home = () => {
-  const posting = "/images/posting.png";
-  const logo = "/images/logo.png";
   return (
-    <main className="flex h-screen flex-row">
-      <article className="h-screen w-4/5 flex-1 overflow-y-auto bg-[#122C49] px-24 py-8">
-        <section className="w-4/5">
-          <div className="flex flex-row items-center justify-end gap-2 px-8 text-[24px] font-medium text-white">
-            <h2>Category</h2>
-            <i className="fas fa-filter -mb-2 text-[28px]"></i>
+    <>
+      <main className="h-screen w-screen overflow-x-hidden">
+        {/* NavBar */}
+        <nav className="sticky top-0 z-40 flex w-full flex-row justify-between bg-white p-5 shadow-md">
+          <div className="flex flex-row items-center gap-2">
+            <Image src="/images/logo.png" alt="Logo" width={100} height={100} />
+            <h1 className="text-[32px] font-bold">Sosialisasi</h1>
           </div>
+          <div className="flex w-1/2 flex-row items-center gap-4 rounded-3xl border-2 border-[#E5E7EB] bg-[#FAFAFF] px-5 py-2">
+            <i className="fas fa-search text-[20px] text-[#787878]"></i>
+            <input
+              className="placeholder-text-[#ADAEBC] w-full text-[20px] focus:outline-none"
+              placeholder="Search Post,People,Opportunities.."
+            />
+          </div>
+          <div className="flex flex-row items-center gap-7">
+            <div className="rounded-xl bg-[#FAFAFF] p-4">
+              <i className="fas fa-filter text-[20px] text-[#787878]"></i>
+            </div>
+            <div className="rounded-xl bg-[#FAFAFF] p-4">
+              <i className="fas fa-bell text-[20px] text-[#787878]"></i>
+            </div>
+            <div className="rounded-xl bg-black p-5"></div>
+          </div>
+        </nav>
 
-          {/* Konten */}
-          <div className="mt-3 mb-10 bg-white px-10 py-8">
-            <div className="flex flex-row items-center gap-4">
-              <div className="rounded-full bg-black p-6"></div>
-              <div className="flex flex-col">
-                <h3 className="text-[20px] font-bold">
-                  Mochamad Javier Elsyera
-                </h3>
-                <h5 className="text-[18px] text-gray-400">
-                  31 Agustus 2025 19:35
-                </h5>
-              </div>
+        <div className="flex flex-1 flex-row">
+          {/* Sidebar */}
+          <aside className="sticky top-20 left-0 z-30 flex h-screen w-1/5 flex-col bg-[#FAFAFF] p-4 px-5 py-8 shadow-[10px_0_15px_-3px_rgba(0,0,0,0.1)]">
+            <div className="flex flex-row items-center gap-4 rounded-xl bg-[#5568FE] p-4 text-[24px] text-white">
+              <i className="fas fa-home"></i>
+              <h3 className="font-regular">Home</h3>
             </div>
-            <div className="font-regular mt-8 mb-14 text-[20px]">
-              <p>Hallo Sobat tambang,</p>
-              <br />
-              <p>Kami ingin mengajak kamu untuk berkolaborasi nih Proyek nih</p>
-              <br />
-              <p>📌 Posisi yang dibuka:</p>
-              <p>- Engineering</p>
-              <p>- Plant</p>
-              <p>- CRM</p>
-              <p>- SCM</p>
+            <div className="flex cursor-pointer flex-row items-center gap-4 rounded-xl p-4 text-[24px] text-[#787878]">
+              <i className="fa-solid fa-message"></i>
+              <h3 className="font-regular">Messages</h3>
             </div>
-            <div className="mb-28">
-              <img src={posting} className="w-full" />
+            <div className="flex cursor-pointer flex-row items-center gap-4 rounded-xl p-4 text-[24px] text-[#787878]">
+              <i className="fa-solid fa-user"></i>
+              <h3 className="font-regular">Profile</h3>
             </div>
-            <div className="flex flex-row gap-10 text-[20px] font-medium">
-              <div className="flex flex-row items-center gap-2">
-                <i className="fa-regular fa-thumbs-up"></i>
-                <h6 className="text-gray-400">Like</h6>
-              </div>
-              <div className="flex flex-row items-center gap-2">
-                <i className="fa-regular fa-comments"></i>
-                <h6 className="text-gray-400">Comment</h6>
-              </div>
-              <div className="flex flex-row items-center gap-2">
-                <i className="fas fa-share"></i>
-                <h6 className="text-gray-400">Share</h6>
-              </div>
+            <div className="flex cursor-pointer flex-row items-center gap-4 rounded-xl p-4 text-[24px] text-[#787878]">
+              <i className="fa-solid fa-gear"></i>
+              <h3 className="font-regular">Pengaturan</h3>
             </div>
-          </div>
+            <div className="mx-5 mt-5 flex flex-col items-center justify-center gap-2 rounded-lg bg-[#E5E7EB]/30 px-7 py-4 text-center">
+              <p className="text-[30px]">🚀</p>
+              <p className="text-[20px] font-bold text-[#202020]">
+                Share Your Journey
+              </p>
+              <p className="font-regular text-[16px] text-[#787878]">
+                Connect with peers and discover amazing opportunities
+              </p>
+              <button className="w-full rounded-xl bg-[#5568FE] text-[18px] font-medium text-white hover:bg-[#5568FE]/80 focus:outline-none">
+                Create Post
+              </button>
+            </div>
+          </aside>
 
-          {/* Konten 2 */}
-          <div className="mt-3 mb-20 bg-white px-10 py-8">
-            <div className="flex flex-row items-center gap-4">
-              <div className="rounded-full bg-black p-6"></div>
-              <div className="flex flex-col">
-                <h3 className="text-[20px] font-bold">
-                  Mochamad Javier Elsyera
-                </h3>
-                <h5 className="text-[18px] text-gray-400">
-                  31 Agustus 2025 19:35
-                </h5>
+          <section className="flex h-full w-4/5 flex-col items-center overflow-y-auto bg-[#FAFAFF]">
+            <article className="mt-7 flex w-[50%] flex-col rounded-3xl bg-white p-3 shadow-sm">
+              <div className="flex flex-row items-center justify-between p-3">
+                <div className="rounded-xl bg-black p-7"></div>
+                <div className="flex w-[72%] flex-row items-center gap-4 rounded-2xl border-2 border-[#E5E7EB] bg-[#FAFAFF] px-5 py-3">
+                  <input
+                    className="placeholder-text-[#ADAEBC] w-full text-[20px] focus:outline-none"
+                    placeholder="Search Post,People,Opportunities.."
+                  />
+                </div>
+                <div className="flex cursor-pointer flex-row items-center gap-3 rounded-lg bg-[#5568FE] p-3 text-white hover:bg-[#5568FE]/80">
+                  <i className="fas fa-paper-plane text-[24px] font-bold"></i>
+                  <h2 className="text-[20px] font-bold">Post</h2>
+                </div>
               </div>
-            </div>
-            <div className="font-regular mt-8 mb-14 text-[20px]">
-              <p>Hallo Sobat tambang,</p>
-              <br />
-              <p>Kami ingin mengajak kamu untuk berkolaborasi nih Proyek nih</p>
-              <br />
-              <p>📌 Posisi yang dibuka:</p>
-              <p>- Engineering</p>
-              <p>- Plant</p>
-              <p>- CRM</p>
-              <p>- SCM</p>
-            </div>
-            <div className="mb-28">
-              <img src={posting} className="w-full" />
-            </div>
-            <div className="flex flex-row gap-10 text-[20px] font-medium">
-              <div className="flex flex-row items-center gap-2">
-                <i className="fa-regular fa-thumbs-up"></i>
-                <h6 className="text-gray-400">Like</h6>
+            </article>
+
+            <article className="mt-7 flex w-[50%] flex-col rounded-3xl bg-white p-3 shadow-sm">
+              <div className="flex flex-row gap-5 p-3">
+                <div className="rounded-xl bg-black p-7"></div>
+                <div className="flex flex-col">
+                  <div className="flex flex-row items-center gap-4">
+                    <h3 className="text-[18px] font-semibold text-[#202020]">
+                      Mochamad Javier Elsyera
+                    </h3>
+                    <div className="rounded-full bg-[#5568FE]/10 px-5 py-1">
+                      <h5 className="text-[14px] font-medium text-[#5568FE]">
+                        Project
+                      </h5>
+                    </div>
+                  </div>
+                  <h4 className="font-regular text-[14px] text-[#787878]">
+                    2 Hours Ago
+                  </h4>
+                </div>
               </div>
-              <div className="flex flex-row items-center gap-2">
-                <i className="fa-regular fa-comments"></i>
-                <h6 className="text-gray-400">Comment</h6>
+
+              <div className="font-regular p-3 text-[16px] text-[#202020]">
+                <p>
+                  🔬 Exciting opportunity! I'm looking for 3 undergraduate
+                  information systems students to join my AI research project on
+                  natural language processing. This is a great chance to get
+                  hands-on experience with machine learning and contribute to
+                  cutting-edge research.
+                </p>
+                <Image
+                  src="/images/gambar.png"
+                  alt="Logo"
+                  width={200}
+                  height={200}
+                />
+                <div className="flex flex-row items-center gap-3">
+                  <div className="mt-5 rounded-full bg-[#5568FE]/10 px-5 py-1">
+                    <h5 className="text-[14px] font-medium text-[#5568FE]">
+                      #Research Collab
+                    </h5>
+                  </div>
+                  <div className="mt-5 rounded-full bg-[#5568FE]/10 px-5 py-1">
+                    <h5 className="text-[14px] font-medium text-[#5568FE]">
+                      #AI
+                    </h5>
+                  </div>
+                  <div className="mt-5 rounded-full bg-[#5568FE]/10 px-5 py-1">
+                    <h5 className="text-[14px] font-medium text-[#5568FE]">
+                      #Undergraduate
+                    </h5>
+                  </div>
+                </div>
+                <div className="mt-5 border border-[#F3F4F6]"></div>
+                <div className="flex flex-row items-center justify-between pt-4">
+                  <div className="flex flex-row items-center gap-5">
+                    <div className="flex flex-row items-center gap-1">
+                      <i className="fa-regular fa-heart"></i>
+                      <p>24</p>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <i className="fa-regular fa-comment"></i>
+                      <p>8</p>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <i className="fa-regular fa-bookmark"></i>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <i className="fa-solid fa-share"></i>
+                    </div>
+                  </div>
+                  <button className="bg-[#5568FE] text-[14px] font-medium text-white hover:bg-[#5568FE]/80">
+                    Apply Now
+                  </button>
+                </div>
               </div>
-              <div className="flex flex-row items-center gap-2">
-                <i className="fas fa-share"></i>
-                <h6 className="text-gray-400">Share</h6>
+            </article>
+
+            <article className="mt-7 flex w-[50%] flex-col rounded-3xl bg-white p-3 shadow-sm">
+              <div className="flex flex-row gap-5 p-3">
+                <div className="rounded-xl bg-black p-7"></div>
+                <div className="flex flex-col">
+                  <div className="flex flex-row items-center gap-4">
+                    <h3 className="text-[18px] font-semibold text-[#202020]">
+                      Mochamad Javier Elsyera
+                    </h3>
+                    <div className="rounded-full bg-[#5568FE]/10 px-5 py-1">
+                      <h5 className="text-[14px] font-medium text-[#5568FE]">
+                        Project
+                      </h5>
+                    </div>
+                  </div>
+                  <h4 className="font-regular text-[14px] text-[#787878]">
+                    2 Hours Ago
+                  </h4>
+                </div>
               </div>
-            </div>
-          </div>
-        </section>
-        <button className="fixed right-40 bottom-8 rounded-lg bg-[#CFAE78] px-6 py-3 text-[18px] font-bold text-white shadow-lg transition hover:bg-[#b28f5c]">
-          Create Post
-        </button>
-      </article>
-    </main>
+
+              <div className="font-regular p-3 text-[16px] text-[#202020]">
+                <p>
+                  🔬 Exciting opportunity! I'm looking for 3 undergraduate
+                  information systems students to join my AI research project on
+                  natural language processing. This is a great chance to get
+                  hands-on experience with machine learning and contribute to
+                  cutting-edge research.
+                </p>
+                <Image
+                  src="/images/gambar.png"
+                  alt="Logo"
+                  width={200}
+                  height={200}
+                />
+                <div className="flex flex-row items-center gap-3">
+                  <div className="mt-5 rounded-full bg-[#5568FE]/10 px-5 py-1">
+                    <h5 className="text-[14px] font-medium text-[#5568FE]">
+                      #Research Collab
+                    </h5>
+                  </div>
+                  <div className="mt-5 rounded-full bg-[#5568FE]/10 px-5 py-1">
+                    <h5 className="text-[14px] font-medium text-[#5568FE]">
+                      #AI
+                    </h5>
+                  </div>
+                  <div className="mt-5 rounded-full bg-[#5568FE]/10 px-5 py-1">
+                    <h5 className="text-[14px] font-medium text-[#5568FE]">
+                      #Undergraduate
+                    </h5>
+                  </div>
+                </div>
+                <div className="mt-5 border border-[#F3F4F6]"></div>
+                <div className="flex flex-row items-center justify-between pt-4">
+                  <div className="flex flex-row items-center gap-5">
+                    <div className="flex flex-row items-center gap-1">
+                      <i className="fa-regular fa-heart"></i>
+                      <p>24</p>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <i className="fa-regular fa-comment"></i>
+                      <p>8</p>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <i className="fa-regular fa-bookmark"></i>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <i className="fa-solid fa-share"></i>
+                    </div>
+                  </div>
+                  <button className="bg-[#5568FE] text-[14px] font-medium text-white hover:bg-[#5568FE]/80">
+                    Apply Now
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article className="mt-7 flex w-[50%] flex-col rounded-3xl bg-white p-3 shadow-sm">
+              <div className="flex flex-row gap-5 p-3">
+                <div className="rounded-xl bg-black p-7"></div>
+                <div className="flex flex-col">
+                  <div className="flex flex-row items-center gap-4">
+                    <h3 className="text-[18px] font-semibold text-[#202020]">
+                      Mochamad Javier Elsyera
+                    </h3>
+                    <div className="rounded-full bg-[#5568FE]/10 px-5 py-1">
+                      <h5 className="text-[14px] font-medium text-[#5568FE]">
+                        Project
+                      </h5>
+                    </div>
+                  </div>
+                  <h4 className="font-regular text-[14px] text-[#787878]">
+                    2 Hours Ago
+                  </h4>
+                </div>
+              </div>
+
+              <div className="font-regular p-3 text-[16px] text-[#202020]">
+                <p>
+                  🔬 Exciting opportunity! I'm looking for 3 undergraduate
+                  information systems students to join my AI research project on
+                  natural language processing. This is a great chance to get
+                  hands-on experience with machine learning and contribute to
+                  cutting-edge research.
+                </p>
+                <Image
+                  src="/images/gambar.png"
+                  alt="Logo"
+                  width={200}
+                  height={200}
+                />
+                <div className="flex flex-row items-center gap-3">
+                  <div className="mt-5 rounded-full bg-[#5568FE]/10 px-5 py-1">
+                    <h5 className="text-[14px] font-medium text-[#5568FE]">
+                      #Research Collab
+                    </h5>
+                  </div>
+                  <div className="mt-5 rounded-full bg-[#5568FE]/10 px-5 py-1">
+                    <h5 className="text-[14px] font-medium text-[#5568FE]">
+                      #AI
+                    </h5>
+                  </div>
+                  <div className="mt-5 rounded-full bg-[#5568FE]/10 px-5 py-1">
+                    <h5 className="text-[14px] font-medium text-[#5568FE]">
+                      #Undergraduate
+                    </h5>
+                  </div>
+                </div>
+                <div className="mt-5 border border-[#F3F4F6]"></div>
+                <div className="flex flex-row items-center justify-between pt-4">
+                  <div className="flex flex-row items-center gap-5">
+                    <div className="flex flex-row items-center gap-1">
+                      <i className="fa-regular fa-heart"></i>
+                      <p>24</p>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <i className="fa-regular fa-comment"></i>
+                      <p>8</p>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <i className="fa-regular fa-bookmark"></i>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <i className="fa-solid fa-share"></i>
+                    </div>
+                  </div>
+                  <button className="bg-[#5568FE] text-[14px] font-medium text-white hover:bg-[#5568FE]/80">
+                    Apply Now
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article className="mt-7 flex w-[50%] flex-col rounded-3xl bg-white p-3 shadow-sm">
+              <div className="flex flex-row gap-5 p-3">
+                <div className="rounded-xl bg-black p-7"></div>
+                <div className="flex flex-col">
+                  <div className="flex flex-row items-center gap-4">
+                    <h3 className="text-[18px] font-semibold text-[#202020]">
+                      Mochamad Javier Elsyera
+                    </h3>
+                    <div className="rounded-full bg-[#5568FE]/10 px-5 py-1">
+                      <h5 className="text-[14px] font-medium text-[#5568FE]">
+                        Project
+                      </h5>
+                    </div>
+                  </div>
+                  <h4 className="font-regular text-[14px] text-[#787878]">
+                    2 Hours Ago
+                  </h4>
+                </div>
+              </div>
+
+              <div className="font-regular p-3 text-[16px] text-[#202020]">
+                <p>
+                  🔬 Exciting opportunity! I'm looking for 3 undergraduate
+                  information systems students to join my AI research project on
+                  natural language processing. This is a great chance to get
+                  hands-on experience with machine learning and contribute to
+                  cutting-edge research.
+                </p>
+                <Image
+                  src="/images/gambar.png"
+                  alt="Logo"
+                  width={200}
+                  height={200}
+                />
+                <div className="flex flex-row items-center gap-3">
+                  <div className="mt-5 rounded-full bg-[#5568FE]/10 px-5 py-1">
+                    <h5 className="text-[14px] font-medium text-[#5568FE]">
+                      #Research Collab
+                    </h5>
+                  </div>
+                  <div className="mt-5 rounded-full bg-[#5568FE]/10 px-5 py-1">
+                    <h5 className="text-[14px] font-medium text-[#5568FE]">
+                      #AI
+                    </h5>
+                  </div>
+                  <div className="mt-5 rounded-full bg-[#5568FE]/10 px-5 py-1">
+                    <h5 className="text-[14px] font-medium text-[#5568FE]">
+                      #Undergraduate
+                    </h5>
+                  </div>
+                </div>
+                <div className="mt-5 border border-[#F3F4F6]"></div>
+                <div className="flex flex-row items-center justify-between pt-4">
+                  <div className="flex flex-row items-center gap-5">
+                    <div className="flex flex-row items-center gap-1">
+                      <i className="fa-regular fa-heart"></i>
+                      <p>24</p>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <i className="fa-regular fa-comment"></i>
+                      <p>8</p>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <i className="fa-regular fa-bookmark"></i>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <i className="fa-solid fa-share"></i>
+                    </div>
+                  </div>
+                  <button className="bg-[#5568FE] text-[14px] font-medium text-white hover:bg-[#5568FE]/80">
+                    Apply Now
+                  </button>
+                </div>
+              </div>
+            </article>
+          </section>
+        </div>
+      </main>
+    </>
   );
 };
 
