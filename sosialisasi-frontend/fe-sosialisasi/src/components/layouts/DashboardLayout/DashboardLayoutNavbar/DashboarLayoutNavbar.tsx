@@ -8,7 +8,7 @@ const DashboardLayoutNavbar = ({ showSearch = false }: IPropTypes) => {
   return (
     <nav className="sticky top-0 z-40 flex w-full flex-row justify-between bg-white p-5 shadow-md">
       <div className="flex flex-row items-center gap-2">
-        <Image src="/images/logo.png" alt="Logo" width={100} height={100} />
+        <Image src="/images/logo.png" alt="Logo" width={50} height={50} />
         <h1 className="text-[32px] font-bold">Sosialisasi</h1>
       </div>
 
