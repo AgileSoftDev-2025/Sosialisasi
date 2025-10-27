@@ -10,9 +10,9 @@ router.get("/", (req, res) => {
   });
 });
 
-router.post("/auth/register", authControllers.register);
-router.post("/auth/login", authControllers.login);
-router.get("/auth/me", authMiddleware, authControllers.me);
-router.post("/auth/activation", authControllers.activation);
+router.post("/register", authControllers.register);
+router.post("/login", authControllers.login);
+router.get("/me", authMiddleware, authControllers.me);
+router.post("/activation", authControllers.activation);
 
 export default router;
