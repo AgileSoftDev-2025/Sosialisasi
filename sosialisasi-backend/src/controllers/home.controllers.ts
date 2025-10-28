@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import * as Yup from "yup";
 import ContentModel from "../models/content.models";
 import { IReqUser } from "../middlewares/auth.middleware";
+import fs from "fs";
+import path from "path";
 
 const contentValidateSchema = Yup.object({
   text_content: Yup.string().required("Teks konten wajib diisi."),
@@ -60,6 +62,43 @@ export default {
       console.error(error);
       return res.status(500).json({
         message: "Terjadi kesalahan server.",
+        error,
+      });
+    }
+  },
+
+  async delete(req: IReqUser, res: Response) {
+    try {
+      const id: string = req.params.id.trim();
+
+      const content = await ContentModel.findById(id);
+      if (!content) {
+        return res.status(404).json({
+          message: "Konten tidak ditemukan.",
+        });
+      }
+
+      if (content.attachmentUrl_content) {
+        const filePath = path.join(
+          __dirname,
+          "..",
+          "..",
+          content.attachmentUrl_content
+        );
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+
+      await ContentModel.findByIdAndDelete(id);
+
+      return res.status(200).json({
+        message: "Konten berhasil dihapus.",
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(401).json({
+        message: "Terjadi kesalahan server saat menghapus konten.",
         error,
       });
     }
