@@ -27,7 +27,7 @@ const ContentSchema = new Schema<Content>(
     status_content: {
       type: Schema.Types.Boolean,
       required: true,
-      default: false,
+      default: true,
     },
     type_content: {
       type: Schema.Types.String,

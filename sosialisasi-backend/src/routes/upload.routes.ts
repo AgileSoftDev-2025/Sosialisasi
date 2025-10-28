@@ -37,5 +37,6 @@ router.post(
   upload.single("file"),
   homeControllers.create
 );
+router.delete("/content/:id", homeControllers.delete);
 
 export default router;
