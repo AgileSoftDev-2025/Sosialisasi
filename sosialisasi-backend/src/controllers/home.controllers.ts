@@ -4,6 +4,7 @@ import ContentModel from "../models/content.models";
 import { IReqUser } from "../middlewares/auth.middleware";
 import fs from "fs";
 import path from "path";
+import LikeModel from "../models/like.models";
 
 const contentValidateSchema = Yup.object({
   text_content: Yup.string().required("Teks konten wajib diisi."),
