@@ -14,11 +14,11 @@ const DashboardLayout = ({
   showCreatePostCard,
 }: IPropTypes) => {
   return (
-    <main className="h-screen w-screen overflow-x-hidden bg-[#FAFAFF]">
+    <main className="flex min-h-screen flex-col bg-[#FAFAFF]">
       <DashboardLayoutNavbar showSearch={showSearch} />
-      <div className="flex flex-1 flex-row">
+      <div className="flex flex-1 overflow-hidden">
         <DashboardLayoutSidebar showCreatePostCard={showCreatePostCard} />
-        <section className="flex h-full w-4/5 flex-col items-center overflow-y-auto">
+        <section className="flex-1 overflow-y-auto p-6 md:p-8">
           {children}
         </section>
       </div>

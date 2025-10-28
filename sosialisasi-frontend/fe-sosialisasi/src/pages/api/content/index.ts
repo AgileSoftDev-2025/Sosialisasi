@@ -1,5 +1,3 @@
-// src/pages/api/content/index.ts
-
 import { NextApiRequest, NextApiResponse } from "next";
 import { getToken } from "next-auth/jwt";
 import formidable from "formidable";
@@ -16,7 +14,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  console.log("\n--- [API ROUTE] Request Diterima ---"); // Log Awal
+  // console.log("\n--- [API ROUTE] Request Diterima ---");
 
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method Not Allowed" });
@@ -33,7 +31,7 @@ export default async function handler(
       .json({ message: "Unauthorized: Token tidak valid atau tidak lengkap." });
   }
 
-  console.log("[API ROUTE] Cekpoint 1: Token valid.");
+  // console.log("[API ROUTE] Cekpoint 1: Token valid.");
 
   try {
     const form = formidable({});
@@ -71,9 +69,9 @@ export default async function handler(
       );
     }
 
-    console.log(
-      "[API ROUTE] Cekpoint 5: FormData untuk backend siap, akan melakukan fetch.",
-    );
+    // console.log(
+    //   "[API ROUTE] Cekpoint 5: FormData untuk backend siap, akan melakukan fetch.",
+    // );
 
     const backendResponse = await fetch(
       "http://localhost:3001/api/upload/content",
