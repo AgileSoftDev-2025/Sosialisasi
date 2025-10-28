@@ -19,7 +19,8 @@ const useLogin = () => {
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
-  const callbackUrl: string = (router.query.callbackUrl as string) || "/";
+  const callbackUrl: string =
+    (router.query.callbackUrl as string) || "/dashboard/home";
 
   const {
     control,
