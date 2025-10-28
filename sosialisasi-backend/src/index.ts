@@ -4,6 +4,7 @@ import router from "./routes/api";
 import db from "./utils/database";
 import docs from "./docs/route";
 import cors from "cors";
+import path from "path";
 
 async function init() {
   try {
@@ -12,6 +13,9 @@ async function init() {
 
     const app = express();
     app.use(bodyParser.json());
+    app.use(cors());
+
+    app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
     const PORT = 3001;
 
@@ -22,12 +26,11 @@ async function init() {
       });
     });
 
-    app.use(cors());
     app.use("/api", router);
     docs(app);
 
     app.listen(PORT, () => {
-      console.log(`Server is running on https://localhost:${PORT}`);
+      console.log(`✅ Server is running on http://localhost:${PORT}`);
     });
   } catch (error) {
     console.log(error);

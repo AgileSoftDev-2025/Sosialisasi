@@ -1,10 +1,14 @@
 import multer from "multer";
 import path from "path";
+import fs from "fs";
 
-// Konfigurasi disk storage untuk Multer
 const diskStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "..", "..", "upload"));
+    const uploadPath = path.join(__dirname, "..", "..", "uploads");
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
   },
 
   filename: (req, file, cb) => {

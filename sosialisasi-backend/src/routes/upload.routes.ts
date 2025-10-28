@@ -1,6 +1,7 @@
 import express from "express";
 import upload from "../middlewares/upload.middleware";
 import authMiddleware from "../middlewares/auth.middleware";
+import homeControllers from "../controllers/home.controllers";
 
 const router = express.Router();
 
@@ -27,6 +28,14 @@ router.put(
       data: { filePath: req.file.path },
     });
   }
+);
+
+router.get("/content", homeControllers.getAll);
+router.post(
+  "/content",
+  authMiddleware,
+  upload.single("file"),
+  homeControllers.create
 );
 
 export default router;
