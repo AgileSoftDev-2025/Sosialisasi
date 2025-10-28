@@ -40,8 +40,9 @@ export default {
           message: "User tidak terautentikasi.",
         });
       }
-
-      const attachmentUrl_content = req.file ? req.file.path : undefined;
+      const attachmentUrl_content = req.file
+        ? `/uploads/${req.file.filename}`
+        : undefined;
 
       const newContent = await ContentModel.create({
         text_content,

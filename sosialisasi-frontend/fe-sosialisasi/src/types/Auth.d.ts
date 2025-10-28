@@ -18,6 +18,10 @@ interface ILogin {
   password: string;
 }
 
+interface IContentPayload {
+  formData: FormData;
+}
+
 interface UserExtended extends User {
   accessToken?: string;
   role?: string;
@@ -34,6 +38,7 @@ interface JWTExtended extends JWT {
 export type {
   IRegister,
   ILogin,
+  IContentPayload,
   IActivation,
   UserExtended,
   SessionExtended,
