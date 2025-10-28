@@ -24,10 +24,7 @@ const HomePage = () => {
 
   const getDataContent = async () => {
     try {
-      const res = await axios.get("http://localhost:3001/api/upload/content", {
-        headers: { Authorization: `Bearer ${token.user.accessToken}` },
-      });
-
+      const res = await axios.get("http://localhost:3001/api/upload/content");
       setData(res.data.data);
     } catch (err) {
       console.error("Gagal mengambil data:", err);
@@ -37,6 +34,68 @@ const HomePage = () => {
   useEffect(() => {
     getDataContent();
   }, []);
+
+  useEffect(() => {
+    const updateLikes = async () => {
+      const updatedData = await Promise.all(
+        data.map(async (item) => {
+          const likesCount = await fetchLikes(item._id);
+          return { ...item, likes: likesCount };
+        }),
+      );
+      setData(updatedData);
+    };
+
+    if (data.length) updateLikes();
+  }, [data]);
+
+  const handleToggleLike = async (contentId: string, userId: string) => {
+    try {
+      const res = await fetch(
+        `http://localhost:3001/api/like/toggle/${contentId}?userId=${userId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token.user.accessToken}`,
+          },
+          body: JSON.stringify({}), // wajib meskipun kosong
+        },
+      );
+
+      const data = await res.json();
+      const action = data.action;
+
+      setData((prev) =>
+        prev.map((item) =>
+          item._id === contentId
+            ? {
+                ...item,
+                likes:
+                  action === "like"
+                    ? (item.likes || 0) + 1
+                    : Math.max((item.likes || 1) - 1, 0),
+              }
+            : item,
+        ),
+      );
+    } catch (err) {
+      console.error("Gagal toggle like:", err);
+    }
+  };
+
+  const fetchLikes = async (contentId: string) => {
+    try {
+      const res = await fetch(
+        `http://localhost:3001/api/like/toggle/${contentId}`,
+      );
+      const data = await res.json();
+      return data.totalLikes || 0;
+    } catch (err) {
+      console.error("Gagal ambil like:", err);
+      return 0;
+    }
+  };
 
   return (
     <DashboardLayout showSearch showCreatePostCard>
@@ -105,18 +164,18 @@ const HomePage = () => {
             <div className="flex flex-row items-center justify-between pt-4">
               <div className="flex flex-row items-center gap-5">
                 <div className="flex flex-row items-center gap-1">
-                  <i className="fa-regular fa-heart"></i>
+                  <i
+                    className={`fa-heart cursor-pointer ${item.likes && item.likes > 0 ? "fa-solid text-red-500" : "fa-regular"}`}
+                    onClick={() => handleToggleLike(item._id)}
+                  ></i>
                   <p>{item.likes || 0}</p>
                 </div>
                 <div className="flex flex-row items-center gap-1">
-                  <i className="fa-regular fa-comment"></i>
+                  <i className="fa-regular fa-comment cursor-pointer"></i>
                   <p>{item.comments?.length || 0}</p>
                 </div>
                 <div className="flex flex-row items-center gap-1">
-                  <i className="fa-regular fa-bookmark"></i>
-                </div>
-                <div className="flex flex-row items-center gap-1">
-                  <i className="fa-solid fa-share"></i>
+                  <i className="fa-solid fa-share cursor-pointer"></i>
                 </div>
               </div>
               <button className="rounded-md bg-[#5568FE] p-3 text-[14px] font-medium text-white hover:bg-[#5568FE]/80">
