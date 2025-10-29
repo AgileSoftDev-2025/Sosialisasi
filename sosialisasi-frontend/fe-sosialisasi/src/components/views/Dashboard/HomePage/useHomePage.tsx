@@ -18,6 +18,7 @@ const useHomePage = () => {
 
     onMutate: async (postId: string) => {
       const userId = session?.user?.id;
+      console.log(userId);
       if (!userId) return;
 
       await queryClient.cancelQueries({ queryKey: ["posts"] });

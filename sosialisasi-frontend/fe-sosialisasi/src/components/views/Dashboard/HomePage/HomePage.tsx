@@ -1,10 +1,10 @@
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import useHomePage from "./useHomePage";
 import Image from "next/image";
+import { useState } from "react";
 
 const HomePage = () => {
   const { posts, isLoading, currentUserId, handleToggleLike } = useHomePage();
-
   const renderContent = () => {
     if (isLoading) {
       return <p className="text-center text-gray-500">Loading posts...</p>;
@@ -77,11 +77,16 @@ const HomePage = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-5 text-gray-600">
                   <button
-                    onClick={() => handleToggleLike(post._id)}
+                    onClick={() => {
+                      // console.log("Button clicked");
+                      handleToggleLike(post._id);
+                    }}
                     className="flex items-center gap-2 transition-colors duration-200 hover:text-red-500"
                   >
                     <i
-                      className={`fa-heart text-xl ${hasLiked ? "fa-solid text-red-500" : "fa-regular"}`}
+                      className={`fa-heart text-xl ${
+                        hasLiked ? "fa-solid text-red-500" : "fa-regular"
+                      }`}
                     ></i>
                     <span className="text-sm font-medium">
                       {post.likes.length}
