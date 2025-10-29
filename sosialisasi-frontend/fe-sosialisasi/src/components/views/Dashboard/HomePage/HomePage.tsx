@@ -1,191 +1,116 @@
-import Image from "next/image";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { useState, useEffect } from "react";
-import axios from "axios";
-
-interface Content {
-  _id: string;
-  text_content: string;
-  attachmentUrl_content?: string;
-  type_content: string;
-  created_at_content: string;
-  userId?: {
-    fullName: string;
-  };
-  tags?: string[];
-  likes?: number;
-  comments?: { _id: string }[];
-}
+import useHomePage from "./useHomePage";
+import Image from "next/image";
 
 const HomePage = () => {
-  const [data, setData] = useState<Content[]>([]);
+  const { posts, isLoading, currentUserId, handleToggleLike } = useHomePage();
 
-  const token = { user: { accessToken: "YOUR_ACCESS_TOKEN_HERE" } };
-
-  const getDataContent = async () => {
-    try {
-      const res = await axios.get("http://localhost:3001/api/upload/content");
-      setData(res.data.data);
-    } catch (err) {
-      console.error("Gagal mengambil data:", err);
+  const renderContent = () => {
+    if (isLoading) {
+      return <p className="text-center text-gray-500">Loading posts...</p>;
     }
-  };
 
-  useEffect(() => {
-    getDataContent();
-  }, []);
-
-  useEffect(() => {
-    const updateLikes = async () => {
-      const updatedData = await Promise.all(
-        data.map(async (item) => {
-          const likesCount = await fetchLikes(item._id);
-          return { ...item, likes: likesCount };
-        }),
-      );
-      setData(updatedData);
-    };
-
-    if (data.length) updateLikes();
-  }, [data]);
-
-  const handleToggleLike = async (contentId: string, userId: string) => {
-    try {
-      const res = await fetch(
-        `http://localhost:3001/api/like/toggle/${contentId}?userId=${userId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token.user.accessToken}`,
-          },
-          body: JSON.stringify({}), // wajib meskipun kosong
-        },
-      );
-
-      const data = await res.json();
-      const action = data.action;
-
-      setData((prev) =>
-        prev.map((item) =>
-          item._id === contentId
-            ? {
-                ...item,
-                likes:
-                  action === "like"
-                    ? (item.likes || 0) + 1
-                    : Math.max((item.likes || 1) - 1, 0),
-              }
-            : item,
-        ),
-      );
-    } catch (err) {
-      console.error("Gagal toggle like:", err);
+    if (posts.length === 0) {
+      return <p className="text-center text-gray-500">No posts yet.</p>;
     }
-  };
 
-  const fetchLikes = async (contentId: string) => {
-    try {
-      const res = await fetch(
-        `http://localhost:3001/api/like/toggle/${contentId}`,
-      );
-      const data = await res.json();
-      return data.totalLikes || 0;
-    } catch (err) {
-      console.error("Gagal ambil like:", err);
-      return 0;
-    }
+    return (
+      <div className="flex flex-col gap-6">
+        {posts.map((post) => {
+          const hasLiked = currentUserId
+            ? post.likes.includes(currentUserId)
+            : false;
+
+          return (
+            <article
+              key={post._id}
+              className="flex w-full flex-col rounded-2xl bg-white p-4 shadow-sm sm:p-6"
+            >
+              {/* Header Post */}
+              <div className="flex flex-row items-center gap-4">
+                <Image
+                  src={post.userId.profilePicture || "/images/logo.png"}
+                  alt={post.userId.fullName}
+                  width={48}
+                  height={48}
+                  className="h-12 w-12 rounded-lg bg-black object-cover"
+                />
+                <div className="flex flex-col">
+                  <div className="flex flex-wrap items-center gap-x-2">
+                    <h3 className="text-base font-semibold text-[#202020] sm:text-lg">
+                      {post.userId.fullName || "Unknown User"}
+                    </h3>
+                    <div className="rounded-full bg-[#5568FE]/10 px-3 py-1">
+                      <h5 className="text-xs font-medium text-[#5568FE] sm:text-sm">
+                        {post.type_content || "Project"}
+                      </h5>
+                    </div>
+                  </div>
+                  <h4 className="text-xs text-[#787878] sm:text-sm">
+                    {new Date(post.created_at_content).toLocaleString("id-ID", {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                    })}
+                  </h4>
+                </div>
+              </div>
+
+              {/* Konten Post */}
+              <div className="mt-4">
+                <p className="text-sm whitespace-pre-wrap text-[#202020] sm:text-base">
+                  {post.text_content}
+                </p>
+                {post.attachmentUrl_content && (
+                  <div className="relative mt-3 w-full pt-[56.25%]">
+                    <Image
+                      src={`http://localhost:3001${post.attachmentUrl_content}`}
+                      alt="Attachment"
+                      layout="fill"
+                      className="rounded-lg object-cover"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Garis Pemisah & Aksi */}
+              <div className="my-4 border-t border-gray-100"></div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-5 text-gray-600">
+                  <button
+                    onClick={() => handleToggleLike(post._id)}
+                    className="flex items-center gap-2 transition-colors duration-200 hover:text-red-500"
+                  >
+                    <i
+                      className={`fa-heart text-xl ${hasLiked ? "fa-solid text-red-500" : "fa-regular"}`}
+                    ></i>
+                    <span className="text-sm font-medium">
+                      {post.likes.length}
+                    </span>
+                  </button>
+                  <div className="flex cursor-pointer items-center gap-2">
+                    <i className="fa-regular fa-comment text-xl"></i>
+                    <span className="text-sm font-medium">
+                      {post.comments.length}
+                    </span>
+                  </div>
+                  <i className="fa-solid fa-share cursor-pointer text-xl"></i>
+                </div>
+                {post.type_content !== "All" && (
+                  <button className="rounded-md bg-[#5568FE] px-4 py-2 text-sm font-medium text-white hover:bg-[#5568FE]/80">
+                    Apply Now
+                  </button>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    );
   };
 
   return (
     <DashboardLayout showSearch showCreatePostCard>
-      <div className="flex w-full max-w-4xl flex-col rounded-xl">
-        {data.map((item) => (
-          <article
-            key={item._id}
-            className="mb-7 flex w-full flex-col justify-center rounded-3xl bg-white p-3 shadow-sm"
-          >
-            {/* Header */}
-            <div className="flex flex-row gap-5 p-3">
-              <div className="rounded-xl bg-black p-7"></div>
-              <div className="flex flex-col">
-                <div className="flex flex-row items-center gap-4">
-                  <h3 className="text-[18px] font-semibold text-[#202020]">
-                    {item.userId?.fullName || "Unknown User"}
-                  </h3>
-                  <div className="rounded-full bg-[#5568FE]/10 px-5 py-1">
-                    <h5 className="text-[14px] font-medium text-[#5568FE]">
-                      {item.type_content || "Project"}
-                    </h5>
-                  </div>
-                </div>
-                <h4 className="font-regular text-[14px] text-[#787878]">
-                  {item.created_at_content
-                    ? new Date(item.created_at_content).toLocaleString()
-                    : "Unknown time"}
-                </h4>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="font-regular p-3 text-[16px] whitespace-pre-wrap text-[#202020]">
-              <p>{item.text_content}</p>
-
-              {item.attachmentUrl_content && (
-                <Image
-                  src={
-                    item.attachmentUrl_content
-                      ? `http://localhost:3001${item.attachmentUrl_content}`
-                      : "/images/default.png"
-                  }
-                  alt="Content Image"
-                  width={1000}
-                  height={500}
-                  className="mt-3 rounded-lg"
-                />
-              )}
-
-              {/* Tags */}
-              <div className="mt-5 flex flex-row items-center gap-3">
-                {item.tags?.map((tag, idx) => (
-                  <div
-                    key={idx}
-                    className="rounded-full bg-[#5568FE]/10 px-5 py-1"
-                  >
-                    <h5 className="text-[14px] font-medium text-[#5568FE]">
-                      {tag}
-                    </h5>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-5 border border-[#F3F4F6]"></div>
-
-              {/* Actions */}
-              <div className="flex flex-row items-center justify-between pt-4">
-                <div className="flex flex-row items-center gap-5">
-                  <div className="flex flex-row items-center gap-1">
-                    <i
-                      className={`fa-heart cursor-pointer ${item.likes && item.likes > 0 ? "fa-solid text-red-500" : "fa-regular"}`}
-                    ></i>
-                    <p>{item.likes || 0}</p>
-                  </div>
-                  <div className="flex flex-row items-center gap-1">
-                    <i className="fa-regular fa-comment cursor-pointer"></i>
-                    <p>{item.comments?.length || 0}</p>
-                  </div>
-                  <div className="flex flex-row items-center gap-1">
-                    <i className="fa-solid fa-share cursor-pointer"></i>
-                  </div>
-                </div>
-                <button className="rounded-md bg-[#5568FE] p-3 text-[14px] font-medium text-white hover:bg-[#5568FE]/80">
-                  Apply Now
-                </button>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
+      <div className="mx-auto w-full max-w-2xl">{renderContent()}</div>
     </DashboardLayout>
   );
 };
