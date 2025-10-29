@@ -11,13 +11,13 @@ const DashboardLayoutSidebar = ({ showCreatePostCard = false }: IPropTypes) => {
   const router = useRouter();
 
   return (
-    <aside className="hidden h-full flex-col bg-[#FAFAFF] p-4 px-5 py-8 md:flex md:w-64 lg:w-72">
-      <div className="flex-1">
+    <aside className="sticky top-0 left-0 flex h-screen w-40 flex-col overflow-y-auto bg-white p-4 px-5 py-8 shadow-md md:flex md:w-64 lg:w-72">
+      <div>
         {SIDEBAR_ITEMS.map((item) => (
           <Link href={item.href} key={item.key}>
             <div
               className={cn(
-                "flex cursor-pointer flex-row items-center gap-4 rounded-xl p-4 text-lg text-[#787878] lg:text-xl", // Ukuran font disesuaikan
+                "flex cursor-pointer flex-row items-center gap-4 rounded-xl p-4 text-lg text-[#787878] lg:text-xl",
                 {
                   "bg-[#5568FE] text-white": router.pathname === item.href,
                 },
