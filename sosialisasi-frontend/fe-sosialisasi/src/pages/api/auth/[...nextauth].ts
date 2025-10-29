@@ -31,15 +31,22 @@ export default NextAuth({
         });
         const accessToken = result.data.data;
         const me = await authServices.getProfileWithToken(accessToken);
-        const user = me.data.data;
+        const userApi = me.data.data;
 
         if (
           accessToken &&
           result.status === 200 &&
-          user._id &&
+          userApi._id &&
           me.status === 200
         ) {
-          user.accessToken = accessToken;
+          const user: UserExtended = {
+            id: userApi._id,
+            name: userApi.fullName,
+            email: userApi.email,
+            image: userApi.profilePicture,
+            accessToken: accessToken,
+            role: userApi.role,
+          };
           return user;
         } else {
           return null;
