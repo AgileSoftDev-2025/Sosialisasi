@@ -16,12 +16,22 @@ export default {
   async getAll(req: IReqUser, res: Response) {
     try {
       const contents = await ContentModel.find()
-        .populate("userId", "fullName")
-        .sort({ created_at_content: -1 });
+        .populate("userId", "fullName profilePicture")
+        .sort({ created_at_content: -1 })
+        .lean();
+
+      const transformedContents = contents.map((content) => {
+        return {
+          ...content,
+          likes: content.likes?.map((like) => like.toString()) || [],
+          comments:
+            content.comments?.map((comment) => comment.toString()) || [],
+        };
+      });
 
       res.status(200).json({
         message: "Berhasil mengambil semua konten",
-        data: contents,
+        data: transformedContents,
       });
     } catch (error) {
       const err = error as Error;
