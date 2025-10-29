@@ -99,92 +99,93 @@ const HomePage = () => {
 
   return (
     <DashboardLayout showSearch showCreatePostCard>
-      {data.map((item) => (
-        <article
-          key={item._id}
-          className="mt-7 flex w-[50%] flex-col rounded-3xl bg-white p-3 shadow-sm"
-        >
-          {/* Header */}
-          <div className="flex flex-row gap-5 p-3">
-            <div className="rounded-xl bg-black p-7"></div>
-            <div className="flex flex-col">
-              <div className="flex flex-row items-center gap-4">
-                <h3 className="text-[18px] font-semibold text-[#202020]">
-                  {item.userId?.fullName || "Unknown User"}
-                </h3>
-                <div className="rounded-full bg-[#5568FE]/10 px-5 py-1">
-                  <h5 className="text-[14px] font-medium text-[#5568FE]">
-                    {item.type_content || "Project"}
-                  </h5>
+      <div className="flex w-full max-w-4xl flex-col rounded-xl">
+        {data.map((item) => (
+          <article
+            key={item._id}
+            className="mb-7 flex w-full flex-col justify-center rounded-3xl bg-white p-3 shadow-sm"
+          >
+            {/* Header */}
+            <div className="flex flex-row gap-5 p-3">
+              <div className="rounded-xl bg-black p-7"></div>
+              <div className="flex flex-col">
+                <div className="flex flex-row items-center gap-4">
+                  <h3 className="text-[18px] font-semibold text-[#202020]">
+                    {item.userId?.fullName || "Unknown User"}
+                  </h3>
+                  <div className="rounded-full bg-[#5568FE]/10 px-5 py-1">
+                    <h5 className="text-[14px] font-medium text-[#5568FE]">
+                      {item.type_content || "Project"}
+                    </h5>
+                  </div>
                 </div>
+                <h4 className="font-regular text-[14px] text-[#787878]">
+                  {item.created_at_content
+                    ? new Date(item.created_at_content).toLocaleString()
+                    : "Unknown time"}
+                </h4>
               </div>
-              <h4 className="font-regular text-[14px] text-[#787878]">
-                {item.created_at_content
-                  ? new Date(item.created_at_content).toLocaleString()
-                  : "Unknown time"}
-              </h4>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="font-regular p-3 text-[16px] text-[#202020]">
-            <p>{item.text_content}</p>
-
-            {item.attachmentUrl_content && (
-              <Image
-                src={
-                  item.attachmentUrl_content
-                    ? `http://localhost:3001${item.attachmentUrl_content}`
-                    : "/images/default.png"
-                }
-                alt="Content Image"
-                width={800}
-                height={200}
-                className="mt-3 rounded-lg"
-              />
-            )}
-
-            {/* Tags */}
-            <div className="mt-5 flex flex-row items-center gap-3">
-              {item.tags?.map((tag, idx) => (
-                <div
-                  key={idx}
-                  className="rounded-full bg-[#5568FE]/10 px-5 py-1"
-                >
-                  <h5 className="text-[14px] font-medium text-[#5568FE]">
-                    {tag}
-                  </h5>
-                </div>
-              ))}
             </div>
 
-            <div className="mt-5 border border-[#F3F4F6]"></div>
+            {/* Content */}
+            <div className="font-regular p-3 text-[16px] whitespace-pre-wrap text-[#202020]">
+              <p>{item.text_content}</p>
 
-            {/* Actions */}
-            <div className="flex flex-row items-center justify-between pt-4">
-              <div className="flex flex-row items-center gap-5">
-                <div className="flex flex-row items-center gap-1">
-                  <i
-                    className={`fa-heart cursor-pointer ${item.likes && item.likes > 0 ? "fa-solid text-red-500" : "fa-regular"}`}
-                    onClick={() => handleToggleLike(item._id)}
-                  ></i>
-                  <p>{item.likes || 0}</p>
-                </div>
-                <div className="flex flex-row items-center gap-1">
-                  <i className="fa-regular fa-comment cursor-pointer"></i>
-                  <p>{item.comments?.length || 0}</p>
-                </div>
-                <div className="flex flex-row items-center gap-1">
-                  <i className="fa-solid fa-share cursor-pointer"></i>
-                </div>
+              {item.attachmentUrl_content && (
+                <Image
+                  src={
+                    item.attachmentUrl_content
+                      ? `http://localhost:3001${item.attachmentUrl_content}`
+                      : "/images/default.png"
+                  }
+                  alt="Content Image"
+                  width={1000}
+                  height={500}
+                  className="mt-3 rounded-lg"
+                />
+              )}
+
+              {/* Tags */}
+              <div className="mt-5 flex flex-row items-center gap-3">
+                {item.tags?.map((tag, idx) => (
+                  <div
+                    key={idx}
+                    className="rounded-full bg-[#5568FE]/10 px-5 py-1"
+                  >
+                    <h5 className="text-[14px] font-medium text-[#5568FE]">
+                      {tag}
+                    </h5>
+                  </div>
+                ))}
               </div>
-              <button className="rounded-md bg-[#5568FE] p-3 text-[14px] font-medium text-white hover:bg-[#5568FE]/80">
-                Apply Now
-              </button>
+
+              <div className="mt-5 border border-[#F3F4F6]"></div>
+
+              {/* Actions */}
+              <div className="flex flex-row items-center justify-between pt-4">
+                <div className="flex flex-row items-center gap-5">
+                  <div className="flex flex-row items-center gap-1">
+                    <i
+                      className={`fa-heart cursor-pointer ${item.likes && item.likes > 0 ? "fa-solid text-red-500" : "fa-regular"}`}
+                    ></i>
+                    <p>{item.likes || 0}</p>
+                  </div>
+                  <div className="flex flex-row items-center gap-1">
+                    <i className="fa-regular fa-comment cursor-pointer"></i>
+                    <p>{item.comments?.length || 0}</p>
+                  </div>
+                  <div className="flex flex-row items-center gap-1">
+                    <i className="fa-solid fa-share cursor-pointer"></i>
+                  </div>
+                </div>
+                <button className="rounded-md bg-[#5568FE] p-3 text-[14px] font-medium text-white hover:bg-[#5568FE]/80">
+                  Apply Now
+                </button>
+              </div>
             </div>
-          </div>
-        </article>
-      ))}
+          </article>
+        ))}
+      </div>
     </DashboardLayout>
   );
 };
