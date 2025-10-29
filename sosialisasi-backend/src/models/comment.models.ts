@@ -5,41 +5,39 @@ import { CLIENT_HOST } from "../utils/env";
 
 const Schema = mongoose.Schema;
 
-export interface User{
-    _id: mongoose.Types.ObjectId;
+export interface User {
+  _id: mongoose.Types.ObjectId;
 }
 
-export interface Content{
-    _id: mongoose.Types.ObjectId;
+export interface Content {
+  _id: mongoose.Types.ObjectId;
 }
 
-export interface Comment{
-    id_user: mongoose.Types.ObjectId;
-    id_content: mongoose.Types.ObjectId;
-    text_comment: string;
-    created_at_comment: Date;
+export interface Comment {
+  id_user: mongoose.Types.ObjectId;
+  id_content: mongoose.Types.ObjectId;
+  text_comment: string;
+  created_at_comment: Date;
 }
 
-const CommentSchema = new Schema<Comment>(
-    {
-        id_user: {
-            type: Schema.Types.ObjectId,
-            required: true,
-        },
-        id_content: {
-            type: Schema.Types.ObjectId,
-            required: true,
-        },
-        text_comment: {
-            type: Schema.Types.String,
-            required: true,
-        },
-        created_at_comment: {
-            type: Schema.Types.Date,
-            required: true,
-        },
-    }
-);
+const CommentSchema = new Schema<Comment>({
+  id_user: {
+    type: Schema.Types.ObjectId,
+    required: true,
+  },
+  id_content: {
+    type: Schema.Types.ObjectId,
+    required: true,
+  },
+  text_comment: {
+    type: Schema.Types.String,
+    required: true,
+  },
+  created_at_comment: {
+    type: Schema.Types.Date,
+    required: true,
+  },
+});
 
 const CommentModel = mongoose.model("Comment", CommentSchema);
 
