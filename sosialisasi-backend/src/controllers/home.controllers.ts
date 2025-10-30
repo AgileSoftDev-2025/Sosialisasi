@@ -122,4 +122,38 @@ export default {
       });
     }
   },
+
+  async getOne(req: IReqUser, res: Response) {
+    try {
+      const id: string = req.params.id.trim();
+
+      const content = await ContentModel.findById(id)
+        .populate("userId", "fullName profilePicture")
+        .lean();
+
+      if (!content) {
+        return res.status(404).json({ message: "Konten tidak ditemukan" });
+      }
+
+      const commentsCount = await CommentModel.countDocuments({
+        id_content: content._id,
+      });
+
+      res.status(200).json({
+        message: "Berhasil mengambil konten",
+        data: {
+          ...content,
+          likes: content.likes?.map((like) => like.toString()) || [],
+          comments: content.comments?.map((c) => c.toString()) || [],
+          commentsCount,
+        },
+      });
+    } catch (error) {
+      const err = error as Error;
+      res.status(500).json({
+        message: "Terjadi kesalahan saat mengambil konten",
+        error: err.message,
+      });
+    }
+  },
 };
