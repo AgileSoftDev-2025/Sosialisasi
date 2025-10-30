@@ -5,6 +5,7 @@ import { IReqUser } from "../middlewares/auth.middleware";
 import fs from "fs";
 import path from "path";
 import LikeModel from "../models/like.models";
+import CommentModel from "../models/comment.models";
 
 const contentValidateSchema = Yup.object({
   text_content: Yup.string().required("Teks konten wajib diisi."),
@@ -20,14 +21,21 @@ export default {
         .sort({ created_at_content: -1 })
         .lean();
 
-      const transformedContents = contents.map((content) => {
-        return {
-          ...content,
-          likes: content.likes?.map((like) => like.toString()) || [],
-          comments:
-            content.comments?.map((comment) => comment.toString()) || [],
-        };
-      });
+      const transformedContents = await Promise.all(
+        contents.map(async (content) => {
+          const commentsCount = await CommentModel.countDocuments({
+            id_content: content._id,
+          });
+
+          return {
+            ...content,
+            likes: content.likes?.map((like) => like.toString()) || [],
+            comments:
+              content.comments?.map((comment) => comment.toString()) || [],
+            commentsCount, // ⬅️ Tambahan ini
+          };
+        })
+      );
 
       res.status(200).json({
         message: "Berhasil mengambil semua konten",

@@ -1,7 +1,4 @@
 import mongoose from "mongoose";
-import { encrypt } from "../utils/encryption";
-import { renderMailHTML, sendMail } from "../utils/mail/mail";
-import { CLIENT_HOST } from "../utils/env";
 
 const Schema = mongoose.Schema;
 
@@ -23,10 +20,12 @@ export interface Comment {
 const CommentSchema = new Schema<Comment>({
   id_user: {
     type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   id_content: {
     type: Schema.Types.ObjectId,
+    ref: "Content",
     required: true,
   },
   text_comment: {
@@ -35,6 +34,7 @@ const CommentSchema = new Schema<Comment>({
   },
   created_at_comment: {
     type: Schema.Types.Date,
+    default: Date.now,
     required: true,
   },
 });

@@ -86,7 +86,7 @@ const CreatePage = () => {
                   <textarea
                     {...field}
                     placeholder="Write something to share…"
-                    className="h-48 w-full resize-none text-base focus:outline-none sm:text-lg"
+                    className="h-48 w-full resize-none text-base whitespace-pre-wrap focus:outline-none sm:text-lg"
                   />
                 </div>
               )}
@@ -110,11 +110,23 @@ const CreatePage = () => {
                   htmlFor="fileUpload"
                   className="flex cursor-pointer flex-col items-center justify-center gap-1 rounded-2xl border border-dashed border-[#ADAEBC] py-14 hover:bg-gray-50"
                 >
-                  <i className="fa-solid fa-camera text-4xl text-[#787878]"></i>
-                  <p className="text-xl font-medium text-[#787878]">
-                    Add Picture(s)
-                  </p>
-                  <p className="text-base text-[#787878]">Click to browse</p>
+                  {preview ? (
+                    <img
+                      src={preview}
+                      alt="Preview"
+                      className="mt-3 h-full w-full rounded-lg border object-cover"
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center">
+                      <i className="fa-solid fa-camera text-4xl text-[#787878]"></i>
+                      <p className="text-xl font-medium text-[#787878]">
+                        Add Picture(s)
+                      </p>
+                      <p className="text-base text-[#787878]">
+                        Click to browse
+                      </p>
+                    </div>
+                  )}
                   <input
                     id="fileUpload"
                     type="file"
@@ -125,13 +137,6 @@ const CreatePage = () => {
                 </label>
               )}
             />
-            {preview && (
-              <img
-                src={preview}
-                alt="Preview"
-                className="mt-3 w-60 rounded-lg border object-cover"
-              />
-            )}
           </div>
 
           <div className="mt-8 flex justify-end">
