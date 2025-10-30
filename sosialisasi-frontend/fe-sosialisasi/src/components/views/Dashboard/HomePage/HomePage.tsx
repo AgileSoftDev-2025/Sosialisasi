@@ -16,7 +16,24 @@ const HomePage = () => {
     commentsByPost,
     commentInputs,
     loadingComments,
+    // handleShare,
   } = useHomePage();
+
+  const handleShare = (postId: string) => {
+    // 1️⃣ Buat URL share
+    const url = `${window.location.origin}/dashboard/post/${postId}`;
+
+    // 2️⃣ Copy ke clipboard
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        alert(`Link copied: ${url}`);
+      })
+      .catch((err) => {
+        console.error("Failed to copy link: ", err);
+        alert("Failed to copy link");
+      });
+  };
 
   // 🔹 Render konten utama
   const renderContent = () => {
@@ -119,7 +136,10 @@ const HomePage = () => {
                       </span>
                     </button>
 
-                    <i className="fa-solid fa-share cursor-pointer text-xl"></i>
+                    <i
+                      className="fa-solid fa-share cursor-pointer text-xl"
+                      onClick={() => handleShare(post._id)}
+                    ></i>
                   </div>
 
                   {post.type_content !== "All" && (
