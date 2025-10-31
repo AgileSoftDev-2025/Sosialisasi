@@ -1,18 +1,18 @@
-"use client";
-
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { useRouter } from "next/router";
 import { FaPencilAlt } from "react-icons/fa";
+import Link from "next/link";
 
 const Profile = () => {
+  const { data: session } = useSession();
+  console.log(session);
   const router = useRouter();
 
   return (
     <div className="flex w-full flex-col gap-6 bg-gray-50 p-6 lg:flex-row">
-      {/* ===== KONTEN PROFIL ===== */}
       <div className="flex-1 space-y-6">
-        {/* Header Profil */}
         <Card className="rounded-2xl border border-gray-200 bg-white shadow-sm">
           <CardBody className="flex flex-col items-start justify-between gap-6 p-6 md:flex-row md:items-center">
             <div className="flex items-center gap-5">
@@ -25,16 +25,19 @@ const Profile = () => {
               />
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900">
-                  Ahmad Rizki Pratama
+                  {session?.user?.name || "Loading..."}
                 </h2>
                 <p className="text-gray-600">
-                  Web Developer & Digital UI/UX Designer
+                  {session?.user?.status || "Loading..."}
                 </p>
-                <p className="text-sm text-gray-500">
-                  Computer Science • Faculty of Engineering • Universitas
-                  Indonesia
+                <p className="text-sm text-blue-500">
+                  <Link
+                    target="blank"
+                    href="https://www.linkedin.com/in/pilemon-barimbing/"
+                  >
+                    LinkedIn
+                  </Link>
                 </p>
-                <p className="text-sm text-blue-500">500+ connections</p>
               </div>
             </div>
             <div className="flex gap-3">
@@ -43,20 +46,19 @@ const Profile = () => {
                 variant="solid"
                 className="rounded-full px-5"
               >
-                Connect
+                Edit Profile
               </Button>
-              <Button
+              {/* <Button
                 color="primary"
                 variant="bordered"
                 className="rounded-full px-5"
               >
                 Message
-              </Button>
+              </Button> */}
             </div>
           </CardBody>
         </Card>
 
-        {/* ===== ABOUT ===== */}
         <Card className="rounded-2xl border border-gray-200 bg-white shadow-sm">
           <CardHeader className="flex items-center justify-between border-b border-gray-100 p-4">
             <h3 className="text-lg font-semibold text-gray-800">About</h3>
@@ -74,11 +76,8 @@ const Profile = () => {
           </CardBody>
         </Card>
 
-        {/* ===== MAIN CONTENT GRID ===== */}
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-          {/* ===== LEFT COLUMN ===== */}
           <div className="col-span-2 space-y-6">
-            {/* Education */}
             <Card className="rounded-2xl border border-gray-200 bg-white shadow-sm">
               <CardHeader className="flex items-center justify-between border-b border-gray-100 p-4">
                 <h3 className="text-lg font-semibold text-gray-800">
@@ -129,7 +128,6 @@ const Profile = () => {
               </CardBody>
             </Card>
 
-            {/* Work Experience */}
             <Card className="rounded-2xl border border-gray-200 bg-white shadow-sm">
               <CardHeader className="flex items-center justify-between border-b border-gray-100 p-4">
                 <h3 className="text-lg font-semibold text-gray-800">
@@ -164,9 +162,7 @@ const Profile = () => {
             </Card>
           </div>
 
-          {/* ===== RIGHT COLUMN ===== */}
           <div className="space-y-6">
-            {/* Awards */}
             <Card className="rounded-2xl border border-gray-200 bg-white shadow-sm">
               <CardHeader className="flex items-center justify-between border-b border-gray-100 p-4">
                 <h3 className="text-lg font-semibold text-gray-800">
@@ -191,7 +187,6 @@ const Profile = () => {
               </CardBody>
             </Card>
 
-            {/* Organizations */}
             <Card className="rounded-2xl border border-gray-200 bg-white shadow-sm">
               <CardHeader className="flex items-center justify-between border-b border-gray-100 p-4">
                 <h3 className="text-lg font-semibold text-gray-800">

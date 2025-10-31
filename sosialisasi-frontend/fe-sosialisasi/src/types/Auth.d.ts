@@ -2,8 +2,8 @@ import { Session, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
 
 interface IRegister {
-  userName: string;
   fullName: string;
+  status: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -20,6 +20,7 @@ interface ILogin {
 
 interface UserExtended extends User {
   accessToken?: string;
+  status?: string;
   role?: string;
 }
 
