@@ -10,6 +10,8 @@ export interface User {
   email: string;
   status: string;
   password: string;
+  jurusan: string;
+  universitas: string;
   role?: string;
   studentCard: string;
   isActive: boolean;
@@ -29,6 +31,14 @@ const UserSchema = new Schema<User>(
       unique: true,
     },
     password: {
+      type: Schema.Types.String,
+      required: true,
+    },
+    jurusan: {
+      type: Schema.Types.String,
+      required: true,
+    },
+    universitas: {
       type: Schema.Types.String,
       required: true,
     },

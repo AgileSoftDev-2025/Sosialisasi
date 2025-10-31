@@ -11,6 +11,8 @@ export interface IUserToken
     | "isActive"
     | "email"
     | "fullName"
+    | "jurusan"
+    | "universitas"
     | "status"
     | "studentCard"
   > {
