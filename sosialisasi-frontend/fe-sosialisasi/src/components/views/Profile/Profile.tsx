@@ -3,11 +3,39 @@ import { Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { useRouter } from "next/router";
 import { FaPencilAlt } from "react-icons/fa";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import authServices from "@/services/auth.service";
 
 const Profile = () => {
   const { data: session } = useSession();
   console.log(session);
+  const [user, setUser] = useState(session?.user);
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!session?.accessToken) return;
+      try {
+        const res = await authServices.getProfileWithToken(session.accessToken);
+        const u = res.data.data;
+        setUser({
+          id: u._id,
+          name: u.fullName,
+          email: u.email,
+          image: u.profilePicture,
+          role: u.role,
+          jurusan: u.jurusan,
+          universitas: u.universitas,
+          status: u.status,
+          accessToken: session.accessToken,
+        });
+      } catch (err) {
+        console.error("fetch profile failed", err);
+      }
+    };
+    fetchProfile();
+  }, [session?.accessToken]);
 
   return (
     <div className="flex w-full flex-col gap-6 bg-gray-50 p-6 lg:flex-row">
@@ -18,13 +46,13 @@ const Profile = () => {
               <div className="h-28 w-28 rounded-full bg-black object-cover"></div>
               <div className="flex flex-col gap-3">
                 <h1 className="text-[32px] font-bold text-[#1A1A1A]">
-                  Dafa Fajar Bagaskara
+                  {user?.name}
                 </h1>
                 <div className="flex flex-row items-center gap-2 text-[#7A7A7A]">
                   <i className="fa-solid fa-graduation-cap text-[20px]"></i>
                   <h3 className="font-regular text-[24px]">
-                    <span>Mahasiswa</span> <span>Universitas Airlangga</span> -{" "}
-                    <span>Sistem Informasi</span>
+                    <span>{user?.status}</span> <span>{user?.jurusan}</span> -{" "}
+                    <span>{user?.universitas}</span>
                   </h3>
                 </div>
                 <div className="flex flex-row items-center gap-5">

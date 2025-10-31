@@ -44,9 +44,11 @@ export default NextAuth({
             name: userApi.fullName,
             email: userApi.email,
             image: userApi.profilePicture,
-            accessToken: accessToken,
             role: userApi.role,
+            jurusan: userApi.jurusan,
+            universitas: userApi.universitas,
             status: userApi.status,
+            accessToken: accessToken,
           };
           return user;
         } else {

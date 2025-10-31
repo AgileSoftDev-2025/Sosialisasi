@@ -10,6 +10,8 @@ import { ToasterContext } from "@/contexts/ToasterContext";
 
 const registerSchema = yup.object().shape({
   fullName: yup.string().required("Please input your fullname"),
+  jurusan: yup.string().required("Please input your major study"),
+  universitas: yup.string().required("Please input your university"),
   status: yup
     .string()
     .oneOf(["Admin", "Mahasiswa", "Dosen", "Alumni"], "Role tidak valid")
@@ -44,6 +46,8 @@ const registerSchema = yup.object().shape({
     .required("Please input your confirmation password"),
 });
 
+export type RegisterFormData = yup.InferType<typeof registerSchema>;
+
 const useRegister = () => {
   const router = useRouter();
   const { setToaster } = useContext(ToasterContext);
@@ -63,9 +67,10 @@ const useRegister = () => {
     control,
     handleSubmit,
     formState: { errors },
+    trigger,
     reset,
     setError,
-  } = useForm({
+  } = useForm<RegisterFormData>({
     resolver: yupResolver(registerSchema),
     mode: "onTouched",
     reValidateMode: "onChange",
@@ -103,6 +108,7 @@ const useRegister = () => {
     handleRegister,
     isPendingRegister,
     errors,
+    trigger,
   };
 };
 
