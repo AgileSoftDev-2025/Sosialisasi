@@ -32,7 +32,7 @@ const CreatePage = () => {
                 "https://placehold.co/56x56/000000/FFFFFF?text=AV"
               }
               alt="Avatar"
-              className="h-14 w-14 rounded-xl bg-black object-cover"
+              className="h-14 w-14 rounded-full bg-black object-cover"
             />
 
             <div>
