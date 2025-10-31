@@ -5,6 +5,8 @@ interface IRegister {
   fullName: string;
   status: string;
   email: string;
+  jurusan: string;
+  universitas: string;
   password: string;
   confirmPassword: string;
 }
@@ -21,6 +23,8 @@ interface ILogin {
 interface UserExtended extends User {
   accessToken?: string;
   status?: string;
+  jurusan?: string;
+  universitas?: string;
   role?: string;
 }
 
