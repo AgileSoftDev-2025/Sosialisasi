@@ -11,7 +11,7 @@ export interface IUserToken
     | "isActive"
     | "email"
     | "fullName"
-    | "userName"
+    | "status"
     | "studentCard"
   > {
   id?: Types.ObjectId;

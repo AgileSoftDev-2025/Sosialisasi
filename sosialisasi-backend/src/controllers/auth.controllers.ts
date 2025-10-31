@@ -6,8 +6,8 @@ import { generateToken } from "../utils/jwt";
 import { IReqUser } from "../middlewares/auth.middleware";
 
 type TRegister = {
-  userName: string;
   fullName: string;
+  status: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -19,8 +19,10 @@ type TLogin = {
 };
 
 const registerValidateSchema = Yup.object({
-  userName: Yup.string().required(),
   fullName: Yup.string().required(),
+  status: Yup.string()
+    .oneOf(["Admin", "Mahasiswa", "Dosen", "Alumni"], "Role tidak valid")
+    .required("Role wajib diisi"),
   email: Yup.string().required(),
   password: Yup.string()
     .required()
@@ -50,22 +52,30 @@ const registerValidateSchema = Yup.object({
 
 export default {
   async register(req: Request, res: Response) {
-    const { userName, fullName, email, password, confirmPassword } =
+    const { fullName, email, status, password, confirmPassword } =
       req.body as unknown as TRegister;
 
     try {
       await registerValidateSchema.validate({
-        userName,
         fullName,
         email,
+        status,
         password,
         confirmPassword,
       });
 
+      const existingUser = await UserModel.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({
+          message: "Email sudah terdaftar",
+          data: null,
+        });
+      }
+
       const result = await UserModel.create({
-        userName,
         fullName,
         email,
+        status,
         password,
       });
 
@@ -158,6 +168,50 @@ export default {
       return res.status(200).json({
         message: "Account activated successfully",
         data: user,
+      });
+    } catch (error) {
+      const err = error as unknown as Error;
+      res.status(400).json({
+        message: err.message,
+        data: null,
+      });
+    }
+  },
+
+  async editProfile(req: IReqUser, res: Response) {
+    try {
+      const user = req.user;
+      const { fullName, status } = req.body as {
+        fullName?: string;
+        status?: string;
+      };
+
+      if (!fullName && !status) {
+        return res.status(400).json({
+          message: "Nothing changed!",
+          data: null,
+        });
+      }
+      const updatedUser = await UserModel.findOneAndUpdate(
+        { _id: user?.id },
+        {
+          fullName,
+          status,
+        },
+        {
+          new: true,
+        }
+      );
+
+      if (!updatedUser) {
+        return res.status(404).json({
+          message: "User not found",
+          data: null,
+        });
+      }
+      return res.status(200).json({
+        message: "Profile edit successfully",
+        data: updatedUser,
       });
     } catch (error) {
       const err = error as unknown as Error;

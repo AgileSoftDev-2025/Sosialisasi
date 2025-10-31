@@ -7,8 +7,8 @@ const Schema = mongoose.Schema;
 
 export interface User {
   fullName: string;
-  userName: string;
   email: string;
+  status: string;
   password: string;
   role?: string;
   studentCard: string;
@@ -23,11 +23,6 @@ const UserSchema = new Schema<User>(
       type: Schema.Types.String,
       required: true,
     },
-    userName: {
-      type: Schema.Types.String,
-      required: true,
-      unique: true,
-    },
     email: {
       type: Schema.Types.String,
       required: true,
@@ -37,10 +32,15 @@ const UserSchema = new Schema<User>(
       type: Schema.Types.String,
       required: true,
     },
+    status: {
+      type: Schema.Types.String,
+      enum: ["Mahasiswa", "Dosen"],
+      required: true,
+    },
     role: {
       type: Schema.Types.String,
-      enum: ["admin", "mahasiswa", "dosen", "alumni"],
-      default: "mahasiswa",
+      enum: ["admin", "user"],
+      default: "user",
     },
     studentCard: {
       type: Schema.Types.String,
@@ -73,7 +73,6 @@ UserSchema.post("save", async function (doc, next) {
     console.log("Send email to: ", user.email);
 
     const contentMail = await renderMailHTML("registration-success.ejs", {
-      userName: user.userName,
       fullName: user.fullName,
       email: user.email,
       createdAt: user.createdAt,
