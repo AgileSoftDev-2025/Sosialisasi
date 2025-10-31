@@ -10,6 +10,8 @@ type TRegister = {
   status: string;
   email: string;
   password: string;
+  jurusan: string;
+  universitas: string;
   confirmPassword: string;
 };
 
@@ -24,6 +26,8 @@ const registerValidateSchema = Yup.object({
     .oneOf(["Admin", "Mahasiswa", "Dosen", "Alumni"], "Role tidak valid")
     .required("Role wajib diisi"),
   email: Yup.string().required(),
+  jurusan: Yup.string().required(),
+  universitas: Yup.string().required(),
   password: Yup.string()
     .required()
     .min(6, "Password minimal 6 karakter")
@@ -52,14 +56,23 @@ const registerValidateSchema = Yup.object({
 
 export default {
   async register(req: Request, res: Response) {
-    const { fullName, email, status, password, confirmPassword } =
-      req.body as unknown as TRegister;
+    const {
+      fullName,
+      email,
+      jurusan,
+      universitas,
+      status,
+      password,
+      confirmPassword,
+    } = req.body as unknown as TRegister;
 
     try {
       await registerValidateSchema.validate({
         fullName,
         email,
         status,
+        jurusan,
+        universitas,
         password,
         confirmPassword,
       });
@@ -75,6 +88,8 @@ export default {
       const result = await UserModel.create({
         fullName,
         email,
+        jurusan,
+        universitas,
         status,
         password,
       });
@@ -181,22 +196,31 @@ export default {
   async editProfile(req: IReqUser, res: Response) {
     try {
       const user = req.user;
-      const { fullName, status } = req.body as {
+      const { fullName, status, jurusan, universitas } = req.body as {
         fullName?: string;
         status?: string;
+        jurusan?: string;
+        universitas?: string;
       };
 
-      if (!fullName && !status) {
+      const updatedData: Record<string, any> = {};
+
+      if (fullName !== undefined) updatedData.fullName = fullName;
+      if (status !== undefined) updatedData.status = status;
+      if (jurusan !== undefined) updatedData.jurusan = jurusan;
+      if (universitas !== undefined) updatedData.universitas = universitas;
+
+      if (Object.keys(updatedData).length === 0) {
         return res.status(400).json({
           message: "Nothing changed!",
           data: null,
         });
       }
+
       const updatedUser = await UserModel.findOneAndUpdate(
         { _id: user?.id },
         {
-          fullName,
-          status,
+          $set: updatedData,
         },
         {
           new: true,
