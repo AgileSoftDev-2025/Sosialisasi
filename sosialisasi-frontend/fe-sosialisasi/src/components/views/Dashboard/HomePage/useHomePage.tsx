@@ -175,27 +175,18 @@ const useHomePage = () => {
     }
   };
 
-  const handleShare = async (postId: string) => {
-    try {
-      const url = `${window.location.origin}/post/${postId}`;
+  const handleShare = (postId: string) => {
+    const url = `${window.location.origin}/dashboard/post/${postId}`;
 
-      await navigator.clipboard.writeText(url);
-      alert(`Link copied: ${url}`);
-
-      const token = session?.user?.accessToken;
-      const res = await fetch(`http://localhost:3001/api/content/${postId}`, {
-        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-        credentials: "include",
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        alert(`Link copied: ${url}`);
+      })
+      .catch((err) => {
+        console.error("Failed to copy link: ", err);
+        alert("Failed to copy link");
       });
-
-      if (!res.ok) throw new Error("Failed to fetch content");
-      const data = await res.json();
-
-      console.log("Fetched content for preview:", data.data);
-    } catch (err) {
-      console.error("Error sharing content:", err);
-      alert("Failed to share content");
-    }
   };
 
   return {

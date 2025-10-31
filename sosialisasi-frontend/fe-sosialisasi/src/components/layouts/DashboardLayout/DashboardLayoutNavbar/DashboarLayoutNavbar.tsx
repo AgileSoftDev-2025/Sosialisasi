@@ -29,7 +29,7 @@ const DashboardLayoutNavbar = ({ showSearch = false }: IPropTypes) => {
         <div className="cursor-pointer rounded-xl bg-[#FAFAFF] p-3 sm:p-4">
           <i className="fas fa-bell text-lg text-[#787878]"></i>
         </div>
-        <div className="h-12 w-12 cursor-pointer rounded-xl bg-black"></div>
+        <div className="h-12 w-12 cursor-pointer rounded-full bg-black"></div>
       </div>
     </nav>
   );

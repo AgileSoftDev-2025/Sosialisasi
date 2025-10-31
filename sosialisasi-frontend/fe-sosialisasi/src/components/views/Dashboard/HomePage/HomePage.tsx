@@ -16,26 +16,9 @@ const HomePage = () => {
     commentsByPost,
     commentInputs,
     loadingComments,
-    // handleShare,
+    handleShare,
   } = useHomePage();
 
-  const handleShare = (postId: string) => {
-    // 1️⃣ Buat URL share
-    const url = `${window.location.origin}/dashboard/post/${postId}`;
-
-    // 2️⃣ Copy ke clipboard
-    navigator.clipboard
-      .writeText(url)
-      .then(() => {
-        alert(`Link copied: ${url}`);
-      })
-      .catch((err) => {
-        console.error("Failed to copy link: ", err);
-        alert("Failed to copy link");
-      });
-  };
-
-  // 🔹 Render konten utama
   const renderContent = () => {
     if (isLoading) {
       return <p className="text-center text-gray-500">Loading posts...</p>;
@@ -46,7 +29,7 @@ const HomePage = () => {
     }
 
     return (
-      <div className="flex flex-col gap-6">
+      <div className="flex w-full flex-col gap-6">
         {posts.map((post) => {
           const hasLiked = currentUserId
             ? post.likes.includes(currentUserId)
@@ -55,7 +38,7 @@ const HomePage = () => {
           const comments = commentsByPost[post._id] || [];
 
           return (
-            <div key={post._id} className="flex flex-col gap-4">
+            <div key={post._id} className="flex w-full flex-col gap-4">
               <article className="flex w-full flex-col rounded-2xl bg-white p-4 shadow-sm sm:p-6">
                 {/* Header Post */}
                 <div className="flex flex-row items-center gap-4">
@@ -64,7 +47,7 @@ const HomePage = () => {
                     alt={post.userId.fullName}
                     width={48}
                     height={48}
-                    className="h-12 w-12 rounded-lg bg-black object-cover"
+                    className="h-12 w-12 rounded-full bg-black object-cover"
                   />
                   <div className="flex flex-col">
                     <div className="flex flex-wrap items-center gap-x-2">
@@ -159,7 +142,7 @@ const HomePage = () => {
                       alt={post.userId.fullName}
                       width={48}
                       height={48}
-                      className="-mt-2 h-12 w-12 rounded-lg bg-black object-cover"
+                      className="-mt-2 h-12 w-12 rounded-full bg-black object-cover"
                     />
                     <div className="h-auto w-full rounded-lg border-2 border-[#E5E7EB] bg-[#FAFAFF] px-4">
                       <textarea
@@ -205,7 +188,7 @@ const HomePage = () => {
                           alt={comment.id_user?.fullName || "User"}
                           width={48}
                           height={48}
-                          className="h-12 w-12 rounded-lg bg-black object-cover"
+                          className="h-12 w-12 rounded-full bg-black object-cover"
                         />
                         <div className="-mt-1 flex flex-col">
                           <div className="flex flex-wrap items-center gap-x-2">
