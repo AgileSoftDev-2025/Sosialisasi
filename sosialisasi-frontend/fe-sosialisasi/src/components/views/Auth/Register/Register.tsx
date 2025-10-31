@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
-import { Form, Input, Checkbox, Button, Spinner } from "@heroui/react";
+import {
+  Select,
+  SelectSection,
+  SelectItem,
+  Form,
+  Input,
+  Checkbox,
+  Button,
+  Spinner,
+} from "@heroui/react";
 import useRegister from "./useRegister";
 import Link from "next/link";
 import { Controller } from "react-hook-form";
@@ -32,21 +41,6 @@ const Register = () => {
           >
             <div className="flex w-full flex-col gap-3">
               <Controller
-                name="userName"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    isRequired
-                    label="Username"
-                    labelPlacement="inside"
-                    placeholder="Enter your name"
-                    isInvalid={errors.userName !== undefined}
-                    errorMessage={errors.userName?.message}
-                  />
-                )}
-              />
-              <Controller
                 name="fullName"
                 control={control}
                 render={({ field }) => (
@@ -76,6 +70,30 @@ const Register = () => {
                     isInvalid={errors.email !== undefined}
                     errorMessage={errors.email?.message}
                   />
+                )}
+              />
+
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    isRequired
+                    label="Status"
+                    labelPlacement="inside"
+                    placeholder="Select your role"
+                    selectedKeys={field.value ? [field.value] : []}
+                    onSelectionChange={(keys) =>
+                      field.onChange(Array.from(keys)[0])
+                    }
+                    isInvalid={errors.status !== undefined}
+                    errorMessage={errors.status?.message}
+                    className="text-black"
+                  >
+                    <SelectItem key="Mahasiswa">Mahasiswa</SelectItem>
+                    <SelectItem key="Dosen">Dosen</SelectItem>
+                  </Select>
                 )}
               />
 

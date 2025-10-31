@@ -9,8 +9,11 @@ import { useRouter } from "next/router";
 import { ToasterContext } from "@/contexts/ToasterContext";
 
 const registerSchema = yup.object().shape({
-  userName: yup.string().required("Please input your username"),
   fullName: yup.string().required("Please input your fullname"),
+  status: yup
+    .string()
+    .oneOf(["Admin", "Mahasiswa", "Dosen", "Alumni"], "Role tidak valid")
+    .required("Role wajib diisi"),
   email: yup
     .string()
     .email("Email format not valid")

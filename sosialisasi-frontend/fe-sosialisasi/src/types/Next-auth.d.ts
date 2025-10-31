@@ -6,8 +6,6 @@ declare module "next-auth" {
     user: UserExtended;
     accessToken?: string;
   }
-
-  interface User extends UserExtended {}
 }
 
 declare module "next-auth/jwt" {

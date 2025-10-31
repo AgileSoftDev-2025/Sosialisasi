@@ -46,6 +46,7 @@ export default NextAuth({
             image: userApi.profilePicture,
             accessToken: accessToken,
             role: userApi.role,
+            status: userApi.status,
           };
           return user;
         } else {

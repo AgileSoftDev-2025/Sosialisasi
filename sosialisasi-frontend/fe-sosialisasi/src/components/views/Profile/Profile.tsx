@@ -2,8 +2,11 @@ import Image from "next/image";
 import { Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { useRouter } from "next/router";
 import { FaPencilAlt } from "react-icons/fa";
+import Link from "next/link";
 
 const Profile = () => {
+  const { data: session } = useSession();
+  console.log(session);
   const router = useRouter();
 
   return (
