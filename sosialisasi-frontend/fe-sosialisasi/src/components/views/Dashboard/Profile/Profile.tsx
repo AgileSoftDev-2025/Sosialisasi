@@ -9,7 +9,7 @@ import authServices from "@/services/auth.service";
 
 const Profile = () => {
   const { data: session } = useSession();
-  console.log(session);
+  // console.log(session);
   const [user, setUser] = useState(session?.user);
   const router = useRouter();
 

@@ -11,6 +11,13 @@ interface IRegister {
   confirmPassword: string;
 }
 
+interface IEditProfile {
+  fullName: string;
+  jurusan: string;
+  universitas: string;
+  status: string;
+}
+
 interface IActivation {
   code: string;
 }
@@ -39,6 +46,7 @@ interface JWTExtended extends JWT {
 export type {
   IRegister,
   ILogin,
+  IEditProfile,
   IActivation,
   UserExtended,
   SessionExtended,
