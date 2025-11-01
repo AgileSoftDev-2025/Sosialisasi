@@ -6,6 +6,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Head from "next/head";
+import { ToasterProvider } from "@/contexts/ToasterContext";
 import { SessionProvider } from "next-auth/react";
 
 const jakartaPlusSans = Plus_Jakarta_Sans({
@@ -43,7 +44,9 @@ export default function App({
           </Head>
 
           <main className={cn(jakartaPlusSans.className)}>
-            <Component {...pageProps} />
+            <ToasterProvider>
+              <Component {...pageProps} />
+            </ToasterProvider>
           </main>
         </HeroUIProvider>
       </QueryClientProvider>
