@@ -4,12 +4,8 @@ import commentControllers from "../controllers/comment.controllers";
 
 const router = express.Router();
 
-router.post("/comment/:id", authMiddleware, commentControllers.toggleComment);
+router.post("/:id", authMiddleware, commentControllers.toggleComment);
 
-router.get(
-  "/comment/:id",
-  authMiddleware,
-  commentControllers.getCommentsByContentId
-);
+router.get("/:id", authMiddleware, commentControllers.getCommentsByContentId);
 
 export default router;
