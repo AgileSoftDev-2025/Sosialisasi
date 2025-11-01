@@ -3,11 +3,8 @@ import Link from "next/link";
 import { SIDEBAR_ITEMS } from "../DashboardLayout.constants";
 import { cn } from "@/utils/cn";
 
-interface IPropTypes {
-  showCreatePostCard?: boolean;
-}
 
-const DashboardLayoutSidebar = ({ showCreatePostCard = false }: IPropTypes) => {
+const DashboardLayoutSidebar = () => {
   const router = useRouter();
 
   return (
@@ -30,7 +27,7 @@ const DashboardLayoutSidebar = ({ showCreatePostCard = false }: IPropTypes) => {
         ))}
       </div>
 
-      {showCreatePostCard && (
+
         <div className="mt-5 flex flex-col items-center justify-center gap-2 rounded-lg bg-[#E5E7EB]/30 px-4 py-4 text-center">
           <p className="text-2xl">🚀</p>
           <p className="text-lg font-bold text-[#202020]">Share Your Journey</p>
@@ -44,7 +41,7 @@ const DashboardLayoutSidebar = ({ showCreatePostCard = false }: IPropTypes) => {
             Create Post
           </button>
         </div>
-      )}
+      
     </aside>
   );
 };

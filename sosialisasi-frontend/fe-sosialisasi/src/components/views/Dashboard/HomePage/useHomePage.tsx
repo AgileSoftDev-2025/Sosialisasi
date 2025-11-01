@@ -1,41 +1,35 @@
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import contentServices from "@/services/content.service";
-import { IPost, IComment } from "@/types/Home";
-import { useState } from "react";
+import { IPost } from "@/types/Home";
+import { ToasterContext } from "@/contexts/ToasterContext";
+import { useContext } from "react";
 
 const useHomePage = () => {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
-
+  const { setToaster } = useContext(ToasterContext);
   const [visibleComments, setVisibleComments] = useState<
     Record<string, boolean>
   >({});
   const [commentInputs, setCommentInputs] = useState<Record<string, string>>(
     {},
   );
-  const [commentsByPost, setCommentsByPost] = useState<
-    Record<string, IComment[]>
-  >({});
-  const [loadingComments, setLoadingComments] = useState<
-    Record<string, boolean>
-  >({});
 
-  const { data: posts = [], isLoading } = useQuery<IPost[]>({
+  const { data: posts = [], isLoading: isLoadingPosts } = useQuery<IPost[]>({
     queryKey: ["posts"],
     queryFn: contentServices.getAllPosts,
     enabled: !!session,
   });
 
   const { mutate: handleToggleLike } = useMutation({
-    mutationFn: (postId: string) => contentServices.toggleLike(postId),
+    mutationFn: contentServices.toggleLike,
     onMutate: async (postId: string) => {
       const userId = session?.user?.id;
       if (!userId) return;
-
       await queryClient.cancelQueries({ queryKey: ["posts"] });
       const previousPosts = queryClient.getQueryData<IPost[]>(["posts"]);
-
       queryClient.setQueryData<IPost[]>(["posts"], (oldData = []) =>
         oldData.map((post) =>
           post._id === postId
@@ -48,10 +42,9 @@ const useHomePage = () => {
             : post,
         ),
       );
-
       return { previousPosts };
     },
-    onError: (err, _, context) => {
+    onError: (_, __, context) => {
       if (context?.previousPosts)
         queryClient.setQueryData(["posts"], context.previousPosts);
     },
@@ -60,147 +53,59 @@ const useHomePage = () => {
     },
   });
 
-  const handleToggleComments = async (postId: string) => {
-    const isCurrentlyVisible = visibleComments[postId] || false;
+  const { mutate: sendComment, isPending: isSendingComment } = useMutation({
+    mutationFn: contentServices.createComment,
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["comments", variables.postId],
+      });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      setCommentInputs((prev) => ({ ...prev, [variables.postId]: "" }));
+    },
+    onError: () => {
+      setToaster({ type: "error", message: "Gagal mengirim komentar." });
+    },
+  });
 
-    setVisibleComments((prev) => ({ ...prev, [postId]: !isCurrentlyVisible }));
-
-    if (!isCurrentlyVisible) {
-      setLoadingComments((prev) => ({ ...prev, [postId]: true }));
-
-      try {
-        const token = session?.user?.accessToken;
-        if (!token) throw new Error("Token tidak ditemukan");
-
-        const res = await fetch(
-          `http://localhost:3001/api/comment/comment/${postId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            credentials: "include",
-          },
-        );
-
-        if (!res.ok) throw new Error(`Error: ${res.status}`);
-        const result = await res.json();
-
-        setCommentsByPost((prev) => ({
-          ...prev,
-          [postId]: result.data || [],
-        }));
-      } catch (err) {
-        console.error("Error fetching comments:", err);
-      } finally {
-        setLoadingComments((prev) => ({ ...prev, [postId]: false }));
-      }
-    }
+  const handleSendComment = (postId: string) => {
+    const text_comment = commentInputs[postId]?.trim();
+    if (!text_comment) return;
+    sendComment({ postId, text_comment });
   };
 
-  const fetchComments = async (postId: string) => {
-    setLoadingComments((prev) => ({ ...prev, [postId]: true }));
-    try {
-      const token = session?.user?.accessToken;
-      if (!token) throw new Error("Token tidak ditemukan");
-
-      const res = await fetch(
-        `http://localhost:3001/api/comment/comment/${postId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          credentials: "include",
-        },
-      );
-
-      if (!res.ok) throw new Error(`Error: ${res.status}`);
-      const result = await res.json();
-
-      setCommentsByPost((prev) => ({
-        ...prev,
-        [postId]: result.data || [],
-      }));
-    } catch (err) {
-      console.error("Error fetching comments:", err);
-    } finally {
-      setLoadingComments((prev) => ({ ...prev, [postId]: false }));
-    }
+  const handleToggleComments = (postId: string) => {
+    setVisibleComments((prev) => ({ ...prev, [postId]: !prev[postId] }));
   };
 
   const handleInputChange = (postId: string, text: string) => {
     setCommentInputs((prev) => ({ ...prev, [postId]: text }));
   };
 
-  const handleSendComment = async (postId: string) => {
-    const text_comment = commentInputs[postId]?.trim();
-    if (!text_comment) return;
-
-    const user = session?.user;
-    const token = session?.user?.accessToken;
-    if (!user || !token) return;
-
-    try {
-      const res = await fetch(
-        `http://localhost:3001/api/comment/comment/${postId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            text_comment,
-            id_user: user.id,
-          }),
-        },
-      );
-
-      if (!res.ok) throw new Error(`Error: ${res.status}`);
-      const result = await res.json();
-      const newComment = result.data;
-
-      setCommentsByPost((prev) => ({
-        ...prev,
-        [postId]: [...(prev[postId] || []), newComment],
-      }));
-
-      setCommentInputs((prev) => ({ ...prev, [postId]: "" }));
-
-      await queryClient.invalidateQueries({ queryKey: ["posts"] });
-
-      await fetchComments(postId);
-    } catch (err) {
-      console.error("Error sending comment:", err);
-    }
-  };
-
   const handleShare = (postId: string) => {
     const url = `${window.location.origin}/dashboard/post/${postId}`;
-
     navigator.clipboard
       .writeText(url)
       .then(() => {
-        alert(`Link copied: ${url}`);
+        setToaster({ type: "success", message: "Link copied to clipboard!" });
       })
       .catch((err) => {
         console.error("Failed to copy link: ", err);
-        alert("Failed to copy link");
+        setToaster({ type: "error", message: "Failed to copy link." });
       });
   };
 
   return {
     posts,
-    isLoading,
+    isLoadingPosts,
     currentUserId: session?.user?.id,
+    session,
+    visibleComments,
+    commentInputs,
+    isSendingComment,
     handleToggleLike,
     handleToggleComments,
-    handleSendComment,
     handleInputChange,
-    visibleComments,
-    commentsByPost,
-    commentInputs,
-    loadingComments,
+    handleSendComment,
     handleShare,
   };
 };
