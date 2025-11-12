@@ -157,7 +157,12 @@ const ProfileUserPage = () => {
                       </div>
 
                       <p className="mt-1 mb-2 text-sm font-semibold text-[#7A7A7A] sm:text-base lg:text-[20px]">
-                        300 Koneksi
+                        {
+                          profile?.connections?.filter(
+                            (conn) => conn.status === "accepted",
+                          ).length
+                        }{" "}
+                        Koneksi
                       </p>
 
                       <div className="flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-3 md:justify-start lg:gap-5">
