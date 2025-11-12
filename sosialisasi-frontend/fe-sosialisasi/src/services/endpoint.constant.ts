@@ -6,6 +6,7 @@ const endpoint = {
   CONTENT_ID: "/upload/contentuser",
   SEARCH: "/search",
   CONNECT: "/connect",
+  ADMIN: "/admin",
 };
 
 export default endpoint;
