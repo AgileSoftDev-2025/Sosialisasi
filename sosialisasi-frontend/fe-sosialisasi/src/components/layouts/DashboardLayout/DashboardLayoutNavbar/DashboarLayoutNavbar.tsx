@@ -31,6 +31,8 @@ const DashboardLayoutNavbar = ({
 
   const router = useRouter();
 
+  const isAdminRoute = router.pathname.startsWith("/admin");
+
   const handleLogout = async () => {
     try {
       await queryClient.cancelQueries();
@@ -79,14 +81,16 @@ const DashboardLayoutNavbar = ({
           <i className="fas fa-bars text-base text-[#787878] sm:text-lg"></i>
         </button>
 
-        <div
-          className={`cursor-pointer rounded-xl p-2.5 transition-colors sm:p-3 lg:p-4 ${showNotif ? "bg-[#5568FE] hover:bg-[#4657d8]" : "bg-[#FAFAFF] hover:bg-gray-100"}`}
-          onClick={() => router.push("/dashboard/notification")}
-        >
-          <i
-            className={`fas fa-bell text-base sm:text-lg ${showNotif ? "text-white" : "text-[#787878]"}`}
-          ></i>
-        </div>
+        {!isAdminRoute && (
+          <div
+            className={`cursor-pointer rounded-xl p-2.5 transition-colors sm:p-3 lg:p-4 ${showNotif ? "bg-[#5568FE] hover:bg-[#4657d8]" : "bg-[#FAFAFF] hover:bg-gray-100"}`}
+            onClick={() => router.push("/dashboard/notification")}
+          >
+            <i
+              className={`fas fa-bell text-base sm:text-lg ${showNotif ? "text-white" : "text-[#787878]"}`}
+            ></i>
+          </div>
+        )}
 
         <button
           onClick={handleLogout}
