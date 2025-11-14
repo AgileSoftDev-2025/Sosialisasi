@@ -41,3 +41,9 @@ export interface IConnection {
   role: "sender" | "receiver";
   created_at_connection: string;
 }
+
+export interface IContentFilters {
+  type?: string;
+  startDate?: string;
+  endDate?: string;
+}

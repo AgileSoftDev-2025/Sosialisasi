@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import contentServices from "@/services/content.service";
-import { IPost, ISearchResult } from "@/types/Home";
+import { IContentFilters, IPost, ISearchResult } from "@/types/Home";
 import { ToasterContext } from "@/contexts/ToasterContext";
 import { useSearch } from "@/contexts/SearchContext";
 import { useContext } from "react";
@@ -19,12 +19,15 @@ const useHomePage = () => {
   );
   const { searchTerm } = useSearch();
   const isSearching = !!searchTerm;
+  const [filters, setFilters] = useState<IContentFilters>({});
 
   const { data: allPostsData = [], isLoading: isLoadingAllPosts } = useQuery<
     IPost[]
   >({
-    queryKey: ["posts"],
-    queryFn: contentServices.getAllPosts,
+    queryKey: ["posts", filters],
+    queryFn: () => {
+      return contentServices.getAllPosts(filters);
+    },
     enabled: !!session && !isSearching,
   });
 
@@ -153,6 +156,8 @@ const useHomePage = () => {
     visibleComments,
     commentInputs,
     isSendingComment,
+    filters,
+    setFilters,
     handleToggleLike,
     handleToggleComments,
     handleInputChange,

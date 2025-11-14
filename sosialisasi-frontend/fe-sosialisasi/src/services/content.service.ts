@@ -1,12 +1,27 @@
 import instance from "@/libs/axios/instance";
 import endpoint from "./endpoint.constant";
-import { IPost, IComment, ISearchResult } from "@/types/Home";
+import { IPost, IComment, ISearchResult, IContentFilters } from "@/types/Home";
 
 const contentServices = {
-  getAllPosts: () =>
-    instance
-      .get<{ data: IPost[] }>(endpoint.CONTENT)
-      .then((res) => res.data.data),
+  getAllPosts: (filters?: IContentFilters) => {
+    const params: any = {};
+
+    if (filters?.type && filters.type !== "All") {
+      params.type = filters.type;
+    }
+
+    if (filters?.startDate) {
+      params.startDate = filters.startDate;
+    }
+
+    if (filters?.endDate) {
+      params.endDate = filters.endDate;
+    }
+
+    return instance
+      .get<{ data: IPost[] }>(endpoint.CONTENT, { params })
+      .then((res) => res.data.data);
+  },
 
   getPostsByUserId: () =>
     instance
