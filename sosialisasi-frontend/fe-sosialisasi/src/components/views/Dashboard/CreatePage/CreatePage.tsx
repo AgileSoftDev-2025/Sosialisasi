@@ -25,6 +25,59 @@ const CreatePage = () => {
   const profile = profileData?.data?.data;
 
   const CATEGORIES = ["All", "Competition", "Project"] as const;
+
+  if (isLoadingProfile) {
+    return (
+      <DashboardLayout>
+        <div className="mx-auto flex w-full max-w-4xl flex-col">
+          <article className="animate-pulse rounded-3xl bg-white p-6 shadow-sm sm:p-8">
+            <div className="flex flex-row items-center gap-5">
+              <div className="h-14 w-14 flex-shrink-0 rounded-full bg-gray-200"></div>
+
+              <div className="flex flex-col gap-2">
+                <div className="h-6 w-40 rounded bg-gray-200"></div>
+                <div className="h-5 w-48 rounded bg-gray-200"></div>
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-col gap-4">
+              <div className="h-6 w-36 rounded bg-gray-200"></div>
+
+              <div className="flex flex-row flex-wrap items-center gap-3">
+                {[1, 2, 3].map((item) => (
+                  <div
+                    key={item}
+                    className="h-11 w-28 rounded-full bg-gray-200"
+                  ></div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-col gap-2">
+              <div className="h-6 w-40 rounded bg-gray-200"></div>
+              <div className="h-48 w-full rounded-2xl bg-gray-200"></div>
+            </div>
+
+            <div className="mt-6 flex flex-col gap-4">
+              <div className="h-6 w-32 rounded bg-gray-200"></div>
+              <div className="flex h-48 w-full items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-gray-50">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="h-10 w-10 rounded-full bg-gray-200"></div>
+                  <div className="h-5 w-32 rounded bg-gray-200"></div>
+                  <div className="h-4 w-24 rounded bg-gray-200"></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 flex justify-end">
+              <div className="h-12 w-32 rounded-lg bg-gray-200"></div>
+            </div>
+          </article>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
     <DashboardLayout>
       <form
@@ -45,9 +98,7 @@ const CreatePage = () => {
 
             <div>
               <h3 className="text-lg font-medium text-[#202020] sm:text-xl">
-                {isLoadingProfile
-                  ? "Loading..."
-                  : profile?.fullName || "User Name"}
+                {profile?.fullName || "User Name"}
               </h3>
               <h4 className="text-sm text-[#787878] sm:text-base">
                 {profile?.email || "Loading..."}
