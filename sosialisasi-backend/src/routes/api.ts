@@ -23,6 +23,6 @@ router.use("/comment", commentRoutes);
 router.use("/search", searchRoutes);
 router.use("/connect", connectRoutes);
 router.use("/message", messageRoutes);
-
 router.use("/admin", adminRoutes);
+
 export default router;

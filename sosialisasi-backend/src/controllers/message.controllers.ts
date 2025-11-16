@@ -24,6 +24,10 @@ export default {
         });
       }
 
+      if (!mongoose.isValidObjectId(receiverId)) {
+        return res.status(400).json({ message: "ReceiverId tidak valid." });
+      }
+
       const newMessage = await MessageModel.create({
         senderId: new mongoose.Types.ObjectId(senderId),
         receiverId: new mongoose.Types.ObjectId(receiverId),
@@ -36,11 +40,13 @@ export default {
         message: "Pesan berhasil dikirim.",
         data: newMessage,
       });
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error("ERROR MESSAGE:", error.message);
+      console.error("FULL ERROR:", error);
+
       return res.status(500).json({
         message: "Terjadi kesalahan server saat mengirim pesan.",
-        error,
+        error: error.message,
       });
     }
   },
