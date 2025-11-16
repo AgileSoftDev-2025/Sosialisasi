@@ -26,9 +26,88 @@ const HomePage = () => {
   if (isLoadingPosts) {
     return (
       <DashboardLayout showSearch>
-        <p className="pt-8 text-center text-gray-500">
-          {isSearching ? "Mencari..." : "Menunggu posts..."}
-        </p>
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-2 sm:gap-6 sm:px-4 lg:flex-row lg:gap-8">
+          <div className="flex w-full flex-col gap-4 sm:gap-6 lg:max-w-5xl">
+            {[1, 2, 3].map((item) => (
+              <div
+                key={item}
+                className="flex w-full animate-pulse flex-col rounded-lg bg-white p-3 shadow-sm sm:rounded-2xl sm:p-4 lg:p-6"
+              >
+                <div className="flex flex-row items-center gap-3 sm:gap-4">
+                  <div className="flex cursor-pointer flex-row items-center gap-3 sm:gap-4">
+                    <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-200 sm:h-12 sm:w-12 lg:h-14 lg:w-14"></div>
+                    <div className="flex min-w-0 flex-col gap-2">
+                      <div className="h-5 w-32 rounded bg-gray-200 sm:h-6 sm:w-40"></div>
+                      <div className="h-3 w-24 rounded bg-gray-200 sm:h-4 sm:w-32"></div>
+                    </div>
+                  </div>
+                  <div className="h-6 w-20 rounded-full bg-gray-200 sm:h-7 sm:w-24"></div>
+                </div>
+
+                <div className="mt-3 sm:mt-4">
+                  <div className="space-y-2">
+                    <div className="h-4 w-full rounded bg-gray-200"></div>
+                    <div className="h-4 w-5/6 rounded bg-gray-200"></div>
+                    <div className="h-4 w-4/6 rounded bg-gray-200"></div>
+                  </div>
+
+                  <div className="relative mt-3 aspect-video w-full rounded-lg bg-gray-200"></div>
+                </div>
+
+                <div className="my-3 border-t border-gray-100 sm:my-4"></div>
+
+                <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-0">
+                  <div className="flex items-center gap-4 sm:gap-6">
+                    <div className="h-6 w-12 rounded bg-gray-200"></div>
+                    <div className="h-6 w-12 rounded bg-gray-200"></div>
+                    <div className="h-6 w-8 rounded bg-gray-200"></div>
+                  </div>
+                  <div className="h-8 w-full rounded-lg bg-gray-200 sm:w-24"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="sticky top-4 hidden max-w-sm flex-col gap-4 self-start lg:flex lg:max-w-sm lg:gap-5 xl:max-w-md">
+            <div className="flex max-w-sm animate-pulse flex-col gap-4 rounded-2xl bg-white p-4 shadow-md lg:gap-5 lg:p-6">
+              <div className="h-7 w-48 rounded bg-gray-200 lg:h-8"></div>
+              <div className="flex flex-col gap-4 lg:gap-6">
+                {[1, 2, 3].map((item) => (
+                  <div
+                    key={item}
+                    className="flex flex-row items-center gap-3 lg:gap-4"
+                  >
+                    <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-200 lg:h-12 lg:w-12"></div>
+                    <div className="flex min-w-0 flex-1 flex-col gap-2">
+                      <div className="h-4 w-32 rounded bg-gray-200"></div>
+                      <div className="h-3 w-24 rounded bg-gray-200"></div>
+                    </div>
+                    <div className="h-8 w-20 flex-shrink-0 rounded-lg bg-gray-200"></div>
+                  </div>
+                ))}
+                <div className="mt-2 h-5 w-full rounded bg-gray-200"></div>
+              </div>
+            </div>
+
+            <div className="flex w-full animate-pulse flex-col gap-4 rounded-2xl bg-white p-4 shadow-md lg:gap-5 lg:p-6">
+              <div className="h-7 w-56 rounded bg-gray-200 lg:h-8"></div>
+              <div className="flex flex-col gap-4 lg:gap-6">
+                {[1, 2, 3, 4, 5].map((item) => (
+                  <div
+                    key={item}
+                    className="-m-2 flex flex-row items-center gap-3 rounded-lg p-2 lg:gap-4"
+                  >
+                    <div className="h-10 w-10 flex-shrink-0 rounded-lg bg-gray-200 lg:h-12 lg:w-12"></div>
+                    <div className="flex min-w-0 flex-1 flex-col gap-2">
+                      <div className="h-4 w-40 rounded bg-gray-200"></div>
+                      <div className="h-3 w-20 rounded bg-gray-200"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </DashboardLayout>
     );
   }

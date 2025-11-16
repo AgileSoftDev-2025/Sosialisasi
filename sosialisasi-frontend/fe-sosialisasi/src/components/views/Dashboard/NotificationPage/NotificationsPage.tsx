@@ -21,7 +21,28 @@ const NotificationsPage = () => {
 
           <div className="mt-8 flex w-full flex-col gap-6">
             {isLoadingPending && (
-              <p className="text-center text-[#787878]">Memuat notifikasi...</p>
+              <>
+                {[1, 2, 3].map((item) => (
+                  <div
+                    key={item}
+                    className="flex w-full animate-pulse flex-row items-center justify-between rounded-2xl bg-white p-8 shadow-md"
+                  >
+                    <div className="flex flex-row items-center gap-5">
+                      <div className="h-20 w-20 flex-shrink-0 rounded-full bg-gray-200"></div>
+
+                      <div className="flex flex-col gap-2">
+                        <div className="h-6 w-40 rounded bg-gray-200"></div>
+                        <div className="h-5 w-32 rounded bg-gray-200"></div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-row items-center gap-4">
+                      <div className="h-12 w-24 rounded-xl bg-gray-200"></div>
+                      <div className="h-12 w-24 rounded-xl bg-gray-200"></div>
+                    </div>
+                  </div>
+                ))}
+              </>
             )}
 
             {!isLoadingPending && pendingConnections.length === 0 && (

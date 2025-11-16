@@ -5,6 +5,7 @@ import db from "./utils/database";
 import docs from "./docs/route";
 import cors from "cors";
 import path from "path";
+import { initSocket } from "./lib/socket";
 
 async function init() {
   try {
@@ -34,8 +35,10 @@ async function init() {
     app.use("/api", router);
     docs(app);
 
-    app.listen(PORT, () => {
-      console.log(`✅ Server is running on http://localhost:${PORT}`);
+    const server = initSocket(app);
+
+    server.listen(PORT, () => {
+      console.log(`Server + Socket running at http://localhost:${PORT}`);
     });
   } catch (error) {
     console.log(error);
