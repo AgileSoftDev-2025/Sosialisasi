@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
-import http from "http";
 import { Express } from "express";
+import http from "http";
 
 let io: Server;
 
@@ -15,7 +15,7 @@ export function initSocket(app: Express) {
   });
 
   io.on("connection", (socket) => {
-    console.log("🔌 User connected:", socket.id);
+    console.log("User connected:", socket.id);
 
     socket.on("joinRoom", (userId: string) => {
       socket.join(userId);
@@ -23,8 +23,6 @@ export function initSocket(app: Express) {
     });
 
     socket.on("sendMessage", ({ senderId, receiverId, text }) => {
-      console.log("📨 pesan masuk:", senderId, "->", receiverId, text);
-
       io.to(receiverId).emit("receiveMessage", {
         senderId,
         receiverId,
@@ -42,8 +40,6 @@ export function initSocket(app: Express) {
 }
 
 export function getIO() {
-  if (!io) {
-    throw new Error("Socket IO belum diinisialisasi!");
-  }
+  if (!io) throw new Error("Socket belum diinit!");
   return io;
 }

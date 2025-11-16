@@ -2,6 +2,7 @@ import { Response } from "express";
 import { IReqUser } from "../middlewares/auth.middleware";
 import MessageModel from "../models/message.models";
 import mongoose from "mongoose";
+import { getIO } from "../lib/socket";
 
 export default {
   async createMessage(req: IReqUser, res: Response) {
@@ -35,6 +36,13 @@ export default {
         created_at_message: new Date(),
         status_message: true,
       });
+
+      try {
+        const io = getIO();
+        io.to(receiverId).emit("receiveMessage", newMessage);
+      } catch (err) {
+        console.warn("Socket belum siap, tapi pesan tetap tersimpan.");
+      }
 
       return res.status(201).json({
         message: "Pesan berhasil dikirim.",
