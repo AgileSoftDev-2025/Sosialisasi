@@ -28,13 +28,11 @@ const HomePage = () => {
       <DashboardLayout showSearch>
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-2 sm:gap-6 sm:px-4 lg:flex-row lg:gap-8">
           <div className="flex w-full flex-col gap-4 sm:gap-6 lg:max-w-5xl">
-            {/* Skeleton Posts */}
             {[1, 2, 3].map((item) => (
               <div
                 key={item}
                 className="flex w-full animate-pulse flex-col rounded-lg bg-white p-3 shadow-sm sm:rounded-2xl sm:p-4 lg:p-6"
               >
-                {/* Header Skeleton */}
                 <div className="flex flex-row items-center gap-3 sm:gap-4">
                   <div className="flex cursor-pointer flex-row items-center gap-3 sm:gap-4">
                     <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-200 sm:h-12 sm:w-12 lg:h-14 lg:w-14"></div>
@@ -46,20 +44,18 @@ const HomePage = () => {
                   <div className="h-6 w-20 rounded-full bg-gray-200 sm:h-7 sm:w-24"></div>
                 </div>
 
-                {/* Content Skeleton */}
                 <div className="mt-3 sm:mt-4">
                   <div className="space-y-2">
                     <div className="h-4 w-full rounded bg-gray-200"></div>
                     <div className="h-4 w-5/6 rounded bg-gray-200"></div>
                     <div className="h-4 w-4/6 rounded bg-gray-200"></div>
                   </div>
-                  {/* Image Skeleton */}
+
                   <div className="relative mt-3 aspect-video w-full rounded-lg bg-gray-200"></div>
                 </div>
 
                 <div className="my-3 border-t border-gray-100 sm:my-4"></div>
 
-                {/* Actions Skeleton */}
                 <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-0">
                   <div className="flex items-center gap-4 sm:gap-6">
                     <div className="h-6 w-12 rounded bg-gray-200"></div>
@@ -72,9 +68,7 @@ const HomePage = () => {
             ))}
           </div>
 
-          {/* Sidebar Skeleton */}
           <div className="sticky top-4 hidden max-w-sm flex-col gap-4 self-start lg:flex lg:max-w-sm lg:gap-5 xl:max-w-md">
-            {/* Koneksi Untukmu Skeleton */}
             <div className="flex max-w-sm animate-pulse flex-col gap-4 rounded-2xl bg-white p-4 shadow-md lg:gap-5 lg:p-6">
               <div className="h-7 w-48 rounded bg-gray-200 lg:h-8"></div>
               <div className="flex flex-col gap-4 lg:gap-6">
@@ -95,7 +89,6 @@ const HomePage = () => {
               </div>
             </div>
 
-            {/* Postingan Terhangat Skeleton */}
             <div className="flex w-full animate-pulse flex-col gap-4 rounded-2xl bg-white p-4 shadow-md lg:gap-5 lg:p-6">
               <div className="h-7 w-56 rounded bg-gray-200 lg:h-8"></div>
               <div className="flex flex-col gap-4 lg:gap-6">
