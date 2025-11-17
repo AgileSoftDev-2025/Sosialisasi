@@ -7,6 +7,7 @@ const endpoint = {
   SEARCH: "/search",
   CONNECT: "/connect",
   ADMIN: "/admin",
+  MESSAGE: "/message",
 };
 
 export default endpoint;
