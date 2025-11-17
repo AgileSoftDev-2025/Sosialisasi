@@ -17,25 +17,39 @@ const useMessage = () => {
   const currentUserId = session?.user?.id;
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
 
+  // =========================================
+  // SOCKET JOIN
+  // =========================================
   useEffect(() => {
     if (!currentUserId) return;
 
     socket.emit("join", currentUserId);
+  }, [currentUserId]);
 
-    socket.on("receive-message", (msg: IMessage) => {
-      if (msg.senderId === selectedUser?._id) {
-        queryClient.setQueryData<IMessage[]>(
-          ["messages", msg.senderId],
-          (old = []) => [...old, msg],
-        );
-      }
-    });
+  // =========================================
+  // RECEIVE MESSAGE (LISTENER) — tidak tergantung selectedUser
+  // =========================================
+  useEffect(() => {
+    const handleReceive = (msg: IMessage) => {
+      queryClient.setQueryData<IMessage[]>(
+        ["messages", msg.senderId],
+        (old = []) => [
+          ...old.filter((m) => !m._id.startsWith("temp-")), // hilangkan temp dupe
+          msg,
+        ],
+      );
+    };
+
+    socket.on("receive-message", handleReceive);
 
     return () => {
-      socket.off("receive-message");
+      socket.off("receive-message", handleReceive);
     };
-  }, [currentUserId, selectedUser, queryClient]);
+  }, [queryClient]);
 
+  // =========================================
+  // CONNECTIONS
+  // =========================================
   const { data: connections = [], isLoading: isLoadingConversations } =
     useQuery<IConnection[]>({
       queryKey: ["connections"],
@@ -47,6 +61,9 @@ const useMessage = () => {
     .filter((x) => x.status === "accepted")
     .map((x) => x.user);
 
+  // =========================================
+  // MESSAGES
+  // =========================================
   const { data: messages = [], isLoading: isLoadingMessages } = useQuery<
     IMessage[]
   >({
@@ -55,14 +72,19 @@ const useMessage = () => {
     enabled: !!selectedUser,
   });
 
+  // =========================================
+  // SEND MESSAGE
+  // =========================================
   const { mutate: sendMessage, isPending: isSendingMessage } = useMutation({
     mutationFn: (variables: { receiverId: string; text: string }) => {
+      // SEND SOCKET
       socket.emit("send-message", {
         senderId: currentUserId,
         receiverId: variables.receiverId,
         text: variables.text,
       });
 
+      // SEND API
       return messageServices.sendMessage(variables.receiverId, variables.text);
     },
 
