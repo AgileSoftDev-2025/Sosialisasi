@@ -32,21 +32,26 @@ export default {
       const newMessage = await MessageModel.create({
         senderId: new mongoose.Types.ObjectId(senderId),
         receiverId: new mongoose.Types.ObjectId(receiverId),
-        text: text,
+        text,
         created_at_message: new Date(),
         status_message: true,
       });
 
+      const formattedMessage = {
+        ...newMessage.toObject(),
+        created_at_message: newMessage.created_at_message.toISOString(),
+      };
+
       try {
         const io = getIO();
-        io.to(receiverId).emit("receiveMessage", newMessage);
+        io.to(receiverId).emit("receiveMessage", formattedMessage);
       } catch (err) {
         console.warn("Socket belum siap, tapi pesan tetap tersimpan.");
       }
 
       return res.status(201).json({
         message: "Pesan berhasil dikirim.",
-        data: newMessage,
+        data: formattedMessage,
       });
     } catch (error: any) {
       console.error("ERROR MESSAGE:", error.message);
@@ -77,10 +82,15 @@ export default {
         .sort({ created_at_message: 1 })
         .lean();
 
+      const formattedMessages = messages.map((m) => ({
+        ...m,
+        created_at_message: new Date(m.created_at_message).toISOString(),
+      }));
+
       return res.status(200).json({
         message: "Berhasil mengambil percakapan.",
         totalMessages: messages.length,
-        data: messages,
+        data: formattedMessages,
       });
     } catch (error) {
       console.error(error);
