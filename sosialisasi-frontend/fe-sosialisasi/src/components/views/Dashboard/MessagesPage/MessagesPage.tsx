@@ -1,6 +1,7 @@
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { useState } from "react";
 import useMessage from "@/components/hooks/useMessage";
+import Image from "next/image";
 
 const MessagesPage = () => {
   const {
@@ -36,16 +37,19 @@ const MessagesPage = () => {
     <DashboardLayout>
       <div className="flex h-[100dvh] bg-white md:h-[calc(100vh-100px)] md:rounded-3xl md:shadow-sm">
         <div className="flex h-full w-full overflow-hidden">
+          {/* LEFT SIDEBAR - Conversations List */}
           <div
             className={`${
               showSidebar ? "flex" : "hidden"
             } h-full w-full flex-col border-r border-gray-200 md:flex md:w-80 lg:w-96 xl:w-[400px]`}
           >
+            {/* Header */}
             <div className="border-b border-gray-200 p-4 md:p-6">
               <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
                 Messages
               </h1>
 
+              {/* Search Bar */}
               <div className="mt-4 flex items-center gap-3 rounded-lg bg-gray-50 px-4 py-3">
                 <svg
                   className="h-4 w-4 text-gray-400"
@@ -68,6 +72,7 @@ const MessagesPage = () => {
               </div>
             </div>
 
+            {/* Conversations List */}
             <div className="flex-1 overflow-y-auto">
               {conversations.map((u) => (
                 <div
@@ -78,12 +83,21 @@ const MessagesPage = () => {
                   }`}
                 >
                   <div className="flex items-start gap-3">
-                    <img
-                      src={u.profilePicture || "/default.png"}
-                      alt={u.fullName}
-                      className="h-12 w-12 flex-shrink-0 rounded-full object-cover"
-                    />
+                    {/* Avatar */}
+                    <div className="relative h-12 w-12 flex-shrink-0">
+                      <Image
+                        src={
+                          u.profilePicture
+                            ? `http://localhost:3001${u.profilePicture}`
+                            : "/default.png"
+                        }
+                        alt={u.fullName}
+                        fill
+                        className="rounded-full object-cover"
+                      />
+                    </div>
 
+                    {/* Content */}
                     <div className="flex-1 overflow-hidden">
                       <div className="flex items-start justify-between">
                         <h3 className="truncate text-sm font-semibold text-gray-900">
@@ -93,11 +107,9 @@ const MessagesPage = () => {
                           now
                         </span>
                       </div>
-
                       <p className="truncate text-xs text-gray-500">
                         {u.role ?? "User"}
                       </p>
-
                       <p className="mt-1 truncate text-sm text-gray-600">
                         (last message)
                       </p>
@@ -108,13 +120,16 @@ const MessagesPage = () => {
             </div>
           </div>
 
+          {/* RIGHT SIDE - Chat Area */}
           <div
             className={`${
               !showSidebar ? "flex" : "hidden"
             } h-full w-full flex-1 flex-col md:flex`}
           >
+            {/* Chat Header */}
             {selectedUser && (
               <div className="flex items-center gap-3 border-b border-gray-200 p-4 md:p-6">
+                {/* Back Button (Mobile Only) */}
                 <button
                   onClick={handleBackToList}
                   className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-gray-100 md:hidden"
@@ -134,11 +149,18 @@ const MessagesPage = () => {
                   </svg>
                 </button>
 
-                <img
-                  src={selectedUser.profilePicture || "/default.png"}
-                  alt={selectedUser.fullName}
-                  className="h-12 w-12 rounded-full object-cover"
-                />
+                <div className="relative h-12 w-12">
+                  <Image
+                    src={
+                      selectedUser.profilePicture
+                        ? `http://localhost:3001${selectedUser.profilePicture}`
+                        : "/default.png"
+                    }
+                    alt={selectedUser.fullName}
+                    fill
+                    className="rounded-full object-cover"
+                  />
+                </div>
 
                 <div className="flex-1 overflow-hidden">
                   <h2 className="truncate text-base font-semibold text-gray-900 sm:text-lg">
@@ -151,6 +173,7 @@ const MessagesPage = () => {
               </div>
             )}
 
+            {/* Messages Area */}
             <div className="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-6">
               <div className="space-y-4">
                 {messages.map((msg) => (
@@ -170,7 +193,6 @@ const MessagesPage = () => {
                       }`}
                     >
                       <p className="text-sm leading-relaxed">{msg.text}</p>
-
                       <p
                         className={`mt-1 text-xs ${
                           msg.senderId === selectedUser?._id
@@ -186,8 +208,10 @@ const MessagesPage = () => {
               </div>
             </div>
 
+            {/* Message Input */}
             <div className="border-t border-gray-200 bg-white p-4">
               <div className="flex items-center gap-3">
+                {/* Attachment Button */}
                 <button className="flex h-10 w-10 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100">
                   <svg
                     className="h-5 w-5"
@@ -204,6 +228,7 @@ const MessagesPage = () => {
                   </svg>
                 </button>
 
+                {/* Input Field */}
                 <input
                   type="text"
                   value={messageInput}
@@ -213,6 +238,7 @@ const MessagesPage = () => {
                   className="flex-1 rounded-full bg-gray-100 px-5 py-3 text-sm text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-blue-600 focus:outline-none"
                 />
 
+                {/* Send Button */}
                 <button
                   onClick={handleSendMessage}
                   className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white transition-colors hover:bg-blue-700"
