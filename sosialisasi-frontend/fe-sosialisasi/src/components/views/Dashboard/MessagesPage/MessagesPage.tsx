@@ -1,130 +1,43 @@
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { useState } from "react";
-
-interface Message {
-  id: string;
-  sender: string;
-  senderRole: string;
-  senderAvatar: string;
-  lastMessage: string;
-  timestamp: string;
-  unread?: boolean;
-}
-
-interface ChatMessage {
-  id: string;
-  text: string;
-  time: string;
-  isOwn: boolean;
-}
+import useMessage from "@/components/hooks/useMessage";
+import Image from "next/image";
 
 const MessagesPage = () => {
-  const [selectedConversation, setSelectedConversation] = useState<string>("1");
-  const [messageInput, setMessageInput] = useState<string>("");
-  const [showSidebar, setShowSidebar] = useState<boolean>(true);
+  const {
+    conversations,
+    messages,
+    selectedUser,
+    handleSelectUser,
+    sendMessage,
+  } = useMessage();
 
-  const conversations: Message[] = [
-    {
-      id: "1",
-      sender: "Dr. Sarah Chen",
-      senderRole: "Lecturer • Computer Science",
-      senderAvatar: "https://i.pravatar.cc/150?img=1",
-      lastMessage: "Thanks for sharing the resea...",
-      timestamp: "2m",
-      unread: false,
-    },
-    {
-      id: "2",
-      sender: "Alex Rodriguez",
-      senderRole: "Student",
-      senderAvatar: "https://i.pravatar.cc/150?img=2",
-      lastMessage: "Hey! Are you free for the gro...",
-      timestamp: "15m",
-      unread: false,
-    },
-    {
-      id: "3",
-      sender: "Emma Thompson",
-      senderRole: "Research Assistant",
-      senderAvatar: "https://i.pravatar.cc/150?img=3",
-      lastMessage: "The lab results are ready for...",
-      timestamp: "1h",
-      unread: false,
-    },
-    {
-      id: "4",
-      sender: "Prof. Michael Johnson",
-      senderRole: "Professor",
-      senderAvatar: "https://i.pravatar.cc/150?img=4",
-      lastMessage: "Your thesis proposal looks p...",
-      timestamp: "3h",
-      unread: false,
-    },
-    {
-      id: "5",
-      sender: "Lisa Park",
-      senderRole: "Student",
-      senderAvatar: "https://i.pravatar.cc/150?img=5",
-      lastMessage: "Can you help me with the st...",
-      timestamp: "1d",
-      unread: false,
-    },
-  ];
-
-  const chatMessages: ChatMessage[] = [
-    {
-      id: "1",
-      text: "Hi! I wanted to discuss the research methodology for your upcoming project. Do you have some time this week?",
-      time: "10:30 AM",
-      isOwn: false,
-    },
-    {
-      id: "2",
-      text: "Yes, absolutely! I'm free tomorrow afternoon or Thursday morning. Which works better for you?",
-      time: "10:32 AM",
-      isOwn: true,
-    },
-    {
-      id: "3",
-      text: "Thursday morning works great for me! Should we meet at the library or your office?",
-      time: "10:35 AM",
-      isOwn: false,
-    },
-    {
-      id: "4",
-      text: "Let's meet at the library, 2nd floor study room. See you at 10 AM?",
-      time: "10:36 AM",
-      isOwn: true,
-    },
-  ];
-
-  const selectedChat = conversations.find((c) => c.id === selectedConversation);
+  const [messageInput, setMessageInput] = useState("");
+  const [showSidebar, setShowSidebar] = useState(true);
 
   const handleSendMessage = () => {
-    if (messageInput.trim()) {
-      console.log("Sending message:", messageInput);
-      setMessageInput("");
-    }
+    if (!messageInput.trim() || !selectedUser) return;
+
+    sendMessage({
+      receiverId: selectedUser._id,
+      text: messageInput,
+    });
+
+    setMessageInput("");
   };
 
-  const handleSelectConversation = (id: string) => {
-    setSelectedConversation(id);
-    // Di mobile, hide sidebar setelah memilih conversation
-    if (window.innerWidth < 768) {
-      setShowSidebar(false);
-    }
+  const handleSelectConversation = (user: any) => {
+    handleSelectUser(user);
+    if (window.innerWidth < 768) setShowSidebar(false);
   };
 
-  const handleBackToList = () => {
-    setShowSidebar(true);
-  };
+  const handleBackToList = () => setShowSidebar(true);
 
   return (
     <DashboardLayout>
-      {/* Mobile Full Screen */}
-      <div className="flex h-[100dvh] bg-white md:h-[calc(100vh-100px)] md:rounded-3xl md:shadow-sm">
+      <div className="flex h-[100dvh] w-full bg-white md:h-[calc(100vh-100px)] md:rounded-3xl md:shadow-sm">
         <div className="flex h-full w-full overflow-hidden">
-          {/* LEFT SIDEBAR - Conversations List */}
+          {/* ================= LEFT SIDEBAR ================= */}
           <div
             className={`${
               showSidebar ? "flex" : "hidden"
@@ -136,7 +49,7 @@ const MessagesPage = () => {
                 Messages
               </h1>
 
-              {/* Search Bar */}
+              {/* Search */}
               <div className="mt-4 flex items-center gap-3 rounded-lg bg-gray-50 px-4 py-3">
                 <svg
                   className="h-4 w-4 text-gray-400"
@@ -159,40 +72,43 @@ const MessagesPage = () => {
               </div>
             </div>
 
-            {/* Conversations List */}
+            {/* Conversation List */}
             <div className="flex-1 overflow-y-auto">
-              {conversations.map((conversation) => (
+              {conversations.map((u) => (
                 <div
-                  key={conversation.id}
-                  onClick={() => handleSelectConversation(conversation.id)}
+                  key={u._id}
+                  onClick={() => handleSelectConversation(u)}
                   className={`cursor-pointer border-b border-gray-100 p-4 transition-colors hover:bg-gray-50 ${
-                    selectedConversation === conversation.id ? "bg-blue-50" : ""
+                    selectedUser?._id === u._id ? "bg-blue-50" : ""
                   }`}
                 >
                   <div className="flex items-start gap-3">
                     {/* Avatar */}
-                    <img
-                      src={conversation.senderAvatar}
-                      alt={conversation.sender}
-                      className="h-12 w-12 flex-shrink-0 rounded-full bg-gray-200 object-cover"
-                    />
+                    <div className="relative h-12 w-12 flex-shrink-0">
+                      <Image
+                        src={
+                          u.profilePicture
+                            ? `http://localhost:3001${u.profilePicture}`
+                            : "/default.png"
+                        }
+                        alt={u.fullName}
+                        fill
+                        className="rounded-full object-cover"
+                      />
+                    </div>
 
                     {/* Content */}
                     <div className="flex-1 overflow-hidden">
-                      <div className="flex items-start justify-between">
+                      <div className="flex items-center justify-between">
                         <h3 className="truncate text-sm font-semibold text-gray-900">
-                          {conversation.sender}
+                          {u.fullName}
                         </h3>
-                        <span className="ml-2 flex-shrink-0 text-xs text-gray-500">
-                          {conversation.timestamp}
-                        </span>
+                        <span className="text-xs text-gray-500">now</span>
                       </div>
                       <p className="truncate text-xs text-gray-500">
-                        {conversation.senderRole}
+                        {u.role ?? "User"}
                       </p>
-                      <p className="mt-1 truncate text-sm text-gray-600">
-                        {conversation.lastMessage}
-                      </p>
+                      <p className="mt-1 truncate text-sm text-gray-600"></p>
                     </div>
                   </div>
                 </div>
@@ -200,19 +116,19 @@ const MessagesPage = () => {
             </div>
           </div>
 
-          {/* RIGHT SIDE - Chat Area */}
+          {/* ================= RIGHT CHAT AREA ================= */}
           <div
             className={`${
               !showSidebar ? "flex" : "hidden"
             } h-full w-full flex-1 flex-col md:flex`}
           >
             {/* Chat Header */}
-            {selectedChat && (
+            {selectedUser && (
               <div className="flex items-center gap-3 border-b border-gray-200 p-4 md:p-6">
-                {/* Back Button (Mobile Only) */}
+                {/* Back (mobile) */}
                 <button
                   onClick={handleBackToList}
-                  className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-gray-100 md:hidden"
+                  className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 md:hidden"
                 >
                   <svg
                     className="h-6 w-6 text-gray-600"
@@ -229,56 +145,69 @@ const MessagesPage = () => {
                   </svg>
                 </button>
 
-                <img
-                  src={selectedChat.senderAvatar}
-                  alt={selectedChat.sender}
-                  className="h-12 w-12 rounded-full bg-gray-200 object-cover"
-                />
+                <div className="relative h-12 w-12">
+                  <Image
+                    src={
+                      selectedUser.profilePicture
+                        ? `http://localhost:3001${selectedUser.profilePicture}`
+                        : "/default.png"
+                    }
+                    alt={selectedUser.fullName}
+                    fill
+                    className="rounded-full object-cover"
+                  />
+                </div>
+
                 <div className="flex-1 overflow-hidden">
                   <h2 className="truncate text-base font-semibold text-gray-900 sm:text-lg">
-                    {selectedChat.sender}
+                    {selectedUser.fullName}
                   </h2>
                   <p className="truncate text-xs text-gray-500 sm:text-sm">
-                    {selectedChat.senderRole}
+                    {selectedUser.role ?? "User"}
                   </p>
                 </div>
               </div>
             )}
 
-            {/* Messages Area */}
+            {/* Messages */}
             <div className="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-6">
               <div className="space-y-4">
-                {chatMessages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`flex ${msg.isOwn ? "justify-end" : "justify-start"}`}
-                  >
+                {messages.map((msg) => {
+                  const isOwn = msg.senderId !== selectedUser?._id;
+
+                  return (
                     <div
-                      className={`max-w-[85%] rounded-2xl px-4 py-3 sm:max-w-[75%] md:max-w-[70%] ${
-                        msg.isOwn
-                          ? "bg-blue-600 text-white"
-                          : "bg-white text-gray-900"
-                      }`}
+                      key={msg._id}
+                      className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
                     >
-                      <p className="text-sm leading-relaxed">{msg.text}</p>
-                      <p
-                        className={`mt-1 text-xs ${
-                          msg.isOwn ? "text-blue-100" : "text-gray-500"
+                      <div
+                        className={`max-w-[85%] rounded-2xl px-4 py-3 sm:max-w-[75%] md:max-w-[70%] ${
+                          isOwn
+                            ? "bg-blue-600 text-white"
+                            : "bg-white text-gray-900"
                         }`}
                       >
-                        {msg.time}
-                      </p>
+                        <p className="text-sm">{msg.text}</p>
+                        <p
+                          className={`mt-1 text-xs ${
+                            isOwn ? "text-blue-100" : "text-gray-500"
+                          }`}
+                        >
+                          {new Date(
+                            msg.created_at_message,
+                          ).toLocaleTimeString()}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
-            {/* Message Input */}
+            {/* Input */}
             <div className="border-t border-gray-200 bg-white p-4">
               <div className="flex items-center gap-3">
-                {/* Attachment Button */}
-                <button className="flex h-10 w-10 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100">
+                <button className="flex h-10 w-10 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100">
                   <svg
                     className="h-5 w-5"
                     fill="none"
@@ -294,20 +223,18 @@ const MessagesPage = () => {
                   </svg>
                 </button>
 
-                {/* Input Field */}
                 <input
                   type="text"
                   value={messageInput}
                   onChange={(e) => setMessageInput(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                  onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                   placeholder="Write a message..."
                   className="flex-1 rounded-full bg-gray-100 px-5 py-3 text-sm text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-blue-600 focus:outline-none"
                 />
 
-                {/* Send Button */}
                 <button
                   onClick={handleSendMessage}
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white transition-colors hover:bg-blue-700"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700"
                 >
                   <svg
                     className="h-5 w-5"
