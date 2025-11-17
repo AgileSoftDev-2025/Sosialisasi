@@ -32,7 +32,115 @@ const Profile = () => {
   if (isLoading) {
     return (
       <DashboardLayout>
-        <p className="pt-8 text-center text-gray-500">Loading profile...</p>
+        <div className="flex w-full flex-col gap-4 bg-gray-50 p-2 sm:gap-6 sm:p-4 lg:p-6">
+          <div className="grid w-full grid-cols-1 gap-4 px-2 sm:gap-6 sm:px-4 md:px-6 lg:grid-cols-[7fr_3fr] lg:px-8 xl:px-12">
+            <div className="flex flex-col gap-6 sm:gap-8 lg:gap-10">
+              <article className="animate-pulse rounded-lg bg-white p-4 shadow-md sm:rounded-2xl sm:p-6 md:p-8 lg:p-10">
+                <div className="mb-6 flex flex-col gap-4 sm:mb-10 sm:gap-6 md:gap-8 lg:mb-14">
+                  <div className="flex w-full flex-col gap-4">
+                    <div className="flex flex-col items-center justify-center gap-4 sm:gap-5 md:flex-row md:items-start md:justify-start">
+                      <div className="h-24 w-24 flex-shrink-0 rounded-full bg-gray-200 sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 xl:h-40 xl:w-40"></div>
+
+                      <div className="flex w-full flex-col gap-2 text-center sm:gap-3 md:flex-1 md:text-left">
+                        <div className="mx-auto h-7 w-48 rounded bg-gray-200 sm:h-8 sm:w-56 md:mx-0 md:h-9 lg:h-10"></div>
+
+                        <div className="mx-auto flex items-center gap-2 md:mx-0">
+                          <div className="h-5 w-5 rounded bg-gray-200"></div>
+                          <div className="h-5 w-64 rounded bg-gray-200 sm:w-80"></div>
+                        </div>
+
+                        <div className="mx-auto h-5 w-24 rounded bg-gray-200 md:mx-0"></div>
+
+                        <div className="flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-3 md:justify-start lg:gap-5">
+                          <div className="h-10 w-full rounded-lg bg-gray-200 sm:h-11 sm:w-32"></div>
+                          <div className="h-10 w-full rounded-lg bg-gray-200 sm:h-11 sm:w-32"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="border border-[#E7E7E7]"></div>
+              </article>
+
+              <div className="mb-5 flex w-full animate-pulse flex-col gap-4 rounded-lg bg-white p-3 shadow-md sm:gap-6 sm:rounded-2xl sm:p-4 lg:gap-7 lg:p-6">
+                <div className="h-7 w-32 rounded bg-gray-200 sm:h-8 sm:w-40"></div>
+
+                {[1, 2].map((item) => (
+                  <article key={item} className="flex flex-col">
+                    <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center sm:gap-4">
+                      <div className="flex min-w-0 flex-1 flex-row items-center gap-3 sm:gap-4">
+                        <div className="h-9 w-9 flex-shrink-0 rounded-full bg-gray-200 sm:h-10 sm:w-10 md:h-12 md:w-12"></div>
+                        <div className="flex min-w-0 flex-1 flex-col gap-2">
+                          <div className="flex items-center gap-2">
+                            <div className="h-5 w-32 rounded bg-gray-200 sm:h-6 sm:w-40"></div>
+                            <div className="h-6 w-20 rounded-full bg-gray-200"></div>
+                          </div>
+                          <div className="h-4 w-28 rounded bg-gray-200"></div>
+                        </div>
+                      </div>
+                      <div className="h-6 w-6 rounded bg-gray-200"></div>
+                    </div>
+
+                    <div className="mt-3 space-y-2 sm:mt-4">
+                      <div className="h-4 w-full rounded bg-gray-200"></div>
+                      <div className="h-4 w-5/6 rounded bg-gray-200"></div>
+                      <div className="h-4 w-4/6 rounded bg-gray-200"></div>
+                    </div>
+
+                    <div className="mt-3 h-64 w-full rounded-lg bg-gray-200 sm:h-80"></div>
+
+                    <div className="mt-3 flex items-center gap-3 sm:mt-4 sm:gap-4">
+                      <div className="h-6 w-12 rounded bg-gray-200"></div>
+                      <div className="h-6 w-12 rounded bg-gray-200"></div>
+                      <div className="h-6 w-8 rounded bg-gray-200"></div>
+                    </div>
+
+                    <div className="mt-4 border-t border-gray-100 sm:mt-5 lg:mt-7"></div>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            <div className="hidden w-full flex-col gap-4 sm:gap-5 lg:top-24 lg:flex lg:self-start">
+              <div className="flex animate-pulse flex-col gap-4 rounded-lg bg-white p-3 shadow-md sm:gap-5 sm:rounded-2xl sm:p-4 md:p-6 lg:p-8">
+                <div className="h-6 w-24 rounded bg-gray-200 sm:h-7 sm:w-28"></div>
+                <div className="flex flex-col gap-4 sm:gap-5">
+                  {[1, 2, 3].map((item) => (
+                    <div
+                      key={item}
+                      className="-m-2 flex flex-row items-center gap-3 rounded-lg p-2 sm:gap-4"
+                    >
+                      <div className="h-9 w-9 flex-shrink-0 rounded-full bg-gray-200 sm:h-10 sm:w-10 md:h-12 md:w-12"></div>
+                      <div className="flex min-w-0 flex-1 flex-col gap-2">
+                        <div className="h-4 w-32 rounded bg-gray-200"></div>
+                        <div className="h-3 w-24 rounded bg-gray-200"></div>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="mt-2 h-5 w-full rounded bg-gray-200"></div>
+                </div>
+              </div>
+
+              <div className="flex animate-pulse flex-col gap-4 rounded-lg bg-white p-3 shadow-md sm:gap-5 sm:rounded-2xl sm:p-4 md:p-6 lg:p-8">
+                <div className="h-6 w-40 rounded bg-gray-200 sm:h-7 sm:w-48"></div>
+                <div className="flex flex-col gap-4 sm:gap-5">
+                  {[1, 2, 3].map((item) => (
+                    <div
+                      key={item}
+                      className="-m-2 flex flex-row items-center gap-3 rounded-lg p-2 sm:gap-4"
+                    >
+                      <div className="h-9 w-9 flex-shrink-0 rounded-lg bg-gray-200 sm:h-10 sm:w-10 md:h-12 md:w-12"></div>
+                      <div className="flex min-w-0 flex-1 flex-col gap-2">
+                        <div className="h-4 w-full rounded bg-gray-200"></div>
+                        <div className="h-3 w-20 rounded bg-gray-200"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </DashboardLayout>
     );
   }

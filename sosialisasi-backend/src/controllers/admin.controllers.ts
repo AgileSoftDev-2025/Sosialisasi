@@ -14,11 +14,23 @@ export default {
         role: "user",
         isActive: false,
       });
+      const mahasiswaCount = await UserModel.countDocuments({
+        role: "user",
+        status: "Mahasiswa",
+        isActive: true,
+      });
+      const dosenCount = await UserModel.countDocuments({
+        role: "user",
+        status: "Dosen",
+        isActive: true,
+      });
       res.status(200).json({
         message: "User active status count retrieved successfully",
         data: {
           activeUsers: activeUserCount,
           inactiveUsers: inactiveUserCount,
+          mahasiswaUsers: mahasiswaCount,
+          dosenUsers: dosenCount,
           totalUsers: activeUserCount + inactiveUserCount,
         },
       });
