@@ -17,12 +17,14 @@ const useMessage = () => {
   const currentUserId = session?.user?.id;
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
 
+  // JOIN ROOM → samain dengan server: joinRoom
   useEffect(() => {
     if (!currentUserId) return;
 
-    socket.emit("join", currentUserId);
+    socket.emit("joinRoom", currentUserId);
   }, [currentUserId]);
 
+  // RECEIVE MESSAGE → samain dengan server: receiveMessage
   useEffect(() => {
     const handleReceive = (msg: IMessage) => {
       queryClient.setQueryData<IMessage[]>(
@@ -31,10 +33,10 @@ const useMessage = () => {
       );
     };
 
-    socket.on("receive-message", handleReceive);
+    socket.on("receiveMessage", handleReceive);
 
     return () => {
-      socket.off("receive-message", handleReceive);
+      socket.off("receiveMessage", handleReceive);
     };
   }, [queryClient]);
 
@@ -58,8 +60,9 @@ const useMessage = () => {
   });
 
   const { mutate: sendMessage, isPending: isSendingMessage } = useMutation({
+    // SEND MESSAGE → samain dengan server: sendMessage
     mutationFn: (variables: { receiverId: string; text: string }) => {
-      socket.emit("send-message", {
+      socket.emit("sendMessage", {
         senderId: currentUserId,
         receiverId: variables.receiverId,
         text: variables.text,

@@ -37,19 +37,16 @@ const MessagesPage = () => {
     <DashboardLayout>
       <div className="flex h-[100dvh] w-full bg-white md:h-[calc(100vh-100px)] md:rounded-3xl md:shadow-sm">
         <div className="flex h-full w-full overflow-hidden">
-          {/* ================= LEFT SIDEBAR ================= */}
           <div
             className={`${
               showSidebar ? "flex" : "hidden"
             } h-full w-full flex-col border-r border-gray-200 md:flex md:w-80 lg:w-96 xl:w-[400px]`}
           >
-            {/* Header */}
             <div className="border-b border-gray-200 p-4 md:p-6">
               <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
                 Messages
               </h1>
 
-              {/* Search */}
               <div className="mt-4 flex items-center gap-3 rounded-lg bg-gray-50 px-4 py-3">
                 <svg
                   className="h-4 w-4 text-gray-400"
@@ -72,7 +69,6 @@ const MessagesPage = () => {
               </div>
             </div>
 
-            {/* Conversation List */}
             <div className="flex-1 overflow-y-auto">
               {conversations.map((u) => (
                 <div
@@ -83,7 +79,6 @@ const MessagesPage = () => {
                   }`}
                 >
                   <div className="flex items-start gap-3">
-                    {/* Avatar */}
                     <div className="relative h-12 w-12 flex-shrink-0">
                       <Image
                         src={
@@ -97,7 +92,6 @@ const MessagesPage = () => {
                       />
                     </div>
 
-                    {/* Content */}
                     <div className="flex-1 overflow-hidden">
                       <div className="flex items-center justify-between">
                         <h3 className="truncate text-sm font-semibold text-gray-900">
@@ -116,16 +110,13 @@ const MessagesPage = () => {
             </div>
           </div>
 
-          {/* ================= RIGHT CHAT AREA ================= */}
           <div
             className={`${
               !showSidebar ? "flex" : "hidden"
             } h-full w-full flex-1 flex-col md:flex`}
           >
-            {/* Chat Header */}
             {selectedUser && (
               <div className="flex items-center gap-3 border-b border-gray-200 p-4 md:p-6">
-                {/* Back (mobile) */}
                 <button
                   onClick={handleBackToList}
                   className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 md:hidden"
@@ -169,7 +160,6 @@ const MessagesPage = () => {
               </div>
             )}
 
-            {/* Messages */}
             <div className="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-6">
               <div className="space-y-4">
                 {messages.map((msg) => {
@@ -204,7 +194,6 @@ const MessagesPage = () => {
               </div>
             </div>
 
-            {/* Input */}
             <div className="border-t border-gray-200 bg-white p-4">
               <div className="flex items-center gap-3">
                 <button className="flex h-10 w-10 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100">
