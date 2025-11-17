@@ -4,10 +4,6 @@ import { IoIosArrowDown } from "react-icons/io";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import useHomePage from "@/components/hooks/useHomePage";
 
-const LoadingText = () => (
-  <div className="h-6 w-1/2 animate-pulse rounded-md bg-gray-200"></div>
-);
-
 const ContentManagement = () => {
   const { posts, filters, isSearching, isLoadingPosts, setFilters } =
     useHomePage();
