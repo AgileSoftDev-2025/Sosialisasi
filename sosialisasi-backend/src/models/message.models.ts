@@ -27,8 +27,9 @@ const MessageSchema = new Schema<Message>(
       required: true,
     },
     created_at_message: {
-      type: Schema.Types.Date,
+      type: Date,
       required: true,
+      default: Date.now,
     },
     status_message: {
       type: Schema.Types.Boolean,
@@ -37,7 +38,7 @@ const MessageSchema = new Schema<Message>(
     },
   },
   {
-    timestamps: true,
+    timestamps: false,
   }
 );
 

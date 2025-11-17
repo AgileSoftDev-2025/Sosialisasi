@@ -5,7 +5,7 @@ export interface IMessage {
   senderId: string;
   receiverId: string;
   text: string;
-  created_at_message: string;
+  created_at_message: string | Date;
   status_message: boolean;
 }
 
