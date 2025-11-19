@@ -23,8 +23,38 @@ const EditProfile = () => {
   if (isLoadingProfile) {
     return (
       <DashboardLayout>
-        <div className="flex h-full w-full items-center justify-center">
-          <p className="text-gray-500">Loading profile...</p>
+        <div className="flex w-full flex-col justify-center gap-6 bg-gray-50 py-6 lg:flex-row">
+          <div className="mb-6 w-full max-w-3xl self-start overflow-y-auto rounded-2xl border border-gray-200 bg-white px-6 py-8 lg:w-1/2">
+            <div className="flex animate-pulse flex-col gap-8 px-8 py-12">
+              <div className="flex flex-col items-center gap-4">
+                <div className="h-28 w-28 rounded-full bg-gray-200"></div>
+                <div className="h-9 w-24 rounded-lg bg-gray-200"></div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <div className="h-6 w-24 rounded bg-gray-200"></div>
+                <div className="h-14 w-full rounded-2xl bg-gray-200"></div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <div className="h-6 w-24 rounded bg-gray-200"></div>
+                <div className="h-14 w-full rounded-2xl bg-gray-200"></div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <div className="h-6 w-24 rounded bg-gray-200"></div>
+                <div className="h-14 w-full rounded-2xl bg-gray-200"></div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <div className="h-6 w-24 rounded bg-gray-200"></div>
+                <div className="h-14 w-full rounded-2xl bg-gray-200"></div>
+              </div>
+
+              <div className="mt-8 h-14 w-full rounded-2xl bg-gray-200"></div>
+              <div className="-mt-6 h-14 w-full rounded bg-gray-200"></div>
+            </div>
+          </div>
         </div>
       </DashboardLayout>
     );

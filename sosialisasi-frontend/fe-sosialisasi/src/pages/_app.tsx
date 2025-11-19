@@ -9,6 +9,7 @@ import Head from "next/head";
 import { ToasterProvider } from "@/contexts/ToasterContext";
 import { SearchProvider } from "@/contexts/SearchContext";
 import { SessionProvider } from "next-auth/react";
+import { useEffect } from "react";
 
 const jakartaPlusSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -30,6 +31,10 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) {
+  useEffect(() => {
+    fetch("/api/socket");
+  }, []);
+
   return (
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>

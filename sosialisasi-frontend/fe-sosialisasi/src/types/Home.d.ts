@@ -2,6 +2,7 @@ export interface IUser {
   _id: string;
   fullName: string;
   profilePicture: string;
+  role: string;
 }
 
 export interface IComment {
@@ -40,4 +41,10 @@ export interface IConnection {
   status: "pending" | "accepted";
   role: "sender" | "receiver";
   created_at_connection: string;
+}
+
+export interface IContentFilters {
+  type?: string;
+  startDate?: string;
+  endDate?: string;
 }

@@ -15,7 +15,30 @@ const contentValidateSchema = Yup.object({
 export default {
   async getAll(req: IReqUser, res: Response) {
     try {
-      const contents = await ContentModel.find()
+      const { type, startDate, endDate } = req.query;
+      const filter: any = {};
+      if (type && type !== "All") {
+        filter.type_content = type as string;
+      }
+
+      const dateFilter: any = {};
+      if (startDate) {
+        const start = new Date(startDate as string);
+        start.setHours(0, 0, 0, 0);
+        dateFilter.$gte = start;
+      }
+
+      if (endDate) {
+        const end = new Date(endDate as string);
+        end.setHours(23, 59, 59, 999);
+        dateFilter.$lte = end;
+      }
+
+      if (Object.keys(dateFilter).length > 0) {
+        filter.created_at_content = dateFilter;
+      }
+
+      const contents = await ContentModel.find(filter)
         .populate("userId", "fullName profilePicture")
         .sort({ created_at_content: -1 })
         .lean();

@@ -16,4 +16,12 @@ router.get(
   adminControllers.getUserContentCount
 );
 
+router.get("/users", authMiddleware, adminControllers.getUsers);
+
+router.patch(
+  "/users/:userId/toggle-status",
+  authMiddleware,
+  adminControllers.toggleUsersStatus
+);
+
 export default router;
