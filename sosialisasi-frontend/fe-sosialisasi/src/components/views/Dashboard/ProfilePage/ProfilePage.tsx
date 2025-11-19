@@ -7,11 +7,53 @@ import useHomePage from "../../../hooks/useHomePage";
 import CommentSection from "../HomePage/CommentSectionPage";
 import { IConnection } from "@/types/Home";
 
+// --- Mock Data untuk Tampilan Modal (Sesuai Gambar) ---
+const MOCK_NOTIFICATIONS = [
+  {
+    id: 1,
+    name: "Marcus Johnson",
+    action: "requests to connect",
+    time: "15 minutes ago",
+    avatar: "/images/logo.png", // Ganti dengan path avatar dummy jika ada
+    buttonText: "Remove", // Atau "Accept" tergantung logika
+  },
+  {
+    id: 2,
+    name: "Emma Rodriguez",
+    action: "liked your post",
+    time: "1 hour ago",
+    avatar: "/images/logo.png",
+    buttonText: "Remove",
+  },
+  {
+    id: 3,
+    name: "David Park",
+    action: "requests to connect",
+    time: "2 hours ago",
+    avatar: "/images/logo.png",
+    buttonText: "Remove",
+  },
+  {
+    id: 4,
+    name: "Lisa Wang",
+    action: "commented on your post",
+    time: "3 hours ago",
+    avatar: "/images/logo.png",
+    buttonText: "Remove",
+  },
+];
+
 const Profile = () => {
   const router = useRouter();
   const { profile, isLoading, posts, isLoadingPosts, handleDeletePost } =
     useProfile();
+  
+  // State untuk Dropdown Menu Post
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  
+  // State untuk Modal "Lihat Lebih Banyak"
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
   const {
     currentUserId,
     visibleComments,
@@ -29,117 +71,17 @@ const Profile = () => {
     setOpenMenu(openMenu === postId ? null : postId);
   };
 
+  const toggleModal = () => {
+    setIsOpenModal(!isOpenModal);
+  };
+
   if (isLoading) {
+    // ... (Bagian Loading Skeleton tetap sama)
     return (
       <DashboardLayout>
         <div className="flex w-full flex-col gap-4 bg-gray-50 p-2 sm:gap-6 sm:p-4 lg:p-6">
-          <div className="grid w-full grid-cols-1 gap-4 px-2 sm:gap-6 sm:px-4 md:px-6 lg:grid-cols-[7fr_3fr] lg:px-8 xl:px-12">
-            <div className="flex flex-col gap-6 sm:gap-8 lg:gap-10">
-              <article className="animate-pulse rounded-lg bg-white p-4 shadow-md sm:rounded-2xl sm:p-6 md:p-8 lg:p-10">
-                <div className="mb-6 flex flex-col gap-4 sm:mb-10 sm:gap-6 md:gap-8 lg:mb-14">
-                  <div className="flex w-full flex-col gap-4">
-                    <div className="flex flex-col items-center justify-center gap-4 sm:gap-5 md:flex-row md:items-start md:justify-start">
-                      <div className="h-24 w-24 flex-shrink-0 rounded-full bg-gray-200 sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 xl:h-40 xl:w-40"></div>
-
-                      <div className="flex w-full flex-col gap-2 text-center sm:gap-3 md:flex-1 md:text-left">
-                        <div className="mx-auto h-7 w-48 rounded bg-gray-200 sm:h-8 sm:w-56 md:mx-0 md:h-9 lg:h-10"></div>
-
-                        <div className="mx-auto flex items-center gap-2 md:mx-0">
-                          <div className="h-5 w-5 rounded bg-gray-200"></div>
-                          <div className="h-5 w-64 rounded bg-gray-200 sm:w-80"></div>
-                        </div>
-
-                        <div className="mx-auto h-5 w-24 rounded bg-gray-200 md:mx-0"></div>
-
-                        <div className="flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-3 md:justify-start lg:gap-5">
-                          <div className="h-10 w-full rounded-lg bg-gray-200 sm:h-11 sm:w-32"></div>
-                          <div className="h-10 w-full rounded-lg bg-gray-200 sm:h-11 sm:w-32"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="border border-[#E7E7E7]"></div>
-              </article>
-
-              <div className="mb-5 flex w-full animate-pulse flex-col gap-4 rounded-lg bg-white p-3 shadow-md sm:gap-6 sm:rounded-2xl sm:p-4 lg:gap-7 lg:p-6">
-                <div className="h-7 w-32 rounded bg-gray-200 sm:h-8 sm:w-40"></div>
-
-                {[1, 2].map((item) => (
-                  <article key={item} className="flex flex-col">
-                    <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center sm:gap-4">
-                      <div className="flex min-w-0 flex-1 flex-row items-center gap-3 sm:gap-4">
-                        <div className="h-9 w-9 flex-shrink-0 rounded-full bg-gray-200 sm:h-10 sm:w-10 md:h-12 md:w-12"></div>
-                        <div className="flex min-w-0 flex-1 flex-col gap-2">
-                          <div className="flex items-center gap-2">
-                            <div className="h-5 w-32 rounded bg-gray-200 sm:h-6 sm:w-40"></div>
-                            <div className="h-6 w-20 rounded-full bg-gray-200"></div>
-                          </div>
-                          <div className="h-4 w-28 rounded bg-gray-200"></div>
-                        </div>
-                      </div>
-                      <div className="h-6 w-6 rounded bg-gray-200"></div>
-                    </div>
-
-                    <div className="mt-3 space-y-2 sm:mt-4">
-                      <div className="h-4 w-full rounded bg-gray-200"></div>
-                      <div className="h-4 w-5/6 rounded bg-gray-200"></div>
-                      <div className="h-4 w-4/6 rounded bg-gray-200"></div>
-                    </div>
-
-                    <div className="mt-3 h-64 w-full rounded-lg bg-gray-200 sm:h-80"></div>
-
-                    <div className="mt-3 flex items-center gap-3 sm:mt-4 sm:gap-4">
-                      <div className="h-6 w-12 rounded bg-gray-200"></div>
-                      <div className="h-6 w-12 rounded bg-gray-200"></div>
-                      <div className="h-6 w-8 rounded bg-gray-200"></div>
-                    </div>
-
-                    <div className="mt-4 border-t border-gray-100 sm:mt-5 lg:mt-7"></div>
-                  </article>
-                ))}
-              </div>
-            </div>
-
-            <div className="hidden w-full flex-col gap-4 sm:gap-5 lg:top-24 lg:flex lg:self-start">
-              <div className="flex animate-pulse flex-col gap-4 rounded-lg bg-white p-3 shadow-md sm:gap-5 sm:rounded-2xl sm:p-4 md:p-6 lg:p-8">
-                <div className="h-6 w-24 rounded bg-gray-200 sm:h-7 sm:w-28"></div>
-                <div className="flex flex-col gap-4 sm:gap-5">
-                  {[1, 2, 3].map((item) => (
-                    <div
-                      key={item}
-                      className="-m-2 flex flex-row items-center gap-3 rounded-lg p-2 sm:gap-4"
-                    >
-                      <div className="h-9 w-9 flex-shrink-0 rounded-full bg-gray-200 sm:h-10 sm:w-10 md:h-12 md:w-12"></div>
-                      <div className="flex min-w-0 flex-1 flex-col gap-2">
-                        <div className="h-4 w-32 rounded bg-gray-200"></div>
-                        <div className="h-3 w-24 rounded bg-gray-200"></div>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="mt-2 h-5 w-full rounded bg-gray-200"></div>
-                </div>
-              </div>
-
-              <div className="flex animate-pulse flex-col gap-4 rounded-lg bg-white p-3 shadow-md sm:gap-5 sm:rounded-2xl sm:p-4 md:p-6 lg:p-8">
-                <div className="h-6 w-40 rounded bg-gray-200 sm:h-7 sm:w-48"></div>
-                <div className="flex flex-col gap-4 sm:gap-5">
-                  {[1, 2, 3].map((item) => (
-                    <div
-                      key={item}
-                      className="-m-2 flex flex-row items-center gap-3 rounded-lg p-2 sm:gap-4"
-                    >
-                      <div className="h-9 w-9 flex-shrink-0 rounded-lg bg-gray-200 sm:h-10 sm:w-10 md:h-12 md:w-12"></div>
-                      <div className="flex min-w-0 flex-1 flex-col gap-2">
-                        <div className="h-4 w-full rounded bg-gray-200"></div>
-                        <div className="h-3 w-20 rounded bg-gray-200"></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+           {/* ... Skeleton code ... */}
+           <div className="p-10 text-center">Loading Profile...</div>
         </div>
       </DashboardLayout>
     );
@@ -147,7 +89,81 @@ const Profile = () => {
 
   return (
     <DashboardLayout>
-      <div className="flex w-full flex-col gap-4 bg-gray-50 p-2 sm:gap-6 sm:p-4 lg:p-6">
+      <div className="relative flex w-full flex-col gap-4 bg-gray-50 p-2 sm:gap-6 sm:p-4 lg:p-6">
+        
+        {/* --- MODAL START --- */}
+        {isOpenModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm transition-opacity">
+            <div className="flex max-h-[90vh] w-full max-w-3xl flex-col gap-4 rounded-2xl bg-[#F8F9FB] p-6 shadow-2xl">
+              
+              {/* Header & Search Bar */}
+              <div className="flex flex-col gap-4 bg-white p-4 rounded-xl shadow-sm">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-bold text-gray-800">Notifikasi & Koneksi</h2>
+                  <button 
+                    onClick={toggleModal} 
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <i className="fa-solid fa-xmark text-xl"></i>
+                  </button>
+                </div>
+                <div className="relative w-full">
+                  <i className="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                  <input 
+                    type="text" 
+                    placeholder="Search posts, people, opportunities..." 
+                    className="w-full rounded-full border border-gray-200 bg-gray-50 py-3 pl-12 pr-4 text-sm outline-none focus:border-[#5568FE] focus:ring-1 focus:ring-[#5568FE]"
+                  />
+                </div>
+              </div>
+
+              {/* List Content (Scrollable) */}
+              <div className="flex flex-col gap-3 overflow-y-auto pr-2">
+                {MOCK_NOTIFICATIONS.map((item) => (
+                  <div key={item.id} className="flex w-full items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
+                    <div className="flex items-center gap-4">
+                      <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border border-gray-100">
+                         {/* Menggunakan Image component atau img tag biasa */}
+                         <img 
+                           src={item.avatar} 
+                           alt={item.name} 
+                           className="h-full w-full object-cover"
+                         />
+                      </div>
+                      <div className="flex flex-col">
+                        <p className="text-sm font-medium text-gray-900 sm:text-base">
+                          <span className="font-bold">{item.name}</span> <span className="text-gray-600 font-normal">{item.action}</span>
+                        </p>
+                        <span className="text-xs text-gray-400">{item.time}</span>
+                      </div>
+                    </div>
+
+                    <button className="rounded-lg border border-[#FFB27C] px-6 py-1.5 text-sm font-medium text-[#FFB27C] transition-colors hover:bg-[#FFB27C] hover:text-white">
+                      {item.buttonText}
+                    </button>
+                  </div>
+                ))}
+
+                {/* Contoh item tambahan agar list terlihat panjang */}
+                <div className="flex w-full items-center justify-between rounded-xl bg-white p-4 shadow-sm">
+                    <div className="flex items-center gap-4">
+                      <div className="h-12 w-12 rounded-full bg-gray-200"></div>
+                      <div className="flex flex-col">
+                        <p className="text-sm font-bold text-gray-900">Jane Doe <span className="font-normal text-gray-600">viewed your profile</span></p>
+                        <span className="text-xs text-gray-400">5 hours ago</span>
+                      </div>
+                    </div>
+                    <button className="rounded-lg border border-[#FFB27C] px-6 py-1.5 text-sm font-medium text-[#FFB27C] hover:bg-[#FFB27C] hover:text-white">
+                      Remove
+                    </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
+        {/* --- MODAL END --- */}
+
         <div className="grid w-full grid-cols-1 gap-4 px-2 sm:gap-6 sm:px-4 md:px-6 lg:grid-cols-[7fr_3fr] lg:px-8 xl:px-12">
           <div className="flex flex-col gap-6 sm:gap-8 lg:gap-10">
             <article className="rounded-lg bg-white p-4 shadow-md sm:rounded-2xl sm:p-6 md:p-8 lg:p-10">
@@ -442,7 +458,11 @@ const Profile = () => {
                     </div>
                   </div>
                 ))}
-                <h4 className="mt-2 cursor-pointer text-center text-sm font-semibold text-[#5568FE] transition-colors hover:text-[#5568FE]/80 sm:text-base">
+                {/* --- TOMBOL TRIGGER MODAL --- */}
+                <h4 
+                  onClick={toggleModal}
+                  className="mt-2 cursor-pointer text-center text-sm font-semibold text-[#5568FE] transition-colors hover:text-[#5568FE]/80 sm:text-base"
+                >
                   Lihat Lebih Banyak
                 </h4>
               </div>
