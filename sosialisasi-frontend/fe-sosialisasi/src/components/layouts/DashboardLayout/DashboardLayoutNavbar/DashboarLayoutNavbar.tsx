@@ -29,6 +29,19 @@ const DashboardLayoutNavbar = ({
     }
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocalSearch(value);
+    if (value.trim() === "") {
+      setSearchTerm("");
+    }
+  };
+
+  const handleClearSearch = () => {
+    setLocalSearch("");
+    setSearchTerm("");
+  };
+
   const router = useRouter();
 
   const isAdminRoute = router.pathname.startsWith("/admin");
@@ -67,9 +80,17 @@ const DashboardLayoutNavbar = ({
             className="w-full bg-transparent text-sm placeholder-[#ADAEBC] focus:outline-none sm:text-base lg:text-lg"
             placeholder="Search Post, People, Opportunities.."
             value={localSearch}
-            onChange={(e) => setLocalSearch(e.target.value)}
+            onChange={handleInputChange}
             onKeyDown={handleSearchSubmit}
           />
+          {localSearch && (
+            <button
+              onClick={handleClearSearch}
+              className="text-gray-400 transition-colors hover:text-gray-600"
+            >
+              <i className="fas fa-times"></i>
+            </button>
+          )}
         </div>
       )}
 

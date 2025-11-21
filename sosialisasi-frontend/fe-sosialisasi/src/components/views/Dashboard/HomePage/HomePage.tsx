@@ -4,18 +4,29 @@ import Image from "next/image";
 import CommentSection from "./CommentSectionPage";
 import { useRouter } from "next/router";
 
+const BUTTON_TOPICS = [
+  "Sistem Informasi",
+  "Universitas Airlangga",
+  "Kampus",
+  "Magang",
+  "Lomba",
+  "Penelitian",
+];
+
 const HomePage = () => {
   const router = useRouter();
   const {
     posts,
     users,
     isSearching,
+    searchTerm,
     isLoadingPosts,
     currentUserId,
     visibleComments,
     commentInputs,
     isSendingComment,
     session,
+    setSearchTerm,
     handleToggleLike,
     handleToggleComments,
     handleInputChange,
@@ -23,11 +34,20 @@ const HomePage = () => {
     handleShare,
   } = useHomePage();
 
+  const handleTopicClick = (topic: string) => {
+    if (searchTerm === topic) {
+      setSearchTerm("");
+    } else {
+      setSearchTerm(topic);
+    }
+  };
+
   if (isLoadingPosts) {
     return (
       <DashboardLayout showSearch>
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-2 sm:gap-6 sm:px-4 lg:flex-row lg:gap-8">
           <div className="flex w-full flex-col gap-4 sm:gap-6 lg:max-w-5xl">
+            <div className="scrollbar-hide flex w-full flex-row items-center gap-2 overflow-x-auto pb-2"></div>
             {[1, 2, 3].map((item) => (
               <div
                 key={item}
@@ -112,20 +132,40 @@ const HomePage = () => {
     );
   }
 
-  if (posts.length === 0 && (!isSearching || (users && users.length === 0))) {
-    return (
-      <DashboardLayout showSearch>
-        <p className="pt-8 text-center text-gray-500">
-          {isSearching ? "Tidak ada hasil ditemukan." : "Belum Ada Postingan."}
-        </p>
-      </DashboardLayout>
-    );
-  }
-
   return (
     <DashboardLayout showSearch>
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-2 sm:gap-6 sm:px-4 lg:flex-row lg:gap-8">
         <div className="flex w-full flex-col gap-4 sm:gap-6 lg:max-w-5xl">
+          <div className="mx-auto flex flex-wrap justify-start gap-2 sm:gap-3">
+            {BUTTON_TOPICS.map((topic, index) => {
+              const isActive = searchTerm === topic;
+              return (
+                <button
+                  key={index}
+                  onClick={() => handleTopicClick(topic)}
+                  className={`rounded-full border px-4 py-1.5 text-sm font-medium whitespace-nowrap transition-all duration-200 ${
+                    isActive
+                      ? "border-[#5568FE] bg-[#5568FE] text-white shadow-md"
+                      : "border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50"
+                  }`}
+                >
+                  {topic}
+                </button>
+              );
+            })}
+          </div>
+          {posts.length === 0 &&
+            (!isSearching || (users && users.length === 0)) && (
+              <div className="flex flex-col items-center justify-center rounded-2xl bg-white py-12 text-center shadow-sm">
+                <i className="fas fa-search mb-4 text-4xl text-gray-300"></i>
+                <p className="text-gray-500">
+                  {isSearching
+                    ? `Tidak ada hasil untuk "${searchTerm}"`
+                    : "Belum Ada Postingan."}
+                </p>
+              </div>
+            )}
+
           {isSearching && users && users.length > 0 && (
             <div className="flex w-full flex-col rounded-lg bg-white p-3 shadow-sm sm:rounded-2xl sm:p-4 lg:p-6">
               <h2 className="mb-4 text-xl font-bold text-gray-900">People</h2>
