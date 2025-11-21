@@ -17,7 +17,7 @@ const useHomePage = () => {
   const [commentInputs, setCommentInputs] = useState<Record<string, string>>(
     {},
   );
-  const { searchTerm } = useSearch();
+  const { searchTerm, setSearchTerm } = useSearch();
   const isSearching = !!searchTerm;
   const [filters, setFilters] = useState<IContentFilters>({});
 
@@ -151,12 +151,14 @@ const useHomePage = () => {
     users,
     isSearching,
     isLoadingPosts,
+    searchTerm,
     currentUserId: session?.user?.id,
     session,
     visibleComments,
     commentInputs,
     isSendingComment,
     filters,
+    setSearchTerm,
     setFilters,
     handleToggleLike,
     handleToggleComments,
