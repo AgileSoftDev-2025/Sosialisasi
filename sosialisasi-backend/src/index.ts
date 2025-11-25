@@ -7,6 +7,9 @@ import cors from "cors";
 import path from "path";
 import { initSocket } from "./lib/socket";
 
+const PORT = process.env.PORT || 3001;
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+
 async function init() {
   try {
     const result = await db();
@@ -16,14 +19,12 @@ async function init() {
     app.use(bodyParser.json());
     app.use(
       cors({
-        origin: "http://localhost:3000",
+        origin: FRONTEND_URL,
         credentials: true,
       })
     );
 
     app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
-
-    const PORT = 3001;
 
     app.get("/", (req, res) => {
       res.status(200).json({
