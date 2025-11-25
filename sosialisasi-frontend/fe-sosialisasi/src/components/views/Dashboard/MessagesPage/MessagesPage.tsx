@@ -2,6 +2,7 @@ import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { useState } from "react";
 import useMessage from "@/components/hooks/useMessage";
 import Image from "next/image";
+import environment from "@/config/environment";
 
 const MessagesPage = () => {
   const {
@@ -83,7 +84,7 @@ const MessagesPage = () => {
                       <Image
                         src={
                           u.profilePicture
-                            ? `http://localhost:3001${u.profilePicture}`
+                            ? `${environment.CONSTANT_URL}${u.profilePicture}`
                             : "/default.png"
                         }
                         alt={u.fullName}
@@ -140,7 +141,7 @@ const MessagesPage = () => {
                   <Image
                     src={
                       selectedUser.profilePicture
-                        ? `http://localhost:3001${selectedUser.profilePicture}`
+                        ? `${environment.CONSTANT_URL}${selectedUser.profilePicture}`
                         : "/default.png"
                     }
                     alt={selectedUser.fullName}

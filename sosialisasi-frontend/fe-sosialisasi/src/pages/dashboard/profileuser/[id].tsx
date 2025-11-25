@@ -7,6 +7,7 @@ import useHomePage from "@/components/hooks/useHomePage";
 import CommentSection from "@/components/views/Dashboard/HomePage/CommentSectionPage";
 import { IPost } from "@/types/Home";
 import useNotificationPage from "@/components/hooks/useNotificationPage";
+import environment from "@/config/environment";
 
 interface IUserProfile {
   _id: string;
@@ -64,7 +65,7 @@ const ProfileUserPage = () => {
       const userId = Array.isArray(id) ? id[0] : id;
       if (!userId) throw new Error("User ID is required");
 
-      const res = await fetch(`http://localhost:3001/api/auth/user/${userId}`);
+      const res = await fetch(`${environment.API_URL}auth/user/${userId}`);
       if (!res.ok)
         throw new Error(`Failed to fetch user profile. Status: ${res.status}`);
       const data = await res.json();
@@ -96,7 +97,7 @@ const ProfileUserPage = () => {
       if (!userId) throw new Error("User ID is required");
 
       const res = await fetch(
-        `http://localhost:3001/api/upload/contentuser/${userId}`,
+        `${environment.API_URL}upload/contentuser/${userId}`,
       );
       if (!res.ok)
         throw new Error(`Failed to fetch user posts. Status: ${res.status}`);
@@ -133,7 +134,7 @@ const ProfileUserPage = () => {
                     <Image
                       src={
                         profile?.profilePicture
-                          ? `http://localhost:3001${profile.profilePicture}`
+                          ? `${environment.CONSTANT_URL}${profile.profilePicture}`
                           : "/images/logo.png"
                       }
                       alt={profile?.fullName || "User Avatar"}
@@ -361,7 +362,7 @@ const ProfileUserPage = () => {
                           <img
                             src={
                               post.userId?.profilePicture
-                                ? `http://localhost:3001${post.userId.profilePicture}`
+                                ? `${environment.CONSTANT_URL}${post.userId.profilePicture}`
                                 : "/images/logo.png"
                             }
                             alt="User"
@@ -415,7 +416,7 @@ const ProfileUserPage = () => {
 
                       {post.attachmentUrl_content && (
                         <img
-                          src={`http://localhost:3001${post.attachmentUrl_content}`}
+                          src={`${environment.CONSTANT_URL}${post.attachmentUrl_content}`}
                           alt="Attachment"
                           className="mt-3 max-h-96 w-full rounded-lg object-cover sm:max-h-[500px] sm:rounded-xl"
                         />

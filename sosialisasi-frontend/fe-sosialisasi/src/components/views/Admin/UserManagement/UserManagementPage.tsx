@@ -4,6 +4,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { Switch } from "@heroui/switch";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import useUserManagement from "@/components/hooks/useUserManagement";
+import environment from "@/config/environment";
 
 const UserManagement = () => {
   const {
@@ -142,7 +143,7 @@ const UserManagement = () => {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <Image
-                            src={`http://localhost:3001${user.profilePicture}`}
+                            src={`${environment.CONSTANT_URL}${user.profilePicture}`}
                             alt="Profile Picture"
                             width={40}
                             height={40}

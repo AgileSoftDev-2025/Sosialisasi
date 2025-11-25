@@ -1,6 +1,7 @@
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import useNotificationPage from "@/components/hooks/useNotificationPage";
 import Image from "next/image";
+import environment from "@/config/environment";
 
 const NotificationsPage = () => {
   const {
@@ -58,7 +59,7 @@ const NotificationsPage = () => {
               >
                 <div className="flex flex-row items-center gap-5">
                   <Image
-                    src={`http://localhost:3001${conn.user.profilePicture}`}
+                    src={`${environment.CONSTANT_URL}${conn.user.profilePicture}`}
                     width={500}
                     height={500}
                     className="h-20 w-20 rounded-full object-cover"

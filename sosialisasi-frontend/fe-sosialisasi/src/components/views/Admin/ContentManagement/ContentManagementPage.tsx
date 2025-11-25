@@ -3,6 +3,7 @@ import Image from "next/image";
 import { IoIosArrowDown } from "react-icons/io";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import useHomePage from "@/components/hooks/useHomePage";
+import environment from "@/config/environment";
 
 const ContentManagement = () => {
   const { posts, filters, isSearching, isLoadingPosts, setFilters } =
@@ -184,7 +185,7 @@ const ContentManagement = () => {
                         <div className="flex items-center gap-2">
                           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-xs font-medium">
                             <Image
-                              src={`http://localhost:3001${post.userId.profilePicture}`}
+                              src={`${environment.CONSTANT_URL}${post.userId.profilePicture}`}
                               alt="Profile Picture"
                               width={10}
                               height={10}
@@ -199,7 +200,7 @@ const ContentManagement = () => {
                       <td className="px-6 py-4">
                         {post?.attachmentUrl_content ? (
                           <a
-                            href={`http://localhost:3001${post.attachmentUrl_content}`}
+                            href={`${environment.CONSTANT_URL}${post.attachmentUrl_content}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex rounded-full px-3 py-1 text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline"

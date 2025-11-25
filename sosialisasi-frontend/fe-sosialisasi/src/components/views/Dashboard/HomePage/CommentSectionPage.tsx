@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import contentServices from "@/services/content.service";
 import Image from "next/image";
 import { IComment } from "@/types/Home";
+import environment from "@/config/environment";
 
 interface IPropTypes {
   postId: string;
@@ -28,7 +29,7 @@ const CommentSection = ({ postId }: IPropTypes) => {
           <Image
             src={
               comment.id_user?.profilePicture
-                ? `http://localhost:3001${comment.id_user.profilePicture}`
+                ? `${environment.CONSTANT_URL}${comment.id_user.profilePicture}`
                 : "/images/logo.png"
             }
             alt={comment.id_user?.fullName || "User"}

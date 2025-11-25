@@ -17,12 +17,6 @@ export const SIDEBAR_ITEMS = [
     href: "/dashboard/profile",
     icon: "fa-solid fa-user",
   },
-  {
-    key: "pengaturan",
-    label: "Pengaturan",
-    href: "/dashboard/settings",
-    icon: "fa-solid fa-gear",
-  },
 ];
 
 export const SIDEBAR_ITEMS_ADMIN = [
@@ -37,12 +31,6 @@ export const SIDEBAR_ITEMS_ADMIN = [
     label: "Content Management",
     href: "/admin/content-management",
     icon: "fa-solid fa-message",
-  },
-  {
-    key: "moderation",
-    label: "Moderation",
-    href: "/admin/moderation",
-    icon: "fa-solid fa-user",
   },
   {
     key: "user-management",

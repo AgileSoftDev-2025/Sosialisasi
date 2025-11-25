@@ -3,6 +3,7 @@ import useHomePage from "../../../hooks/useHomePage";
 import Image from "next/image";
 import CommentSection from "./CommentSectionPage";
 import { useRouter } from "next/router";
+import environment from "@/config/environment";
 
 const BUTTON_TOPICS = [
   "Sistem Informasi",
@@ -179,7 +180,7 @@ const HomePage = () => {
                     }
                   >
                     <Image
-                      src={`http://localhost:3001${user.profilePicture}`}
+                      src={`${environment.CONSTANT_URL}${user.profilePicture}`}
                       alt={user.fullName}
                       width={48}
                       height={48}
@@ -222,7 +223,7 @@ const HomePage = () => {
                     }
                   >
                     <Image
-                      src={`http://localhost:3001${post.userId.profilePicture}`}
+                      src={`${environment.CONSTANT_URL}${post.userId.profilePicture}`}
                       alt="Profile Picture"
                       width={48}
                       height={48}
@@ -270,7 +271,7 @@ const HomePage = () => {
                   {post.attachmentUrl_content && (
                     <div className="relative mt-3 aspect-video w-full">
                       <Image
-                        src={`http://localhost:3001${post.attachmentUrl_content}`}
+                        src={`${environment.CONSTANT_URL}${post.attachmentUrl_content}`}
                         alt="Attachment"
                         layout="fill"
                         className="rounded-lg object-cover"

@@ -5,6 +5,7 @@ import { IPost } from "@/types/Home";
 import CommentSection from "@/components/views/Dashboard/HomePage/CommentSectionPage";
 import useHomePage from "@/components/hooks/useHomePage";
 import { useQuery } from "@tanstack/react-query";
+import environment from "@/config/environment";
 
 const PostPage = () => {
   const router = useRouter();
@@ -33,7 +34,7 @@ const PostPage = () => {
       if (!postId) throw new Error("Post ID is required");
 
       const res = await fetch(
-        `http://localhost:3001/api/upload/content/${postId}`,
+        `${environment.API_URL}/upload/content/${postId}`,
       );
       if (!res.ok)
         throw new Error(`Failed to fetch post. Status: ${res.status}`);
@@ -62,7 +63,7 @@ const PostPage = () => {
           <div className="flex flex-col gap-4 md:flex-row md:gap-6">
             <div className="w-full md:w-1/2 lg:w-3/5">
               <Image
-                src={`http://localhost:3001${post.attachmentUrl_content}`}
+                src={`${environment.CONSTANT_URL}${post.attachmentUrl_content}`}
                 width={500}
                 height={500}
                 alt={post.userId?.fullName || "User Avatar"}
@@ -74,7 +75,7 @@ const PostPage = () => {
               <div className="flex flex-col gap-3 sm:gap-4">
                 <div className="flex flex-row items-center gap-3 sm:gap-4">
                   <Image
-                    src={`http://localhost:3001${post.userId.profilePicture}`}
+                    src={`${environment.CONSTANT_URL}${post.userId.profilePicture}`}
                     width={100}
                     height={100}
                     alt={post.userId?.fullName || "User Avatar"}

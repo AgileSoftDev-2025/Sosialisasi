@@ -3,6 +3,7 @@ import { getToken } from "next-auth/jwt";
 import formidable from "formidable";
 import fs from "fs";
 import { JWTExtended } from "@/types/Auth";
+import environment from "@/config/environment";
 
 export const config = {
   api: {
@@ -64,7 +65,7 @@ export default async function handler(
     }
 
     const backendResponse = await fetch(
-      "http://localhost:3001/api/upload/content",
+      `${environment.API_URL}upload/content`,
       {
         method: "POST",
         body: backendFormData,

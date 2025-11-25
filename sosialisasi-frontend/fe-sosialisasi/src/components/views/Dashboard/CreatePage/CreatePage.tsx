@@ -6,6 +6,7 @@ import { Spinner } from "@heroui/react";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import authServices from "@/services/auth.service";
+import environment from "@/config/environment";
 
 const CreatePage = () => {
   const { data: session } = useSession();
@@ -89,7 +90,7 @@ const CreatePage = () => {
             <img
               src={
                 profile?.profilePicture
-                  ? `http://localhost:3001${profile.profilePicture}`
+                  ? `${environment.CONSTANT_URL}${profile.profilePicture}`
                   : "/images/logo.png"
               }
               alt="Avatar"

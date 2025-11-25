@@ -6,6 +6,7 @@ import DashboardLayout from "@/components/layouts/DashboardLayout";
 import useHomePage from "../../../hooks/useHomePage";
 import CommentSection from "../HomePage/CommentSectionPage";
 import { IConnection } from "@/types/Home";
+import environment from "@/config/environment";
 
 // --- Mock Data untuk Tampilan Modal (Sesuai Gambar) ---
 const MOCK_NOTIFICATIONS = [
@@ -47,10 +48,10 @@ const Profile = () => {
   const router = useRouter();
   const { profile, isLoading, posts, isLoadingPosts, handleDeletePost } =
     useProfile();
-  
+
   // State untuk Dropdown Menu Post
   const [openMenu, setOpenMenu] = useState<string | null>(null);
-  
+
   // State untuk Modal "Lihat Lebih Banyak"
   const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -80,8 +81,8 @@ const Profile = () => {
     return (
       <DashboardLayout>
         <div className="flex w-full flex-col gap-4 bg-gray-50 p-2 sm:gap-6 sm:p-4 lg:p-6">
-           {/* ... Skeleton code ... */}
-           <div className="p-10 text-center">Loading Profile...</div>
+          {/* ... Skeleton code ... */}
+          <div className="p-10 text-center">Loading Profile...</div>
         </div>
       </DashboardLayout>
     );
@@ -90,29 +91,29 @@ const Profile = () => {
   return (
     <DashboardLayout>
       <div className="relative flex w-full flex-col gap-4 bg-gray-50 p-2 sm:gap-6 sm:p-4 lg:p-6">
-        
         {/* --- MODAL START --- */}
         {isOpenModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm transition-opacity">
             <div className="flex max-h-[90vh] w-full max-w-3xl flex-col gap-4 rounded-2xl bg-[#F8F9FB] p-6 shadow-2xl">
-              
               {/* Header & Search Bar */}
-              <div className="flex flex-col gap-4 bg-white p-4 rounded-xl shadow-sm">
+              <div className="flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-bold text-gray-800">Notifikasi & Koneksi</h2>
-                  <button 
-                    onClick={toggleModal} 
+                  <h2 className="text-lg font-bold text-gray-800">
+                    Notifikasi & Koneksi
+                  </h2>
+                  <button
+                    onClick={toggleModal}
                     className="text-gray-400 hover:text-gray-600"
                   >
                     <i className="fa-solid fa-xmark text-xl"></i>
                   </button>
                 </div>
                 <div className="relative w-full">
-                  <i className="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                  <input 
-                    type="text" 
-                    placeholder="Search posts, people, opportunities..." 
-                    className="w-full rounded-full border border-gray-200 bg-gray-50 py-3 pl-12 pr-4 text-sm outline-none focus:border-[#5568FE] focus:ring-1 focus:ring-[#5568FE]"
+                  <i className="fa-solid fa-magnifying-glass absolute top-1/2 left-4 -translate-y-1/2 text-gray-400"></i>
+                  <input
+                    type="text"
+                    placeholder="Search posts, people, opportunities..."
+                    className="w-full rounded-full border border-gray-200 bg-gray-50 py-3 pr-4 pl-12 text-sm outline-none focus:border-[#5568FE] focus:ring-1 focus:ring-[#5568FE]"
                   />
                 </div>
               </div>
@@ -120,21 +121,29 @@ const Profile = () => {
               {/* List Content (Scrollable) */}
               <div className="flex flex-col gap-3 overflow-y-auto pr-2">
                 {MOCK_NOTIFICATIONS.map((item) => (
-                  <div key={item.id} className="flex w-full items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
+                  <div
+                    key={item.id}
+                    className="flex w-full items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
+                  >
                     <div className="flex items-center gap-4">
                       <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border border-gray-100">
-                         {/* Menggunakan Image component atau img tag biasa */}
-                         <img 
-                           src={item.avatar} 
-                           alt={item.name} 
-                           className="h-full w-full object-cover"
-                         />
+                        {/* Menggunakan Image component atau img tag biasa */}
+                        <img
+                          src={item.avatar}
+                          alt={item.name}
+                          className="h-full w-full object-cover"
+                        />
                       </div>
                       <div className="flex flex-col">
                         <p className="text-sm font-medium text-gray-900 sm:text-base">
-                          <span className="font-bold">{item.name}</span> <span className="text-gray-600 font-normal">{item.action}</span>
+                          <span className="font-bold">{item.name}</span>{" "}
+                          <span className="font-normal text-gray-600">
+                            {item.action}
+                          </span>
                         </p>
-                        <span className="text-xs text-gray-400">{item.time}</span>
+                        <span className="text-xs text-gray-400">
+                          {item.time}
+                        </span>
                       </div>
                     </div>
 
@@ -146,19 +155,23 @@ const Profile = () => {
 
                 {/* Contoh item tambahan agar list terlihat panjang */}
                 <div className="flex w-full items-center justify-between rounded-xl bg-white p-4 shadow-sm">
-                    <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 rounded-full bg-gray-200"></div>
-                      <div className="flex flex-col">
-                        <p className="text-sm font-bold text-gray-900">Jane Doe <span className="font-normal text-gray-600">viewed your profile</span></p>
-                        <span className="text-xs text-gray-400">5 hours ago</span>
-                      </div>
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-gray-200"></div>
+                    <div className="flex flex-col">
+                      <p className="text-sm font-bold text-gray-900">
+                        Jane Doe{" "}
+                        <span className="font-normal text-gray-600">
+                          viewed your profile
+                        </span>
+                      </p>
+                      <span className="text-xs text-gray-400">5 hours ago</span>
                     </div>
-                    <button className="rounded-lg border border-[#FFB27C] px-6 py-1.5 text-sm font-medium text-[#FFB27C] hover:bg-[#FFB27C] hover:text-white">
-                      Remove
-                    </button>
+                  </div>
+                  <button className="rounded-lg border border-[#FFB27C] px-6 py-1.5 text-sm font-medium text-[#FFB27C] hover:bg-[#FFB27C] hover:text-white">
+                    Remove
+                  </button>
                 </div>
               </div>
-
             </div>
           </div>
         )}
@@ -173,7 +186,7 @@ const Profile = () => {
                     <Image
                       src={
                         profile?.profilePicture
-                          ? `http://localhost:3001${profile.profilePicture}`
+                          ? `${environment.CONSTANT_URL}${profile.profilePicture}`
                           : "/images/logo.png"
                       }
                       alt={profile?.fullName || "User Avatar"}
@@ -262,7 +275,7 @@ const Profile = () => {
                           <img
                             src={
                               post.userId?.profilePicture
-                                ? `http://localhost:3001${post.userId.profilePicture}`
+                                ? `${environment.CONSTANT_URL}${post.userId.profilePicture}`
                                 : "/images/logo.png"
                             }
                             alt="User"
@@ -337,7 +350,7 @@ const Profile = () => {
 
                       {post.attachmentUrl_content && (
                         <img
-                          src={`http://localhost:3001${post.attachmentUrl_content}`}
+                          src={`${environment.CONSTANT_URL}${post.attachmentUrl_content}`}
                           alt="Attachment"
                           className="mt-3 max-h-96 w-full rounded-lg object-cover sm:max-h-[500px] sm:rounded-xl"
                         />
@@ -459,7 +472,7 @@ const Profile = () => {
                   </div>
                 ))}
                 {/* --- TOMBOL TRIGGER MODAL --- */}
-                <h4 
+                <h4
                   onClick={toggleModal}
                   className="mt-2 cursor-pointer text-center text-sm font-semibold text-[#5568FE] transition-colors hover:text-[#5568FE]/80 sm:text-base"
                 >

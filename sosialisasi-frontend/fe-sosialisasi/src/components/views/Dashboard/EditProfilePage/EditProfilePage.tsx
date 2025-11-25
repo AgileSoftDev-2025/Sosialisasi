@@ -3,6 +3,7 @@ import { Controller } from "react-hook-form";
 import { Spinner } from "@heroui/react";
 import { FaCircle } from "react-icons/fa6";
 import useEditProfile from "@/components/hooks/useEditProfile";
+import environment from "@/config/environment";
 
 const EditProfile = () => {
   const {
@@ -85,7 +86,7 @@ const EditProfile = () => {
                       />
                     ) : currentPicture ? (
                       <img
-                        src={`http://localhost:3001${currentPicture}`}
+                        src={`${environment.CONSTANT_URL}${currentPicture}`}
                         alt="Current profile"
                         className="h-28 w-28 rounded-full object-cover"
                       />
