@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import useProfile from "../../../hooks/useProfile";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import useHomePage from "../../../hooks/useHomePage";
@@ -8,51 +8,20 @@ import CommentSection from "../HomePage/CommentSectionPage";
 import { IConnection } from "@/types/Home";
 import environment from "@/config/environment";
 
-// --- Mock Data untuk Tampilan Modal (Sesuai Gambar) ---
-const MOCK_NOTIFICATIONS = [
-  {
-    id: 1,
-    name: "Marcus Johnson",
-    action: "requests to connect",
-    time: "15 minutes ago",
-    avatar: "/images/logo.png", // Ganti dengan path avatar dummy jika ada
-    buttonText: "Remove", // Atau "Accept" tergantung logika
-  },
-  {
-    id: 2,
-    name: "Emma Rodriguez",
-    action: "liked your post",
-    time: "1 hour ago",
-    avatar: "/images/logo.png",
-    buttonText: "Remove",
-  },
-  {
-    id: 3,
-    name: "David Park",
-    action: "requests to connect",
-    time: "2 hours ago",
-    avatar: "/images/logo.png",
-    buttonText: "Remove",
-  },
-  {
-    id: 4,
-    name: "Lisa Wang",
-    action: "commented on your post",
-    time: "3 hours ago",
-    avatar: "/images/logo.png",
-    buttonText: "Remove",
-  },
-];
-
 const Profile = () => {
   const router = useRouter();
-  const { profile, isLoading, posts, isLoadingPosts, handleDeletePost } =
-    useProfile();
 
-  // State untuk Dropdown Menu Post
+  const {
+    profile,
+    isLoading,
+    posts,
+    isLoadingPosts,
+    connections,
+    handleRemoveConnection,
+    handleDeletePost,
+  } = useProfile();
+
   const [openMenu, setOpenMenu] = useState<string | null>(null);
-
-  // State untuk Modal "Lihat Lebih Banyak"
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   const {
@@ -60,13 +29,19 @@ const Profile = () => {
     visibleComments,
     commentInputs,
     isSendingComment,
-    session,
     handleToggleLike,
     handleToggleComments,
     handleInputChange,
     handleSendComment,
     handleShare,
   } = useHomePage();
+
+  const topPosts = useMemo(() => {
+    if (!posts) return [];
+    return [...posts]
+      .sort((a, b) => (b.likes?.length || 0) - (a.likes?.length || 0))
+      .slice(0, 3);
+  }, [posts]);
 
   const toggleMenu = (postId: string) => {
     setOpenMenu(openMenu === postId ? null : postId);
@@ -77,11 +52,9 @@ const Profile = () => {
   };
 
   if (isLoading) {
-    // ... (Bagian Loading Skeleton tetap sama)
     return (
       <DashboardLayout>
         <div className="flex w-full flex-col gap-4 bg-gray-50 p-2 sm:gap-6 sm:p-4 lg:p-6">
-          {/* ... Skeleton code ... */}
           <div className="p-10 text-center">Loading Profile...</div>
         </div>
       </DashboardLayout>
@@ -91,173 +64,120 @@ const Profile = () => {
   return (
     <DashboardLayout>
       <div className="relative flex w-full flex-col gap-4 bg-gray-50 p-2 sm:gap-6 sm:p-4 lg:p-6">
-        {/* --- MODAL START --- */}
         {isOpenModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm transition-opacity">
             <div className="flex max-h-[90vh] w-full max-w-3xl flex-col gap-4 rounded-2xl bg-[#F8F9FB] p-6 shadow-2xl">
-              {/* Header & Search Bar */}
-              <div className="flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-bold text-gray-800">
-                    Notifikasi & Koneksi
-                  </h2>
-                  <button
-                    onClick={toggleModal}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    <i className="fa-solid fa-xmark text-xl"></i>
-                  </button>
-                </div>
-                <div className="relative w-full">
-                  <i className="fa-solid fa-magnifying-glass absolute top-1/2 left-4 -translate-y-1/2 text-gray-400"></i>
-                  <input
-                    type="text"
-                    placeholder="Search posts, people, opportunities..."
-                    className="w-full rounded-full border border-gray-200 bg-gray-50 py-3 pr-4 pl-12 text-sm outline-none focus:border-[#5568FE] focus:ring-1 focus:ring-[#5568FE]"
-                  />
-                </div>
+              <div className="flex items-center justify-between rounded-xl bg-white p-4">
+                <h2 className="font-bold">Semua Koneksi</h2>
+                <button onClick={toggleModal}>
+                  <i className="fa-solid fa-xmark text-xl"></i>
+                </button>
               </div>
-
-              {/* List Content (Scrollable) */}
-              <div className="flex flex-col gap-3 overflow-y-auto pr-2">
-                {MOCK_NOTIFICATIONS.map((item) => (
+              <div className="flex flex-col gap-2 overflow-y-auto p-2">
+                {connections.map((conn: any) => (
                   <div
-                    key={item.id}
-                    className="flex w-full items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
+                    key={conn._id}
+                    className="flex items-center justify-between rounded-xl bg-white p-3"
                   >
-                    <div className="flex items-center gap-4">
-                      <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border border-gray-100">
-                        {/* Menggunakan Image component atau img tag biasa */}
-                        <img
-                          src={item.avatar}
-                          alt={item.name}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                      <div className="flex flex-col">
-                        <p className="text-sm font-medium text-gray-900 sm:text-base">
-                          <span className="font-bold">{item.name}</span>{" "}
-                          <span className="font-normal text-gray-600">
-                            {item.action}
-                          </span>
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={
+                          conn.user?.profilePicture
+                            ? `${environment.CONSTANT_URL}${conn.user.profilePicture}`
+                            : "/images/logo.png"
+                        }
+                        className="h-10 w-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <p className="font-bold">{conn.user?.fullName}</p>
+                        <p className="text-xs text-gray-500">
+                          {conn.user?.jurusan}
                         </p>
-                        <span className="text-xs text-gray-400">
-                          {item.time}
-                        </span>
                       </div>
                     </div>
-
-                    <button className="rounded-lg border border-[#FFB27C] px-6 py-1.5 text-sm font-medium text-[#FFB27C] transition-colors hover:bg-[#FFB27C] hover:text-white">
-                      {item.buttonText}
+                    <button
+                      onClick={() => {
+                        if (confirm("Hapus koneksi?"))
+                          handleRemoveConnection(conn.user._id);
+                      }}
+                      className="rounded-lg border border-red-200 px-3 py-1 text-sm text-red-500 hover:bg-red-50"
+                    >
+                      Hapus
                     </button>
                   </div>
                 ))}
-
-                {/* Contoh item tambahan agar list terlihat panjang */}
-                <div className="flex w-full items-center justify-between rounded-xl bg-white p-4 shadow-sm">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-gray-200"></div>
-                    <div className="flex flex-col">
-                      <p className="text-sm font-bold text-gray-900">
-                        Jane Doe{" "}
-                        <span className="font-normal text-gray-600">
-                          viewed your profile
-                        </span>
-                      </p>
-                      <span className="text-xs text-gray-400">5 hours ago</span>
-                    </div>
-                  </div>
-                  <button className="rounded-lg border border-[#FFB27C] px-6 py-1.5 text-sm font-medium text-[#FFB27C] hover:bg-[#FFB27C] hover:text-white">
-                    Remove
-                  </button>
-                </div>
               </div>
             </div>
           </div>
         )}
-        {/* --- MODAL END --- */}
 
         <div className="grid w-full grid-cols-1 gap-4 px-2 sm:gap-6 sm:px-4 md:px-6 lg:grid-cols-[7fr_3fr] lg:px-8 xl:px-12">
           <div className="flex flex-col gap-6 sm:gap-8 lg:gap-10">
             <article className="rounded-lg bg-white p-4 shadow-md sm:rounded-2xl sm:p-6 md:p-8 lg:p-10">
-              <div className="mb-6 flex flex-col gap-4 sm:mb-10 sm:gap-6 md:gap-8 lg:mb-14">
-                <div className="flex w-full flex-col gap-4">
-                  <div className="flex flex-col items-center justify-center gap-4 sm:gap-5 md:flex-row md:items-start md:justify-start">
-                    <Image
-                      src={
-                        profile?.profilePicture
-                          ? `${environment.CONSTANT_URL}${profile.profilePicture}`
-                          : "/images/logo.png"
-                      }
-                      alt={profile?.fullName || "User Avatar"}
-                      width={160}
-                      height={160}
-                      className="h-24 w-24 flex-shrink-0 rounded-full object-cover sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 xl:h-40 xl:w-40"
-                    />
+              <div className="flex flex-col items-center justify-center gap-4 sm:gap-5 md:flex-row md:items-start md:justify-start">
+                <Image
+                  src={
+                    profile?.profilePicture
+                      ? `${environment.CONSTANT_URL}${profile.profilePicture}`
+                      : "/images/logo.png"
+                  }
+                  alt={profile?.fullName || "User Avatar"}
+                  width={160}
+                  height={160}
+                  className="h-24 w-24 flex-shrink-0 rounded-full object-cover sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 xl:h-40 xl:w-40"
+                />
+                <div className="flex w-full flex-col gap-2 text-center sm:gap-3 md:flex-1 md:text-left">
+                  <h1 className="text-xl font-bold break-words text-[#1A1A1A] sm:text-2xl md:text-3xl lg:text-[32px]">
+                    {profile?.fullName}
+                  </h1>
+                  <div className="flex flex-row flex-wrap items-center justify-center gap-2 text-[#7A7A7A] md:justify-start">
+                    <i className="fa-solid fa-graduation-cap text-base sm:text-lg lg:text-[20px]"></i>
+                    <h3 className="font-regular text-sm sm:text-base lg:text-[20px]">
+                      <span>{profile?.status}</span>{" "}
+                      <span>{profile?.jurusan}</span> -{" "}
+                      <span>{profile?.universitas}</span>
+                    </h3>
+                  </div>
+                  <p className="mt-1 mb-2 text-sm font-semibold text-[#7A7A7A] sm:text-base lg:text-[20px]">
+                    {connections.length} Koneksi
+                  </p>
 
-                    <div className="flex w-full flex-col gap-2 text-center sm:gap-3 md:flex-1 md:text-left">
-                      <h1 className="text-xl font-bold break-words text-[#1A1A1A] sm:text-2xl md:text-3xl lg:text-[32px]">
-                        {profile?.fullName}
-                      </h1>
-
-                      <div className="flex flex-row flex-wrap items-center justify-center gap-2 text-[#7A7A7A] md:justify-start">
-                        <i className="fa-solid fa-graduation-cap text-base sm:text-lg lg:text-[20px]"></i>
-                        <h3 className="font-regular text-sm sm:text-base lg:text-[20px]">
-                          <span>{profile?.status}</span>{" "}
-                          <span>{profile?.jurusan}</span> -{" "}
-                          <span>{profile?.universitas}</span>
-                        </h3>
-                      </div>
-
-                      <p className="mt-1 mb-2 text-sm font-semibold text-[#7A7A7A] sm:text-base lg:text-[20px]">
-                        {
-                          profile?.connections?.filter(
-                            (conn: IConnection) => conn.status === "accepted",
-                          ).length
-                        }{" "}
-                        Koneksi
-                      </p>
-
-                      <div className="flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-3 md:justify-start lg:gap-5">
-                        <div className="flex w-full flex-row items-center justify-center gap-2 rounded-lg border-2 border-[#5568FE] px-3 py-2 transition-colors hover:bg-[#5568FE]/5 sm:w-auto sm:rounded-xl sm:px-4">
-                          <Image
-                            src={"/images/Linkedin.png"}
-                            width={20}
-                            height={20}
-                            alt="Linkedin"
-                            className="h-4 w-4 sm:h-5 sm:w-5"
-                          />
-                          <p className="text-sm font-medium text-[#5568FE] sm:text-base">
-                            <a
-                              href={profile?.linkedinLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              Linkedin
-                            </a>
-                          </p>
-                        </div>
-                        <button
-                          className="flex w-full cursor-pointer flex-row items-center justify-center rounded-lg bg-[#5568FE] px-3 py-2 transition-colors hover:bg-[#5568FE]/90 sm:w-auto sm:rounded-xl sm:px-4"
-                          onClick={() => router.push("/dashboard/edit-profile")}
+                  <div className="flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-3 md:justify-start lg:gap-5">
+                    <div className="flex w-full flex-row items-center justify-center gap-2 rounded-lg border-2 border-[#5568FE] px-3 py-2 transition-colors hover:bg-[#5568FE]/5 sm:w-auto sm:rounded-xl sm:px-4">
+                      <Image
+                        src={"/images/Linkedin.png"}
+                        width={20}
+                        height={20}
+                        alt="Linkedin"
+                        className="h-4 w-4 sm:h-5 sm:w-5"
+                      />
+                      <p className="text-sm font-medium text-[#5568FE] sm:text-base">
+                        <a
+                          href={profile?.linkedinLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
                         >
-                          <p className="text-sm font-bold text-white sm:text-base lg:text-[19px]">
-                            Edit Profil
-                          </p>
-                        </button>
-                      </div>
+                          Linkedin
+                        </a>
+                      </p>
                     </div>
+                    <button
+                      className="flex w-full cursor-pointer flex-row items-center justify-center rounded-lg bg-[#5568FE] px-3 py-2 transition-colors hover:bg-[#5568FE]/90 sm:w-auto sm:rounded-xl sm:px-4"
+                      onClick={() => router.push("/dashboard/edit-profile")}
+                    >
+                      <p className="text-sm font-bold text-white sm:text-base lg:text-[19px]">
+                        Edit Profil
+                      </p>
+                    </button>
                   </div>
                 </div>
               </div>
-              <div className="border border-[#E7E7E7]"></div>
             </article>
 
             <div className="mb-5 flex w-full flex-col gap-4 rounded-lg bg-white p-3 shadow-md sm:gap-6 sm:rounded-2xl sm:p-4 lg:gap-7 lg:p-6">
               <h1 className="text-xl font-semibold text-[#1A1A1A] sm:text-2xl lg:text-[28px]">
                 Postingan
               </h1>
-
               {isLoadingPosts ? (
                 <p className="text-center text-gray-500">Loading...</p>
               ) : posts && posts.length > 0 ? (
@@ -269,7 +189,10 @@ const Profile = () => {
                   const showComments = visibleComments[post._id] || false;
 
                   return (
-                    <article key={post._id} className="flex flex-col">
+                    <article
+                      key={post._id}
+                      className="mb-6 flex flex-col border-b pb-6 last:mb-0 last:border-0 last:pb-0"
+                    >
                       <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center sm:gap-4">
                         <div className="flex min-w-0 flex-1 flex-row items-center gap-3 sm:gap-4">
                           <img
@@ -282,58 +205,33 @@ const Profile = () => {
                             className="h-9 w-9 flex-shrink-0 rounded-full bg-black object-cover sm:h-10 sm:w-10 md:h-12 md:w-12"
                           />
                           <div className="flex min-w-0 flex-1 flex-col">
-                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                              <h3 className="truncate text-sm font-semibold text-[#202020] sm:text-base lg:text-xl">
-                                {post.userId?.fullName || "Nama Pengguna"}
-                              </h3>
-                              <div
-                                className={
-                                  post.type_content === "Competition"
-                                    ? "rounded-full bg-[#FFB27C]/10 px-8 py-1 sm:px-8 sm:py-1"
-                                    : post.type_content === "Project"
-                                      ? "rounded-full bg-[#16A34A]/10 px-8 py-1 sm:px-8 sm:py-1"
-                                      : "rounded-full bg-[#5568FE]/10 px-8 py-1 sm:px-8 sm:py-1"
-                                }
-                              >
-                                <h5
-                                  className={
-                                    post.type_content === "Competition"
-                                      ? "text-xs font-medium text-[#FFB27C] sm:text-sm"
-                                      : post.type_content === "Project"
-                                        ? "text-xs font-medium text-[#16A34A] sm:text-sm"
-                                        : "text-xs font-medium text-[#5568FE] sm:text-sm"
-                                  }
-                                >
-                                  {post.type_content || "Project"}
-                                </h5>
-                              </div>
-                            </div>
+                            <h3 className="truncate text-sm font-semibold text-[#202020] sm:text-base lg:text-xl">
+                              {post.userId?.fullName}
+                            </h3>
                             <h4 className="text-xs text-[#787878] sm:text-[13px] lg:text-[15px]">
-                              {new Date(post.created_at_content).toLocaleString(
-                                "id-ID",
-                                {
-                                  dateStyle: "medium",
-                                  timeStyle: "short",
-                                },
-                              )}
+                              {new Date(
+                                post.created_at_content,
+                              ).toLocaleDateString("id-ID", {
+                                dateStyle: "medium",
+                              })}
                             </h4>
                           </div>
                         </div>
-
                         <div className="relative self-end sm:self-auto">
                           <i
-                            className="fa-solid fa-ellipsis-vertical cursor-pointer text-lg transition-colors hover:text-gray-700 sm:text-xl lg:text-[24px]"
+                            className="fa-solid fa-ellipsis-vertical cursor-pointer p-2 text-lg"
                             onClick={() => toggleMenu(post._id)}
                           ></i>
-
                           {showMenu && (
-                            <div className="absolute right-0 z-10 mt-2 w-24 rounded-lg border bg-white shadow-lg sm:w-28 lg:w-32">
+                            <div className="absolute right-0 z-10 mt-2 w-32 rounded-lg border bg-white shadow-lg">
                               <button
                                 onClick={() => {
-                                  handleDeletePost(post._id);
-                                  setOpenMenu(null);
+                                  if (confirm("Hapus postingan ini?")) {
+                                    handleDeletePost(post._id);
+                                    setOpenMenu(null);
+                                  }
                                 }}
-                                className="block w-full rounded-lg px-3 py-2 text-left text-sm text-red-600 transition-colors hover:bg-red-50 sm:px-4 sm:text-base"
+                                className="block w-full rounded-lg px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
                               >
                                 Hapus
                               </button>
@@ -347,98 +245,60 @@ const Profile = () => {
                           {post.text_content}
                         </p>
                       </div>
-
                       {post.attachmentUrl_content && (
                         <img
                           src={`${environment.CONSTANT_URL}${post.attachmentUrl_content}`}
                           alt="Attachment"
-                          className="mt-3 max-h-96 w-full rounded-lg object-cover sm:max-h-[500px] sm:rounded-xl"
+                          className="mt-3 max-h-96 w-full rounded-lg object-cover sm:rounded-xl"
                         />
                       )}
 
-                      <div className="mt-3 flex items-center justify-between text-gray-600 sm:mt-4 lg:mt-5">
-                        <div className="flex items-center gap-3 sm:gap-4 lg:gap-6">
-                          <button
-                            onClick={() => handleToggleLike(post._id)}
-                            className="flex items-center gap-1.5 transition-colors hover:text-red-500 sm:gap-2"
-                          >
-                            <i
-                              className={`fa-heart text-base sm:text-lg lg:text-xl ${
-                                hasLiked
-                                  ? "fa-solid text-red-500"
-                                  : "fa-regular"
-                              }`}
-                            ></i>
-                            <span className="text-xs font-medium sm:text-sm">
-                              {post.likes.length}
-                            </span>
-                          </button>
-
-                          <button
-                            onClick={() => handleToggleComments(post._id)}
-                            className="flex items-center gap-1.5 transition-colors hover:text-[#5568FE] sm:gap-2"
-                          >
-                            <i className="fa-regular fa-comment text-base sm:text-lg lg:text-xl"></i>
-                            <span className="text-xs font-medium sm:text-sm">
-                              {post.comments?.length || 0}
-                            </span>
-                          </button>
-
-                          <button
-                            onClick={() => handleShare(post._id)}
-                            className="transition-colors hover:text-gray-900"
-                          >
-                            <i className="fa-solid fa-share cursor-pointer text-base sm:text-lg lg:text-xl"></i>
-                          </button>
-                        </div>
+                      <div className="mt-3 flex items-center gap-6 text-gray-600">
+                        <button
+                          onClick={() => handleToggleLike(post._id)}
+                          className="flex items-center gap-2 hover:text-red-500"
+                        >
+                          <i
+                            className={`fa-heart text-lg ${hasLiked ? "fa-solid text-red-500" : "fa-regular"}`}
+                          ></i>
+                          <span>{post.likes.length}</span>
+                        </button>
+                        <button
+                          onClick={() => handleToggleComments(post._id)}
+                          className="flex items-center gap-2 hover:text-blue-500"
+                        >
+                          <i className="fa-regular fa-comment text-lg"></i>
+                          <span>{post.comments?.length || 0}</span>
+                        </button>
                       </div>
 
                       {showComments && (
-                        <article className="mt-4 flex w-full flex-col sm:mt-5 lg:mt-7">
-                          <div className="mb-3 flex flex-col items-stretch gap-2 sm:mb-4 sm:flex-row sm:items-center sm:gap-3 lg:gap-4">
-                            <div className="h-auto w-full rounded-lg border-2 border-[#E5E7EB] bg-[#FAFAFF] px-3 sm:px-4">
-                              <textarea
-                                placeholder="Write a Comment"
-                                className="mt-1 mb-1 w-full resize-none overflow-hidden bg-transparent text-sm focus:outline-none sm:text-base"
-                                rows={1}
-                                value={commentInputs[post._id] || ""}
-                                onChange={(e) =>
-                                  handleInputChange(post._id, e.target.value)
-                                }
-                                onInput={(e) => {
-                                  e.currentTarget.style.height = "auto";
-                                  e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
-                                }}
-                              />
-                            </div>
-
-                            <button
-                              onClick={() => handleSendComment(post._id)}
-                              disabled={
-                                isSendingComment || !commentInputs[post._id]
+                        <div className="mt-4 rounded-xl bg-gray-50 p-4">
+                          <CommentSection postId={post._id} />
+                          <div className="mt-3 flex gap-2">
+                            <input
+                              className="flex-1 rounded-lg border px-3 py-2 text-sm"
+                              placeholder="Tulis komentar..."
+                              value={commentInputs[post._id] || ""}
+                              onChange={(e) =>
+                                handleInputChange(post._id, e.target.value)
                               }
-                              className="flex h-9 w-full flex-row items-center justify-center gap-2 rounded-lg bg-[#5568FE] text-white transition-colors hover:bg-[#5568FE]/80 disabled:cursor-not-allowed disabled:bg-gray-400 sm:h-10 sm:w-auto sm:min-w-[80px] lg:min-w-[90px]"
+                            />
+                            <button
+                              disabled={isSendingComment}
+                              onClick={() => handleSendComment(post._id)}
+                              className="rounded-lg bg-[#5568FE] px-4 py-2 text-sm font-bold text-white disabled:bg-gray-400"
                             >
-                              <i className="fas fa-paper-plane text-xs sm:text-sm"></i>
-                              <h2 className="text-xs font-bold sm:text-sm">
-                                {isSendingComment ? "Sending..." : "Send"}
-                              </h2>
+                              Kirim
                             </button>
                           </div>
-
-                          <h1 className="mb-3 text-base font-semibold text-[#111827] sm:mb-4 sm:text-lg lg:text-[20px]">
-                            Komentar
-                          </h1>
-                          <CommentSection postId={post._id} />
-                        </article>
+                        </div>
                       )}
-
-                      <div className="mt-4 border-t border-gray-100 sm:mt-5 lg:mt-7"></div>
                     </article>
                   );
                 })
               ) : (
-                <p className="text-center text-sm text-gray-500 sm:text-base">
+                <p className="text-center text-sm text-gray-500">
                   Belum ada postingan.
                 </p>
               )}
@@ -451,33 +311,66 @@ const Profile = () => {
                 Koneksi
               </h1>
               <div className="flex flex-col gap-4 sm:gap-5">
-                {[1, 2, 3].map((_, i) => (
-                  <div
-                    key={i}
-                    className="-m-2 flex cursor-pointer flex-row items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-50 sm:gap-4"
-                  >
-                    <img
-                      src="/images/logo.png"
-                      alt="User"
-                      className="h-9 w-9 flex-shrink-0 rounded-full bg-black object-cover sm:h-10 sm:w-10 md:h-12 md:w-12"
-                    />
-                    <div className="flex min-w-0 flex-1 flex-col">
-                      <h2 className="truncate text-sm font-medium text-[#1A1A1A] sm:text-base lg:text-[18px]">
-                        Kurniawan Ilham
-                      </h2>
-                      <p className="truncate text-xs text-[#7A7A7A] sm:text-sm lg:text-[16px]">
-                        Teknik Nuklir
-                      </p>
+                {connections.length > 0 ? (
+                  connections.slice(0, 5).map((conn: any) => (
+                    <div
+                      key={conn._id}
+                      className="group relative flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-50"
+                    >
+                      <div
+                        className="flex flex-1 cursor-pointer items-center gap-3"
+                        onClick={() =>
+                          router.push(`/dashboard/profileuser/${conn.user._id}`)
+                        }
+                      >
+                        <img
+                          src={
+                            conn.user?.profilePicture
+                              ? `${environment.CONSTANT_URL}${conn.user.profilePicture}`
+                              : "/images/logo.png"
+                          }
+                          className="h-10 w-10 flex-shrink-0 rounded-full bg-black object-cover sm:h-12 sm:w-12"
+                        />
+                        <div className="flex min-w-0 flex-1 flex-col">
+                          <h2 className="truncate text-sm font-medium text-[#1A1A1A] sm:text-base">
+                            {conn.user?.fullName}
+                          </h2>
+                          <p className="truncate text-xs text-[#7A7A7A] sm:text-sm">
+                            {conn.user?.jurusan || "Mahasiswa"}
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (
+                            confirm(
+                              `Hapus koneksi dengan ${conn.user.fullName}?`,
+                            )
+                          ) {
+                            handleRemoveConnection(conn.user._id);
+                          }
+                        }}
+                        className="p-2 text-gray-400 opacity-0 transition-opacity group-hover:opacity-100 hover:text-red-500"
+                        title="Hapus Koneksi"
+                      >
+                        <i className="fa-solid fa-user-minus"></i>
+                      </button>
                     </div>
-                  </div>
-                ))}
-                {/* --- TOMBOL TRIGGER MODAL --- */}
-                <h4
-                  onClick={toggleModal}
-                  className="mt-2 cursor-pointer text-center text-sm font-semibold text-[#5568FE] transition-colors hover:text-[#5568FE]/80 sm:text-base"
-                >
-                  Lihat Lebih Banyak
-                </h4>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500">Belum ada koneksi.</p>
+                )}
+
+                {connections.length > 5 && (
+                  <h4
+                    onClick={toggleModal}
+                    className="mt-2 cursor-pointer text-center text-sm font-semibold text-[#5568FE] transition-colors hover:text-[#5568FE]/80 sm:text-base"
+                  >
+                    Lihat Lebih Banyak
+                  </h4>
+                )}
               </div>
             </div>
 
@@ -486,26 +379,36 @@ const Profile = () => {
                 Postingan Terfavorit
               </h1>
               <div className="flex flex-col gap-4 sm:gap-5">
-                {[1, 2, 3].map((_, i) => (
-                  <div
-                    key={i}
-                    className="-m-2 flex cursor-pointer flex-row items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-50 sm:gap-4"
-                  >
-                    <img
-                      src="/images/logo.png"
-                      alt="User"
-                      className="h-9 w-9 flex-shrink-0 rounded-lg bg-black object-cover sm:h-10 sm:w-10 md:h-12 md:w-12"
-                    />
-                    <div className="flex min-w-0 flex-1 flex-col">
-                      <h2 className="line-clamp-2 text-sm font-medium break-words text-[#1A1A1A] sm:text-base lg:text-[18px]">
-                        Kerja Dideloite membua..
-                      </h2>
-                      <p className="text-xs text-[#7A7A7A] sm:text-sm lg:text-[16px]">
-                        286 Likes
-                      </p>
+                {topPosts.length > 0 ? (
+                  topPosts.map((post) => (
+                    <div
+                      key={post._id}
+                      className="flex cursor-pointer flex-row items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-50 sm:gap-4"
+                      onClick={() => router.push(`/dashboard/post/${post._id}`)}
+                    >
+                      <img
+                        src={
+                          post.userId?.profilePicture
+                            ? `${environment.CONSTANT_URL}${post.userId.profilePicture}`
+                            : "/images/logo.png"
+                        }
+                        className="h-10 w-10 flex-shrink-0 rounded-lg bg-black object-cover sm:h-12 sm:w-12"
+                      />
+                      <div className="flex min-w-0 flex-1 flex-col gap-1">
+                        <h2 className="line-clamp-2 text-sm font-medium break-words text-[#1A1A1A] sm:text-base">
+                          {post.text_content}
+                        </h2>
+                        <p className="text-xs text-[#7A7A7A] sm:text-sm">
+                          {post.likes.length} Likes
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500">
+                    Belum ada postingan populer.
+                  </p>
+                )}
               </div>
             </div>
           </div>

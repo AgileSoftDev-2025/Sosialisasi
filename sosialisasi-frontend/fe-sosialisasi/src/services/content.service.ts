@@ -59,6 +59,11 @@ const contentServices = {
     instance
       .get<{ data: ISearchResult }>(`${endpoint.SEARCH}?q=${query}`)
       .then((res) => res.data.data),
+
+  getTrendingPosts: () =>
+    instance
+      .get<{ data: any[] }>(`${endpoint.CONTENT}/trending`)
+      .then((res) => res.data.data),
 };
 
 export default contentServices;
