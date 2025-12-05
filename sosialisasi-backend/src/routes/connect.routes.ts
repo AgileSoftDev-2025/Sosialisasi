@@ -17,5 +17,11 @@ router.get(
   authMiddleware,
   connectionControlllers.getPendingConnections
 );
+router.get(
+  "/suggestions",
+  authMiddleware,
+  connectionControlllers.getSuggestions
+);
+router.delete("/:id", authMiddleware, connectionControlllers.disconnect);
 
 export default router;
