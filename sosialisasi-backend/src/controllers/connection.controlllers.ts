@@ -273,4 +273,98 @@ export default {
       });
     }
   },
+
+  async getSuggestions(req: IReqUser, res: Response) {
+    try {
+      const currentUserId = req.user?.id;
+
+      if (!currentUserId) {
+        return res.status(401).json({
+          message: "User unauthorized.",
+        });
+      }
+
+      const currentUser = await UserModel.findById(currentUserId);
+      if (!currentUser) {
+        return res.status(401).json({
+          message: "User not found.",
+        });
+      }
+
+      const excludedIds = [
+        currentUserId,
+        ...(currentUser.connections?.map((conn: any) => conn.user.toString()) ||
+          []),
+      ];
+
+      const suggestions = await UserModel.find({
+        _id: { $nin: excludedIds },
+        role: "user",
+        isActive: true,
+      })
+        .select("fullName profilePicture status jurusan universitas")
+        .limit(5)
+        .lean();
+
+      res.status(200).json({
+        message: "Suggestions retrieved successfully",
+        data: suggestions,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        message: "Error occured when finding some suggestions",
+        data: null,
+      });
+    }
+  },
+
+  async disconnect(req: IReqUser, res: Response) {
+    try {
+      const currentUserId = req.user?.id;
+      const targetUserId = req.params.id.trim();
+
+      if (!currentUserId) {
+        return res.status(401).json({ message: "User tidak terautentikasi." });
+      }
+
+      const userUpdate = await UserModel.updateOne(
+        {
+          _id: currentUserId,
+          "connections.user": targetUserId,
+          "connections.status": "accepted",
+        },
+        {
+          $pull: { connections: { user: targetUserId } },
+        }
+      );
+
+      const targetUpdate = await UserModel.updateOne(
+        {
+          _id: targetUserId,
+          "connections.user": currentUserId,
+          "connections.status": "accepted",
+        },
+        {
+          $pull: { connections: { user: currentUserId } },
+        }
+      );
+
+      if (userUpdate.modifiedCount === 0 && targetUpdate.modifiedCount === 0) {
+        return res.status(404).json({
+          message: "Koneksi tidak ditemukan atau belum terjalin (bukan teman).",
+        });
+      }
+
+      return res.status(200).json({
+        message: "Koneksi berhasil dihapus.",
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        message: "Terjadi kesalahan server saat menghapus koneksi.",
+        error,
+      });
+    }
+  },
 };
