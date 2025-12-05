@@ -1,17 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import authServices from "@/services/auth.service";
 import { useSession } from "next-auth/react";
 import contentServices from "@/services/content.service";
-import { IPost } from "@/types/Home";
+import connectionServices from "@/services/connection.service";
+import { IPost, IConnection } from "@/types/Home";
 import { ToasterContext } from "@/contexts/ToasterContext";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 
 const useProfile = () => {
   const { data: session } = useSession();
-  const [postss, setPosts] = useState<IPost[]>([]);
   const queryClient = useQueryClient();
   const { setToaster } = useContext(ToasterContext);
+
   const { data: profileResponse, isLoading } = useQuery({
     queryKey: ["profile"],
     queryFn: authServices.getProfile,
@@ -23,38 +23,45 @@ const useProfile = () => {
     enabled: !!session,
   });
 
+  const { data: connections = [], isLoading: isLoadingConnections } = useQuery({
+    queryKey: ["my-connections"],
+    queryFn: connectionServices.getConnections,
+    enabled: !!session,
+  });
+
   const { mutate: handleDeletePost } = useMutation({
     mutationFn: contentServices.deleteContent,
-    onMutate: async (postId: string) => {
-      await queryClient.cancelQueries({ queryKey: ["user-posts"] });
-
-      const previousPosts = queryClient.getQueryData<IPost[]>(["user-posts"]);
-      queryClient.setQueryData<IPost[]>(["user-posts"], (old = []) =>
-        old.filter((p) => p._id !== postId),
-      );
-
-      return { previousPosts };
-    },
-    onError: (_, __, context) => {
-      if (context?.previousPosts)
-        queryClient.setQueryData(["user-posts"], context.previousPosts);
-      setToaster({ type: "error", message: "Gagal menghapus postingan." });
-    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-posts"] });
       setToaster({ type: "success", message: "Postingan berhasil dihapus." });
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["user-posts"] });
+    onError: () => {
+      setToaster({ type: "error", message: "Gagal menghapus postingan." });
+    },
+  });
+
+  const { mutate: handleRemoveConnection } = useMutation({
+    mutationFn: (targetId: string) =>
+      connectionServices.removeConnection(targetId),
+    onSuccess: () => {
+      setToaster({ type: "success", message: "Koneksi berhasil dihapus." });
+      queryClient.invalidateQueries({ queryKey: ["my-connections"] });
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+    },
+    onError: () => {
+      setToaster({ type: "error", message: "Gagal menghapus koneksi." });
     },
   });
 
   return {
     profile: profileResponse?.data?.data,
     posts,
+    connections,
     isLoading,
     isLoadingPosts,
+    isLoadingConnections,
     handleDeletePost,
+    handleRemoveConnection,
   };
 };
 

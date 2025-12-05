@@ -6,6 +6,7 @@ import { IContentFilters, IPost, ISearchResult } from "@/types/Home";
 import { ToasterContext } from "@/contexts/ToasterContext";
 import { useSearch } from "@/contexts/SearchContext";
 import { useContext } from "react";
+import connectionServices from "@/services/connection.service";
 
 const useHomePage = () => {
   const { data: session } = useSession();
@@ -38,9 +39,43 @@ const useHomePage = () => {
       enabled: !!session && isSearching,
     });
 
+  const { data: suggestions = [], isLoading: isLoadingSuggestions } = useQuery({
+    queryKey: ["connections-suggestions"],
+    queryFn: connectionServices.getSuggestions,
+    enabled: !!session,
+  });
+
+  const { data: trendingPosts = [], isLoading: isLoadingTrending } = useQuery({
+    queryKey: ["trending-posts"],
+    queryFn: contentServices.getTrendingPosts,
+    enabled: !!session,
+  });
+
   const posts = isSearching ? searchResults?.contents || [] : allPostsData;
   const users = isSearching ? searchResults?.users || [] : [];
   const isLoadingPosts = isSearching ? isLoadingSearch : isLoadingAllPosts;
+
+  const { mutate: sendConnectionRequest, isPending: isConnecting } =
+    useMutation({
+      mutationFn: (targetId: string) =>
+        connectionServices.toggleConnection(targetId),
+      onSuccess: () => {
+        setToaster({
+          type: "success",
+          message: "Permintaan koneksi terkirim!",
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["connections-suggestions"],
+        });
+      },
+      onError: (error: any) => {
+        setToaster({
+          type: "error",
+          message:
+            error?.response?.data?.message || "Gagal mengirim permintaan.",
+        });
+      },
+    });
 
   const { mutate: handleToggleLike } = useMutation({
     mutationFn: contentServices.toggleLike,
@@ -119,6 +154,10 @@ const useHomePage = () => {
     },
   });
 
+  const handleConnect = (targetId: string) => {
+    sendConnectionRequest(targetId);
+  };
+
   const handleSendComment = (postId: string) => {
     const text_comment = commentInputs[postId]?.trim();
     if (!text_comment) return;
@@ -158,6 +197,12 @@ const useHomePage = () => {
     commentInputs,
     isSendingComment,
     filters,
+    suggestions,
+    isLoadingSuggestions,
+    isConnecting,
+    trendingPosts,
+    isLoadingTrending,
+    handleConnect,
     setSearchTerm,
     setFilters,
     handleToggleLike,

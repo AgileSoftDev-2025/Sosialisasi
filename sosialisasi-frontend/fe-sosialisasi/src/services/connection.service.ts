@@ -1,6 +1,6 @@
 import instance from "@/libs/axios/instance";
 import endpoint from "./endpoint.constant";
-import { IConnection } from "@/types/Home";
+import { IConnection, IUser } from "@/types/Home";
 
 const connectionServices = {
   toggleConnection: (targetUserId: string, action?: string) =>
@@ -36,6 +36,15 @@ const connectionServices = {
     instance
       .get<{ data: IConnection[] }>(`${endpoint.CONNECT}/pending`)
       .then((res) => res.data.data),
+
+  getSuggestions: () =>
+    instance
+      .get<{ data: IUser[] }>(`${endpoint.CONNECT}/suggestions`)
+      .then((res) => res.data.data),
+  removeConnection: (targetUserId: string) =>
+    instance
+      .delete<{ message: string }>(`${endpoint.CONNECT}/${targetUserId}`)
+      .then((res) => res.data),
 };
 
 export default connectionServices;

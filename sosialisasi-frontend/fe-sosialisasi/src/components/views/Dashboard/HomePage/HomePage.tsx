@@ -8,7 +8,6 @@ import environment from "@/config/environment";
 const BUTTON_TOPICS = [
   "Sistem Informasi",
   "Universitas Airlangga",
-  "Kampus",
   "Magang",
   "Lomba",
   "Penelitian",
@@ -27,7 +26,10 @@ const HomePage = () => {
     commentInputs,
     isSendingComment,
     session,
+    suggestions,
+    trendingPosts,
     setSearchTerm,
+    handleConnect,
     handleToggleLike,
     handleToggleComments,
     handleInputChange,
@@ -367,32 +369,48 @@ const HomePage = () => {
               Koneksi Untukmu
             </h1>
             <div className="flex flex-col gap-4 lg:gap-6">
-              {[1, 2, 3].map((item) => (
-                <div
-                  key={item}
-                  className="flex flex-row items-center gap-3 lg:gap-4"
-                >
-                  <img
-                    src="/images/logo.png"
-                    alt="User"
-                    className="h-10 w-10 flex-shrink-0 rounded-full bg-black object-cover lg:h-12 lg:w-12"
-                  />
-                  <div className="flex min-w-0 flex-1 flex-col">
-                    <h2 className="truncate text-sm font-medium text-[#1A1A1A] lg:text-base">
-                      Kurniawan Ilham
-                    </h2>
-                    <p className="truncate text-xs text-[#7A7A7A] lg:text-sm">
-                      Teknik Nuklir
-                    </p>
+              {suggestions.length > 0 ? (
+                suggestions.map((user: any) => (
+                  <div
+                    key={user._id}
+                    className="flex flex-row items-center gap-3 lg:gap-4"
+                  >
+                    <img
+                      src={
+                        user.profilePicture.startsWith("http")
+                          ? user.profilePicture
+                          : `${environment.CONSTANT_URL}${user.profilePicture}`
+                      }
+                      alt={user.fullName}
+                      className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-200 object-cover lg:h-12 lg:w-12"
+                    />
+                    <div className="flex min-w-0 flex-1 flex-col">
+                      <h2 className="truncate text-sm font-medium text-[#1A1A1A] lg:text-base">
+                        {user.fullName}
+                      </h2>
+                      <p className="truncate text-xs text-[#7A7A7A] lg:text-sm">
+                        {user.jurusan || user.status}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => handleConnect(user._id)}
+                      className="flex-shrink-0 rounded-lg bg-[#5568FE] px-2 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#5568FE]/90 lg:px-3 lg:py-2 lg:text-sm"
+                    >
+                      Berkoneksi
+                    </button>
                   </div>
-                  <button className="flex-shrink-0 rounded-lg bg-[#5568FE] px-2 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#5568FE]/90 lg:px-3 lg:py-2 lg:text-sm">
-                    Berkoneksi
-                  </button>
-                </div>
-              ))}
-              <h4 className="mt-2 cursor-pointer text-center text-sm font-semibold text-[#5568FE] transition-colors hover:text-[#5568FE]/80 lg:text-base">
-                Lihat Lebih Banyak
-              </h4>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500">
+                  Tidak ada saran saat ini.
+                </p>
+              )}
+
+              {suggestions.length > 0 && (
+                <h4 className="mt-2 cursor-pointer text-center text-sm font-semibold text-[#5568FE] transition-colors hover:text-[#5568FE]/80 lg:text-base">
+                  Lihat Lebih Banyak
+                </h4>
+              )}
             </div>
           </div>
 
@@ -401,26 +419,42 @@ const HomePage = () => {
               Postingan Terhangat
             </h1>
             <div className="flex flex-col gap-4 lg:gap-6">
-              {[1, 2, 3, 4, 5].map((item) => (
-                <div
-                  key={item}
-                  className="-m-2 flex cursor-pointer flex-row items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-50 lg:gap-4"
-                >
-                  <img
-                    src="/images/logo.png"
-                    alt="User"
-                    className="h-10 w-10 flex-shrink-0 rounded-lg bg-black object-cover lg:h-12 lg:w-12"
-                  />
-                  <div className="flex min-w-0 flex-1 flex-col">
-                    <h2 className="truncate text-sm font-medium text-[#1A1A1A] lg:text-base">
-                      Kuota Magang di dellot..
-                    </h2>
-                    <p className="truncate text-xs text-[#7A7A7A] lg:text-sm">
-                      Jokowi
-                    </p>
+              {trendingPosts.length > 0 ? (
+                trendingPosts.map((item: any) => (
+                  <div
+                    key={item._id}
+                    onClick={() => router.push(`/dashboard/post/${item._id}`)}
+                    className="-m-2 flex cursor-pointer flex-row items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-50 lg:gap-4"
+                  >
+                    <img
+                      src={
+                        item.user.profilePicture.startsWith("http")
+                          ? item.user.profilePicture
+                          : `${environment.CONSTANT_URL}${item.user.profilePicture}`
+                      }
+                      alt={item.user.fullName}
+                      className="h-10 w-10 flex-shrink-0 rounded-lg bg-gray-200 object-cover lg:h-12 lg:w-12"
+                    />
+                    <div className="flex min-w-0 flex-1 flex-col">
+                      <h2 className="truncate text-sm font-medium text-[#1A1A1A] lg:text-base">
+                        {item.text_content.length > 30
+                          ? item.text_content.substring(0, 30) + "..."
+                          : item.text_content}
+                      </h2>
+                      <p className="truncate text-xs text-[#7A7A7A] lg:text-sm">
+                        {item.user.fullName}
+                      </p>
+                      <p className="mt-0.5 text-[10px] text-gray-400">
+                        🔥 {item.likesCount} Likes
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-sm text-gray-500">
+                  Belum ada postingan terhangat.
+                </p>
+              )}
             </div>
           </div>
         </div>
