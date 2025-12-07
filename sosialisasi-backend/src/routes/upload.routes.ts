@@ -26,5 +26,6 @@ router.delete("/content/:id", homeControllers.delete);
 router.get("/content/:id", homeControllers.getOne);
 router.get("/contentuser", authMiddleware, homeControllers.getById);
 router.get("/contentuser/:id", homeControllers.getByUserId);
+router.get("/content/trending",homeControllers.getTrending)
 
 export default router;
