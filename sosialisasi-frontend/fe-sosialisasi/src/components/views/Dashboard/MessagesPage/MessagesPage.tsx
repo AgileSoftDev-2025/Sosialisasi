@@ -36,7 +36,7 @@ const MessagesPage = () => {
 
   return (
     <DashboardLayout>
-      <div className="flex h-[100dvh] w-full bg-white md:h-[calc(100vh-100px)] md:rounded-3xl md:shadow-sm">
+      <div className="flex h-[100dvh] w-screen bg-white md:h-[calc(100vh-100px)] border-l-2 border-gray-300  md:shadow-sm">
         <div className="flex h-full w-full overflow-hidden">
           <div
             className={`${
