@@ -17,6 +17,12 @@ export const SIDEBAR_ITEMS = [
     href: "/dashboard/profile",
     icon: "fa-solid fa-user",
   },
+  {
+    key: "plus",
+    label: "Create Post",
+    href: "/dashboard/create-post",
+    icon: "fa-solid fa-plus",
+  },
 ];
 
 export const SIDEBAR_ITEMS_ADMIN = [
