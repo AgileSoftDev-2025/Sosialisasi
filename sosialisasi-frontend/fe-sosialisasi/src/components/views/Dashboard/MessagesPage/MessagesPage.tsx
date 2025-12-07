@@ -4,6 +4,41 @@ import useMessage from "@/components/hooks/useMessage";
 import Image from "next/image";
 import environment from "@/config/environment";
 
+const formatDateLabel = (dateString: string) => {
+  const date = new Date(dateString);
+  const today = new Date();
+  const yesterday = new Date(Date.now() - 86400000);
+
+  const sameDate = (a: Date, b: Date) =>
+    a.toDateString() === b.toDateString();
+
+  if (sameDate(date, today)) return "Hari ini";
+  if (sameDate(date, yesterday)) return "Kemarin";
+
+  return date.toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    weekday: "long",
+  });
+};
+
+const groupMessagesByDate = (messages: any[]) => {
+  const groups: Record<string, any[]> = {};
+
+  messages.forEach((msg) => {
+    const key = new Date(msg.created_at_message)
+      .toISOString()
+      .split("T")[0];
+
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(msg);
+  });
+
+  return groups;
+};
+
+
 const MessagesPage = () => {
   const {
     conversations,
@@ -190,35 +225,58 @@ const MessagesPage = () => {
               className="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-6"
             >
               {selectedUser ? (
-                <div className="space-y-4">
-                  {messages.map((msg) => {
-                    const isOwn = msg.senderId !== selectedUser?._id;
+                <div className="space-y-8">
+  {Object.entries(groupMessagesByDate(messages)).map(
+    ([dateKey, msgs]) => (
+      <div key={dateKey}>
+        
+        {/* LABEL TANGGAL */}
+        <div className="flex justify-center my-2">
+          <span className="text-xs bg-gray-300 text-gray-700 px-3 py-1 rounded-full">
+            {formatDateLabel(msgs[0].created_at_message)}
+          </span>
+        </div>
 
-                    return (
-                      <div
-                        key={msg._id}
-                        className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
-                      >
-                        <div
-                          className={`max-w-[85%] rounded-2xl px-4 py-3 sm:max-w-[75%] md:max-w-[70%] ${
-                            isOwn
-                              ? "bg-blue-600 text-white"
-                              : "bg-white text-gray-900"
-                          }`}
-                        >
-                          <p className="text-sm">{msg.text}</p>
-                          <p
-                            className={`mt-1 text-xs ${
-                              isOwn ? "text-blue-100" : "text-gray-500"
-                            }`}
-                          >
-                            {new Date(msg.created_at_message).toLocaleTimeString()}
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
+        {/* LIST PESAN DI TANGGAL INI */}
+        <div className="space-y-4">
+          {msgs.map((msg) => {
+            const isOwn = msg.senderId !== selectedUser?._id;
+
+            return (
+              <div
+                key={msg._id}
+                className={`flex ${
+                  isOwn ? "justify-end" : "justify-start"
+                }`}
+              >
+                <div
+                  className={`max-w-[85%] rounded-2xl px-4 py-3 sm:max-w-[75%] md:max-w-[70%] ${
+                    isOwn
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-gray-900"
+                  }`}
+                >
+                  <p className="text-sm">{msg.text}</p>
+
+                  <p
+                    className={`mt-1 text-xs ${
+                      isOwn ? "text-blue-100" : "text-gray-500"
+                    }`}
+                  >
+                    {new Date(
+                      msg.created_at_message
+                    ).toLocaleTimeString()}
+                  </p>
                 </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    )
+  )}
+</div>
+
               ) : (
                 // WELCOME PAGE
                 <div className="flex h-full flex-col items-center justify-center text-center text-gray-500">
