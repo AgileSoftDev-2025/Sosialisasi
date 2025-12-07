@@ -169,36 +169,43 @@ const MessagesPage = () => {
 
             <div className="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-6">
               <div className="space-y-4">
-                {messages.map((msg) => {
-                  const isOwn = msg.senderId !== selectedUser?._id;
+  {(!messages || messages.length === 0) ? (
+    <div className="flex h-full items-center justify-center p-6 text-center">
+      <p className="text-gray-500 text-sm">
+        Hallo, kembali lagi di Message Sosialisasi
+      </p>
+    </div>
+  ) : (
+    messages.map((msg) => {
+      const isOwn = msg.senderId !== selectedUser?._id;
 
-                  return (
-                    <div
-                      key={msg._id}
-                      className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
-                    >
-                      <div
-                        className={`max-w-[85%] rounded-2xl px-4 py-3 sm:max-w-[75%] md:max-w-[70%] ${
-                          isOwn
-                            ? "bg-blue-600 text-white"
-                            : "bg-white text-gray-900"
-                        }`}
-                      >
-                        <p className="text-sm">{msg.text}</p>
-                        <p
-                          className={`mt-1 text-xs ${
-                            isOwn ? "text-blue-100" : "text-gray-500"
-                          }`}
-                        >
-                          {new Date(
-                            msg.created_at_message,
-                          ).toLocaleTimeString()}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+      return (
+        <div
+          key={msg._id}
+          className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
+        >
+          <div
+            className={`max-w-[85%] rounded-2xl px-4 py-3 sm:max-w-[75%] md:max-w-[70%] ${
+              isOwn
+                ? "bg-blue-600 text-white"
+                : "bg-white text-gray-900"
+            }`}
+          >
+            <p className="text-sm">{msg.text}</p>
+            <p
+              className={`mt-1 text-xs ${
+                isOwn ? "text-blue-100" : "text-gray-500"
+              }`}
+            >
+              {new Date(msg.created_at_message).toLocaleTimeString()}
+            </p>
+          </div>
+        </div>
+      );
+    })
+  )}
+</div>
+
             </div>
 
             <div className="border-t border-gray-200 bg-white p-4">
