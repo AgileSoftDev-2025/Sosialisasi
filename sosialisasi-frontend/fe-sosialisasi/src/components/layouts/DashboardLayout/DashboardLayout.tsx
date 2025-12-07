@@ -51,7 +51,7 @@ const DashboardLayout = ({ children, showSearch, showNotif }: IPropTypes) => {
           ></div>
         )}
 
-        <section className="flex w-full flex-1 justify-center overflow-y-auto px-2 py-4 sm:px-4 sm:py-6 md:px-8 md:py-8">
+        <section className="flex w-full flex-1 justify-center overflow-y-auto ">
           {children}
         </section>
       </div>

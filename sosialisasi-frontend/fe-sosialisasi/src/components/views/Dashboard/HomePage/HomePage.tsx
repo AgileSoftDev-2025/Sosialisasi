@@ -137,7 +137,7 @@ const HomePage = () => {
 
   return (
     <DashboardLayout showSearch>
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-2 sm:gap-6 sm:px-4 lg:flex-row lg:gap-8">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-2 sm:gap-6 sm:px-4 lg:flex-row lg:gap-8 mt-5">
         <div className="flex w-full flex-col gap-4 sm:gap-6 lg:max-w-5xl">
           <div className="mx-auto flex flex-wrap justify-start gap-2 sm:gap-3">
             {BUTTON_TOPICS.map((topic, index) => {

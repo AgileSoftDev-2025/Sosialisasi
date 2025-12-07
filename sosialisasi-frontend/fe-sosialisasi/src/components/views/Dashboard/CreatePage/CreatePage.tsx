@@ -83,7 +83,7 @@ const CreatePage = () => {
     <DashboardLayout>
       <form
         onSubmit={handleSubmitForm(handleCreatePost)}
-        className="mx-auto flex w-full max-w-4xl flex-col"
+        className="mx-auto flex w-full max-w-4xl flex-col mt-5"
       >
         <article className="rounded-3xl bg-white p-6 shadow-sm sm:p-8">
           <div className="flex flex-row items-center gap-5">

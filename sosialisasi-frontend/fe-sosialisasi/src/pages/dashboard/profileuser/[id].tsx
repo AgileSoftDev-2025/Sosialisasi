@@ -65,7 +65,7 @@ const ProfileUserPage = () => {
       const userId = Array.isArray(id) ? id[0] : id;
       if (!userId) throw new Error("User ID is required");
 
-      const res = await fetch(`${environment.API_URL}auth/user/${userId}`);
+      const res = await fetch(`${environment.API_URL}/auth/user/${userId}`);
       if (!res.ok)
         throw new Error(`Failed to fetch user profile. Status: ${res.status}`);
       const data = await res.json();
@@ -97,7 +97,7 @@ const ProfileUserPage = () => {
       if (!userId) throw new Error("User ID is required");
 
       const res = await fetch(
-        `${environment.API_URL}upload/contentuser/${userId}`,
+        `${environment.API_URL}/upload/contentuser/${userId}`,
       );
       if (!res.ok)
         throw new Error(`Failed to fetch user posts. Status: ${res.status}`);

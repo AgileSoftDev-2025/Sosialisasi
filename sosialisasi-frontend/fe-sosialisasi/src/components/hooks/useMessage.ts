@@ -14,6 +14,7 @@ const safeId = (id: any): string => {
   if (!id) return "";
   if (typeof id === "string") return id;
   if (typeof id === "number") return id.toString();
+  if (typeof id === "object" && id.$oid) return id.$oid.toString();
   if (typeof id === "object" && "toString" in id) return id.toString();
   return String(id);
 };
@@ -30,23 +31,68 @@ const useMessage = () => {
 
   const currentUserId = session?.user?.id;
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+  const [socketConnected, setSocketConnected] = useState(false);
 
+  // SOCKET CONNECTION STATUS
   useEffect(() => {
-    if (!currentUserId) return;
+    const handleConnect = () => {
+      console.log("Socket connected:", socket.id);
+      setSocketConnected(true);
+    };
 
-    socket.emit("joinRoom", currentUserId);
+    const handleDisconnect = () => {
+      console.log("Socket disconnected");
+      setSocketConnected(false);
+    };
+
+    socket.on("connect", handleConnect);
+    socket.on("disconnect", handleDisconnect);
+
+    // Check if already connected
+    if (socket.connected) {
+      setSocketConnected(true);
+    }
+
+    return () => {
+      socket.off("connect", handleConnect);
+      socket.off("disconnect", handleDisconnect);
+    };
+  }, []);
+
+  // JOIN ROOM
+  useEffect(() => {
+    if (!currentUserId || !socketConnected) return;
+
+    const userId = safeId(currentUserId);
+    
+    console.log("Attempting to join room with userId:", userId);
+
+    socket.emit("joinRoom", userId);
 
     return () => {
       socket.off("joinRoom");
     };
-  }, [currentUserId]);
+  }, [currentUserId, socketConnected]);
 
+  // LISTENER USER ONLINE
+  useEffect(() => {
+    const handleOnlineUsers = (list: string[]) => {
+      console.log("Received online users:", list);
+      setOnlineUsers(list.map((x) => safeId(x)));
+    };
+
+    socket.on("onlineUsers", handleOnlineUsers);
+
+    return () => {
+      socket.off("onlineUsers", handleOnlineUsers);
+    };
+  }, []);
+
+  // RECEIVE MESSAGE
   useEffect(() => {
     const handleReceive = (msg: IMessage) => {
-      const sender =
-        typeof msg.senderId === "object"
-          ? (msg.senderId as any).toString()
-          : msg.senderId;
+      const sender = safeId(msg.senderId);
 
       const formatted: IMessage = {
         ...msg,
@@ -58,7 +104,7 @@ const useMessage = () => {
         (old: IMessage[] = []) => {
           const cleaned = old.filter((m) => !safeId(m._id).startsWith("temp-"));
           return [...cleaned, formatted];
-        },
+        }
       );
     };
 
@@ -69,6 +115,7 @@ const useMessage = () => {
     };
   }, [queryClient]);
 
+  // GET CONNECTIONS
   const { data: connections = [], isLoading: isLoadingConversations } =
     useQuery<IConnection[]>({
       queryKey: ["connections"],
@@ -80,6 +127,7 @@ const useMessage = () => {
     .filter((x) => x.status === "accepted")
     .map((x) => x.user);
 
+  // GET MESSAGES
   const { data: messages = [], isLoading: isLoadingMessages } = useQuery<
     IMessage[]
   >({
@@ -89,17 +137,18 @@ const useMessage = () => {
     enabled: !!selectedUser,
   });
 
+  // SEND MESSAGE
   const { mutate: sendMessage, isPending: isSendingMessage } = useMutation({
     mutationFn: async (variables: { receiverId: string; text: string }) => {
       socket.emit("sendMessage", {
-        senderId: currentUserId,
-        receiverId: variables.receiverId,
+        senderId: safeId(currentUserId),
+        receiverId: safeId(variables.receiverId),
         text: variables.text,
       });
 
       return await messageServices.sendMessage(
         variables.receiverId,
-        variables.text,
+        variables.text
       );
     },
 
@@ -125,7 +174,7 @@ const useMessage = () => {
 
       queryClient.setQueryData<IMessage[]>(
         ["messages", variables.receiverId],
-        (old: IMessage[] = []) => [...old, optimisticMessage],
+        (old: IMessage[] = []) => [...old, optimisticMessage]
       );
 
       return { previousMessages };
@@ -135,7 +184,7 @@ const useMessage = () => {
       if (ctx?.previousMessages) {
         queryClient.setQueryData(
           ["messages", vars.receiverId],
-          ctx.previousMessages,
+          ctx.previousMessages
         );
       }
 
@@ -168,6 +217,9 @@ const useMessage = () => {
 
     handleSelectUser,
     sendMessage,
+
+    onlineUsers,
+    socketConnected,
   };
 };
 
