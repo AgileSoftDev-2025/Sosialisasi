@@ -14,6 +14,7 @@ const safeId = (id: any): string => {
   if (!id) return "";
   if (typeof id === "string") return id;
   if (typeof id === "number") return id.toString();
+  if (typeof id === "object" && id.$oid) return id.$oid.toString();
   if (typeof id === "object" && "toString" in id) return id.toString();
   return String(id);
 };
@@ -30,24 +31,54 @@ const useMessage = () => {
 
   const currentUserId = session?.user?.id;
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
-
-  // NEW: daftar user online
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+  const [socketConnected, setSocketConnected] = useState(false);
+
+  // SOCKET CONNECTION STATUS
+  useEffect(() => {
+    const handleConnect = () => {
+      console.log("Socket connected:", socket.id);
+      setSocketConnected(true);
+    };
+
+    const handleDisconnect = () => {
+      console.log("Socket disconnected");
+      setSocketConnected(false);
+    };
+
+    socket.on("connect", handleConnect);
+    socket.on("disconnect", handleDisconnect);
+
+    // Check if already connected
+    if (socket.connected) {
+      setSocketConnected(true);
+    }
+
+    return () => {
+      socket.off("connect", handleConnect);
+      socket.off("disconnect", handleDisconnect);
+    };
+  }, []);
 
   // JOIN ROOM
   useEffect(() => {
-    if (!currentUserId) return;
+    if (!currentUserId || !socketConnected) return;
 
-    socket.emit("joinRoom", currentUserId);
+    const userId = safeId(currentUserId);
+    
+    console.log("Attempting to join room with userId:", userId);
+
+    socket.emit("joinRoom", userId);
 
     return () => {
       socket.off("joinRoom");
     };
-  }, [currentUserId]);
+  }, [currentUserId, socketConnected]);
 
-  // NEW: LISTENER USER ONLINE
+  // LISTENER USER ONLINE
   useEffect(() => {
     const handleOnlineUsers = (list: string[]) => {
+      console.log("Received online users:", list);
       setOnlineUsers(list.map((x) => safeId(x)));
     };
 
@@ -61,10 +92,7 @@ const useMessage = () => {
   // RECEIVE MESSAGE
   useEffect(() => {
     const handleReceive = (msg: IMessage) => {
-      const sender =
-        typeof msg.senderId === "object"
-          ? (msg.senderId as any).toString()
-          : msg.senderId;
+      const sender = safeId(msg.senderId);
 
       const formatted: IMessage = {
         ...msg,
@@ -113,8 +141,8 @@ const useMessage = () => {
   const { mutate: sendMessage, isPending: isSendingMessage } = useMutation({
     mutationFn: async (variables: { receiverId: string; text: string }) => {
       socket.emit("sendMessage", {
-        senderId: currentUserId,
-        receiverId: variables.receiverId,
+        senderId: safeId(currentUserId),
+        receiverId: safeId(variables.receiverId),
         text: variables.text,
       });
 
@@ -190,8 +218,8 @@ const useMessage = () => {
     handleSelectUser,
     sendMessage,
 
-  
     onlineUsers,
+    socketConnected,
   };
 };
 

@@ -51,8 +51,13 @@ const MessagesPage = () => {
   } = useMessage();
 
   
+  const isSelectedUserOnline = selectedUser && onlineUsers.includes(String(selectedUser._id));
 
+const [searchQuery, setSearchQuery] = useState("");
 
+const filteredConversations = conversations.filter((c) =>
+  c.fullName.toLowerCase().includes(searchQuery.toLowerCase())
+);
 
 
   const [messageInput, setMessageInput] = useState("");
@@ -120,22 +125,27 @@ const MessagesPage = () => {
                 </svg>
 
                 <input
-                  type="text"
-                  placeholder="Search conversations..."
-                  className="w-full bg-transparent text-sm text-gray-600 placeholder-gray-400 focus:outline-none"
-                />
+  type="text"
+  placeholder="Search conversations..."
+  value={searchQuery}
+  onChange={(e) => setSearchQuery(e.target.value)}
+  className="w-full bg-transparent text-sm text-gray-600 placeholder-gray-400 focus:outline-none"
+/>
+
               </div>
             </div>
 
             {/* LIST USER */}
-            <div className="flex-1 overflow-y-auto">
+           
+<div className="flex-1 overflow-y-auto">
   {conversations.length === 0 ? (
     <div className="flex h-full items-center justify-center p-6 text-center text-gray-500">
       <p className="text-sm">Anda Belum Melakukan Koneksi Dengan Siapapun</p>
     </div>
   ) : (
-    conversations.map((u) => {
-      const isOnline = onlineUsers.includes(u._id);
+filteredConversations.map((u) => {
+      const userId = String(u._id);
+      const isOnline = onlineUsers.includes(userId);
 
       return (
         <div
@@ -146,6 +156,7 @@ const MessagesPage = () => {
           }`}
         >
           <div className="flex items-start gap-3">
+            {/* Avatar dengan indicator online */}
             <div className="relative h-12 w-12 flex-shrink-0">
               <Image
                 src={
@@ -157,6 +168,12 @@ const MessagesPage = () => {
                 fill
                 className="rounded-full object-cover"
               />
+              {/* Dot indicator di avatar */}
+              <span
+                className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${
+                  isOnline ? "bg-green-500" : "bg-gray-400"
+                }`}
+              />
             </div>
 
             <div className="flex-1 overflow-hidden">
@@ -164,21 +181,12 @@ const MessagesPage = () => {
                 <h3 className="truncate text-sm font-semibold text-gray-900">
                   {u.fullName}
                 </h3>
-
-                <div className="flex items-center gap-1">
-                  <span
-                    className={`h-2 w-2 rounded-full ${
-                      isOnline ? "bg-green-500" : "bg-gray-400"
-                    }`}
-                  />
-                  <p className="text-xs text-gray-500">
-                    {isOnline ? "Online" : "Offline"}
-                  </p>
-                </div>
+                <span className="text-xs text-gray-400">12:30 PM</span>
               </div>
 
-              <p className="truncate text-xs text-gray-500">
-                {u.role ?? "User"}
+              {/* Status online/offline */}
+              <p className="mt-0.5 text-xs text-gray-500">
+                {isOnline ? "🟢 Online" : "⚫ Offline"}
               </p>
             </div>
           </div>
