@@ -120,6 +120,7 @@ const ProfileUserPage = () => {
     return "none";
   }, [profile, currentUserId, localConnectionStatus]);
 
+
   // --- FETCH POST USER ---
   const { data: posts, isLoading: loadingPosts } = useQuery<IPost[]>({
     queryKey: ["user-posts", id],
@@ -137,6 +138,14 @@ const ProfileUserPage = () => {
     },
     enabled: !!id && id !== currentUserId,
   });
+
+  const topPosts = useMemo(() => {
+  if (!posts) return [];
+
+  return [...posts]
+    .sort((a, b) => (b.likes?.length || 0) - (a.likes?.length || 0))
+    .slice(0, 3);
+}, [posts]);
 
   const toggleMenu = (postId: string) => {
     setOpenMenu(openMenu === postId ? null : postId);
@@ -595,26 +604,37 @@ const ProfileUserPage = () => {
                 Postingan Terfavorit
               </h1>
               <div className="flex flex-col gap-4 sm:gap-5">
-                {[1, 2, 3].map((_, i) => (
-                  <div
-                    key={i}
-                    className="-m-2 flex cursor-pointer flex-row items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-50 sm:gap-4"
-                  >
-                    <img
-                      src="/images/logo.png"
-                      alt="User"
-                      className="h-9 w-9 flex-shrink-0 rounded-lg bg-black object-cover sm:h-10 sm:w-10 md:h-12 md:w-12"
-                    />
-                    <div className="flex min-w-0 flex-1 flex-col">
-                      <h2 className="line-clamp-2 text-sm font-medium break-words text-[#1A1A1A] sm:text-base lg:text-[18px]">
-                        Kerja Dideloite membua..
-                      </h2>
-                      <p className="text-xs text-[#7A7A7A] sm:text-sm lg:text-[16px]">
-                        286 Likes
-                      </p>
-                    </div>
-                  </div>
-                ))}
+             {topPosts.length > 0 ? (
+  topPosts.map((post) => (
+    <div
+      key={post._id}
+      className="-m-2 flex cursor-pointer flex-row items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-50 sm:gap-4"
+      onClick={() => router.push(`/dashboard/post/${post._id}`)}
+    >
+      <img
+        src={
+          post.userId?.profilePicture
+            ? `${environment.CONSTANT_URL}${post.userId.profilePicture}`
+            : "/images/logo.png"
+        }
+        alt="User"
+        className="h-9 w-9 flex-shrink-0 rounded-lg object-cover sm:h-10 sm:w-10 md:h-12 md:w-12"
+      />
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <h2 className="line-clamp-2 text-sm font-medium break-words text-[#1A1A1A] sm:text-base lg:text-[18px]">
+          {post.text_content}
+        </h2>
+        <p className="text-xs text-[#7A7A7A] sm:text-sm lg:text-[16px]">
+          {post.likes.length} Likes
+        </p>
+      </div>
+    </div>
+  ))
+) : (
+  <p className="text-sm text-gray-500">Belum ada postingan populer.</p>
+)}
+
               </div>
             </div>
           </div>
