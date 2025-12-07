@@ -47,6 +47,8 @@ const ProfileUserPage = () => {
     handleShare,
   } = useHomePage();
 
+
+  
   // Kalau user buka profil dirinya sendiri, arahkan ke /dashboard/profile
   useEffect(() => {
     if (id && currentUserId && id === currentUserId) {
@@ -74,6 +76,35 @@ const ProfileUserPage = () => {
     enabled: !!id && id !== currentUserId,
   });
 
+
+  const { data: connectionUsers, isLoading: loadingConnections } = useQuery({
+  queryKey: ["profile-connections", profile?._id],
+  enabled: !!profile, // hanya jalan kalau profile sudah ada
+  queryFn: async () => {
+    if (!profile?.connections) return [];
+
+    // Ambil hanya koneksi yang sudah accepted
+    const accepted = profile.connections.filter(
+      (c) => c.status === "accepted"
+    );
+
+    if (accepted.length === 0) return [];
+
+    // Fetch detail masing-masing user
+    const users = await Promise.all(
+      accepted.map(async (c) => {
+        const res = await fetch(
+          `${environment.API_URL}/auth/user/${c.user}`
+        );
+        const data = await res.json();
+        return data.data; // sesuai API kamu
+      })
+    );
+
+    return users;
+  },
+});
+
   // --- CEK STATUS KONEKSI ---
   const connectionStatus = useMemo(() => {
     if (localConnectionStatus) return localConnectionStatus;
@@ -88,6 +119,7 @@ const ProfileUserPage = () => {
     if (existing.status === "accepted") return "accepted";
     return "none";
   }, [profile, currentUserId, localConnectionStatus]);
+
 
   // --- FETCH POST USER ---
   const { data: posts, isLoading: loadingPosts } = useQuery<IPost[]>({
@@ -106,6 +138,14 @@ const ProfileUserPage = () => {
     },
     enabled: !!id && id !== currentUserId,
   });
+
+  const topPosts = useMemo(() => {
+  if (!posts) return [];
+
+  return [...posts]
+    .sort((a, b) => (b.likes?.length || 0) - (a.likes?.length || 0))
+    .slice(0, 3);
+}, [posts]);
 
   const toggleMenu = (postId: string) => {
     setOpenMenu(openMenu === postId ? null : postId);
@@ -513,61 +553,88 @@ const ProfileUserPage = () => {
 
           <div className="hidden w-full flex-col gap-4 sm:gap-5 lg:top-24 lg:flex lg:self-start">
             <div className="flex flex-col gap-4 rounded-lg bg-white p-3 shadow-md sm:gap-5 sm:rounded-2xl sm:p-4 md:p-6 lg:p-8">
-              <h1 className="text-lg font-bold text-[#1A1A1A] sm:text-xl lg:text-[24px]">
-                Koneksi
-              </h1>
-              <div className="flex flex-col gap-4 sm:gap-5">
-                {[1, 2, 3].map((_, i) => (
-                  <div
-                    key={i}
-                    className="-m-2 flex cursor-pointer flex-row items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-50 sm:gap-4"
-                  >
-                    <img
-                      src="/images/logo.png"
-                      alt="User"
-                      className="h-9 w-9 flex-shrink-0 rounded-full bg-black object-cover sm:h-10 sm:w-10 md:h-12 md:w-12"
-                    />
-                    <div className="flex min-w-0 flex-1 flex-col">
-                      <h2 className="truncate text-sm font-medium text-[#1A1A1A] sm:text-base lg:text-[18px]">
-                        Kurniawan Ilham
-                      </h2>
-                      <p className="truncate text-xs text-[#7A7A7A] sm:text-sm lg:text-[16px]">
-                        Teknik Nuklir
-                      </p>
-                    </div>
-                  </div>
-                ))}
-                <h4 className="mt-2 cursor-pointer text-center text-sm font-semibold text-[#5568FE] transition-colors hover:text-[#5568FE]/80 sm:text-base">
-                  Lihat Lebih Banyak
-                </h4>
-              </div>
-            </div>
+  <h1 className="text-lg font-bold text-[#1A1A1A] sm:text-xl lg:text-[24px]">
+    Koneksi
+  </h1>
+
+  <div className="flex flex-col gap-4 sm:gap-5">
+    {loadingConnections ? (
+      <p className="text-sm text-gray-500">Loading...</p>
+    ) : connectionUsers && connectionUsers.length > 0 ? (
+      connectionUsers.map((u) => (
+        <div
+          key={u._id}
+          className="-m-2 flex cursor-pointer flex-row items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-50 sm:gap-4"
+          onClick={() => router.push(`/dashboard/profileuser/${u._id}`)}
+        >
+          <img
+            src={
+              u.profilePicture
+                ? `${environment.CONSTANT_URL}${u.profilePicture}`
+                : "/images/logo.png"
+            }
+            alt="User"
+            className="h-9 w-9 flex-shrink-0 rounded-full object-cover sm:h-10 sm:w-10 md:h-12 md:w-12"
+          />
+          <div className="flex min-w-0 flex-1 flex-col">
+            <h2 className="truncate text-sm font-medium text-[#1A1A1A] sm:text-base lg:text-[18px]">
+              {u.fullName}
+            </h2>
+            <p className="truncate text-xs text-[#7A7A7A] sm:text-sm lg:text-[16px]">
+              {u.jurusan}
+            </p>
+          </div>
+        </div>
+      ))
+    ) : (
+      <p className="text-sm text-gray-500">Belum ada koneksi.</p>
+    )}
+
+    {connectionUsers && connectionUsers.length > 3 && (
+      <h4 className="mt-2 cursor-pointer text-center text-sm font-semibold text-[#5568FE]">
+        Lihat Lebih Banyak
+      </h4>
+    )}
+  </div>
+</div>
+
 
             <div className="flex flex-col gap-4 rounded-lg bg-white p-3 shadow-md sm:gap-5 sm:rounded-2xl sm:p-4 md:p-6 lg:p-8">
               <h1 className="text-lg font-bold text-[#1A1A1A] sm:text-xl lg:text-[24px]">
                 Postingan Terfavorit
               </h1>
               <div className="flex flex-col gap-4 sm:gap-5">
-                {[1, 2, 3].map((_, i) => (
-                  <div
-                    key={i}
-                    className="-m-2 flex cursor-pointer flex-row items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-50 sm:gap-4"
-                  >
-                    <img
-                      src="/images/logo.png"
-                      alt="User"
-                      className="h-9 w-9 flex-shrink-0 rounded-lg bg-black object-cover sm:h-10 sm:w-10 md:h-12 md:w-12"
-                    />
-                    <div className="flex min-w-0 flex-1 flex-col">
-                      <h2 className="line-clamp-2 text-sm font-medium break-words text-[#1A1A1A] sm:text-base lg:text-[18px]">
-                        Kerja Dideloite membua..
-                      </h2>
-                      <p className="text-xs text-[#7A7A7A] sm:text-sm lg:text-[16px]">
-                        286 Likes
-                      </p>
-                    </div>
-                  </div>
-                ))}
+             {topPosts.length > 0 ? (
+  topPosts.map((post) => (
+    <div
+      key={post._id}
+      className="-m-2 flex cursor-pointer flex-row items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-50 sm:gap-4"
+      onClick={() => router.push(`/dashboard/post/${post._id}`)}
+    >
+      <img
+        src={
+          post.userId?.profilePicture
+            ? `${environment.CONSTANT_URL}${post.userId.profilePicture}`
+            : "/images/logo.png"
+        }
+        alt="User"
+        className="h-9 w-9 flex-shrink-0 rounded-lg object-cover sm:h-10 sm:w-10 md:h-12 md:w-12"
+      />
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <h2 className="line-clamp-2 text-sm font-medium break-words text-[#1A1A1A] sm:text-base lg:text-[18px]">
+          {post.text_content}
+        </h2>
+        <p className="text-xs text-[#7A7A7A] sm:text-sm lg:text-[16px]">
+          {post.likes.length} Likes
+        </p>
+      </div>
+    </div>
+  ))
+) : (
+  <p className="text-sm text-gray-500">Belum ada postingan populer.</p>
+)}
+
               </div>
             </div>
           </div>
