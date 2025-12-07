@@ -13,7 +13,7 @@ const NotificationsPage = () => {
 
   return (
     <DashboardLayout showNotif>
-      <div className="flex flex-1">
+      <div className="flex flex-1 p-8">
         <div className="flex w-full flex-col gap-2">
           <h1 className="text-4xl font-bold text-[#202020]">Notifikasi</h1>
           <p className="font-regular text-lg text-[#787878]">
