@@ -39,6 +39,7 @@ const groupMessagesByDate = (messages: any[]) => {
 };
 
 
+
 const MessagesPage = () => {
   const {
     conversations,
@@ -46,7 +47,13 @@ const MessagesPage = () => {
     selectedUser,
     handleSelectUser,
     sendMessage,
+    onlineUsers,
   } = useMessage();
+
+  
+
+
+
 
   const [messageInput, setMessageInput] = useState("");
   const [showSidebar, setShowSidebar] = useState(true);
@@ -60,6 +67,8 @@ const MessagesPage = () => {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, selectedUser]);
+
+  
 
   const handleSendMessage = () => {
     if (!messageInput.trim() || !selectedUser) return;
@@ -120,51 +129,65 @@ const MessagesPage = () => {
 
             {/* LIST USER */}
             <div className="flex-1 overflow-y-auto">
-              {conversations.length === 0 ? (
-                <div className="flex h-full items-center justify-center p-6 text-center text-gray-500">
-                  <p className="text-sm">
-                    Anda Belum Melakukan Koneksi Dengan Siapapun
+  {conversations.length === 0 ? (
+    <div className="flex h-full items-center justify-center p-6 text-center text-gray-500">
+      <p className="text-sm">Anda Belum Melakukan Koneksi Dengan Siapapun</p>
+    </div>
+  ) : (
+    conversations.map((u) => {
+      const isOnline = onlineUsers.includes(u._id);
+
+      return (
+        <div
+          key={u._id}
+          onClick={() => handleSelectConversation(u)}
+          className={`cursor-pointer border-b border-gray-100 p-4 transition-colors hover:bg-gray-50 ${
+            selectedUser?._id === u._id ? "bg-blue-50" : ""
+          }`}
+        >
+          <div className="flex items-start gap-3">
+            <div className="relative h-12 w-12 flex-shrink-0">
+              <Image
+                src={
+                  u.profilePicture
+                    ? `${environment.CONSTANT_URL}${u.profilePicture}`
+                    : "/default.png"
+                }
+                alt={u.fullName}
+                fill
+                className="rounded-full object-cover"
+              />
+            </div>
+
+            <div className="flex-1 overflow-hidden">
+              <div className="flex items-center justify-between">
+                <h3 className="truncate text-sm font-semibold text-gray-900">
+                  {u.fullName}
+                </h3>
+
+                <div className="flex items-center gap-1">
+                  <span
+                    className={`h-2 w-2 rounded-full ${
+                      isOnline ? "bg-green-500" : "bg-gray-400"
+                    }`}
+                  />
+                  <p className="text-xs text-gray-500">
+                    {isOnline ? "Online" : "Offline"}
                   </p>
                 </div>
-              ) : (
-                conversations.map((u) => (
-                  <div
-                    key={u._id}
-                    onClick={() => handleSelectConversation(u)}
-                    className={`cursor-pointer border-b border-gray-100 p-4 transition-colors hover:bg-gray-50 ${
-                      selectedUser?._id === u._id ? "bg-blue-50" : ""
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="relative h-12 w-12 flex-shrink-0">
-                        <Image
-                          src={
-                            u.profilePicture
-                              ? `${environment.CONSTANT_URL}${u.profilePicture}`
-                              : "/default.png"
-                          }
-                          alt={u.fullName}
-                          fill
-                          className="rounded-full object-cover"
-                        />
-                      </div>
+              </div>
 
-                      <div className="flex-1 overflow-hidden">
-                        <div className="flex items-center justify-between">
-                          <h3 className="truncate text-sm font-semibold text-gray-900">
-                            {u.fullName}
-                          </h3>
-                          <span className="text-xs text-gray-500">now</span>
-                        </div>
-                        <p className="truncate text-xs text-gray-500">
-                          {u.role ?? "User"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
+              <p className="truncate text-xs text-gray-500">
+                {u.role ?? "User"}
+              </p>
             </div>
+          </div>
+        </div>
+      );
+    })
+  )}
+</div>
+
           </div>
 
           {/* PANEL CHAT */}
