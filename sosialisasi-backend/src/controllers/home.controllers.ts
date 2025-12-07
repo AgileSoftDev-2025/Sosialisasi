@@ -267,52 +267,64 @@ export default {
   },
 
   async getTrending(req: IReqUser, res: Response) {
-    try {
-      const trendingContents = await ContentModel.aggregate([
-        {
-          $addFields: {
-            likesCount: { $size: { $ifNull: ["$likes", []] } },
-            commentsCount: { $size: { $ifNull: ["$comments", []] } },
-          },
+  try {
+    const data = await ContentModel.aggregate([
+      {
+        $lookup: {
+          from: "comments",
+          localField: "_id",
+          foreignField: "id_content",
+          as: "commentsList",
         },
-        {
-          $sort: { likesCount: -1, commentsCount: -1, created_at_content: -1 },
+      },
+      {
+        $addFields: {
+          likesCount: { $size: { $ifNull: ["$likes", []] } },
+          commentsCount: { $size: "$commentsList" },
         },
-        { $limit: 5 },
-        {
-          $lookup: {
-            from: "users",
-            localField: "userId",
-            foreignField: "_id",
-            as: "user",
-          },
+      },
+      {
+        $sort: {
+          likesCount: -1,
+          commentsCount: -1,
+          created_at_content: -1,
         },
-        { $unwind: "$user" },
-        {
-          $project: {
-            _id: 1,
-            text_content: 1,
-            created_at_content: 1,
-            "user.fullName": 1,
-            "user.profilePicture": 1,
-            "user.status": 1,
-            "user.universitas": 1,
-            likesCount: 1,
-          },
+      },
+      { $limit: 5 },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
         },
-      ]);
+      },
+      { $unwind: "$user" },
+      {
+        $project: {
+          _id: 1,
+          text_content: 1,
+          created_at_content: 1,
+          "user.fullName": 1,
+          "user.profilePicture": 1,
+          "user.status": 1,
+          "user.universitas": 1,
+          likesCount: 1,
+          commentsCount: 1,
+        },
+      },
+    ]);
 
-      res.status(200).json({
-        message: "Berhasil mengambil postingan terhangat",
-        data: trendingContents,
-      });
-    } catch (error) {
-      const err = error as Error;
-      console.error(error);
-      res.status(500).json({
-        message: "Terjadi kesalahan saat mengambil trending posts",
-        error: err.message,
-      });
-    }
-  },
+    res.status(200).json({
+      message: "Berhasil mengambil postingan terhangat",
+      data: data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Terjadi kesalahan saat mengambil trending posts",
+      error: (error as Error).message,
+    });
+  }
+}
+
 };

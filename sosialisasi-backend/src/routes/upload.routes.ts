@@ -22,6 +22,7 @@ router.post(
   upload.single("file"),
   homeControllers.create
 );
+router.get("/content/trending",homeControllers.getTrending)
 router.delete("/content/:id", homeControllers.delete);
 router.get("/content/:id", homeControllers.getOne);
 router.get("/contentuser", authMiddleware, homeControllers.getById);
