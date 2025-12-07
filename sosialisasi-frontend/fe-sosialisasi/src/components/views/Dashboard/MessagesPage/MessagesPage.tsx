@@ -71,44 +71,50 @@ const MessagesPage = () => {
             </div>
 
             <div className="flex-1 overflow-y-auto">
-              {conversations.map((u) => (
-                <div
-                  key={u._id}
-                  onClick={() => handleSelectConversation(u)}
-                  className={`cursor-pointer border-b border-gray-100 p-4 transition-colors hover:bg-gray-50 ${
-                    selectedUser?._id === u._id ? "bg-blue-50" : ""
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="relative h-12 w-12 flex-shrink-0">
-                      <Image
-                        src={
-                          u.profilePicture
-                            ? `${environment.CONSTANT_URL}${u.profilePicture}`
-                            : "/default.png"
-                        }
-                        alt={u.fullName}
-                        fill
-                        className="rounded-full object-cover"
-                      />
-                    </div>
+  {conversations.length === 0 ? (
+    <div className="flex h-full items-center justify-center p-6 text-center text-gray-500">
+      <p className="text-sm">Anda Belum Melakukan Koneksi Dengan Siapapun</p>
+    </div>
+  ) : (
+    conversations.map((u) => (
+      <div
+        key={u._id}
+        onClick={() => handleSelectConversation(u)}
+        className={`cursor-pointer border-b border-gray-100 p-4 transition-colors hover:bg-gray-50 ${
+          selectedUser?._id === u._id ? "bg-blue-50" : ""
+        }`}
+      >
+        <div className="flex items-start gap-3">
+          <div className="relative h-12 w-12 flex-shrink-0">
+            <Image
+              src={
+                u.profilePicture
+                  ? `${environment.CONSTANT_URL}${u.profilePicture}`
+                  : "/default.png"
+              }
+              alt={u.fullName}
+              fill
+              className="rounded-full object-cover"
+            />
+          </div>
 
-                    <div className="flex-1 overflow-hidden">
-                      <div className="flex items-center justify-between">
-                        <h3 className="truncate text-sm font-semibold text-gray-900">
-                          {u.fullName}
-                        </h3>
-                        <span className="text-xs text-gray-500">now</span>
-                      </div>
-                      <p className="truncate text-xs text-gray-500">
-                        {u.role ?? "User"}
-                      </p>
-                      <p className="mt-1 truncate text-sm text-gray-600"></p>
-                    </div>
-                  </div>
-                </div>
-              ))}
+          <div className="flex-1 overflow-hidden">
+            <div className="flex items-center justify-between">
+              <h3 className="truncate text-sm font-semibold text-gray-900">
+                {u.fullName}
+              </h3>
+              <span className="text-xs text-gray-500">now</span>
             </div>
+            <p className="truncate text-xs text-gray-500">
+              {u.role ?? "User"}
+            </p>
+          </div>
+        </div>
+      </div>
+    ))
+  )}
+</div>
+
           </div>
 
           <div
