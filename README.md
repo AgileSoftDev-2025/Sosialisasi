@@ -31,3 +31,27 @@ Saat ini, belum ada platform jejaring sosial yang berbasis akademisi untuk mempe
 - **Real-Time**: Socket.IO
 
 ---
+
+## ⚙️ Petunjuk Instalasi (Clean Install)
+
+### Prasyarat
+- Node.js (v18 ke atas)
+- MongoDB (Lokal atau Atlas)
+
+### Langkah-langkah
+1. **Clone Repositori**
+   ```bash
+   git clone [https://github.com/username/sosialisasi.git](https://github.com/username/sosialisasi.git)
+   cd sosialisasi
+
+2. **Setup Backend**
+   cd sosialisasi-backend
+   npm install
+   # Buat file .env dan isi: DATABASE_URL, JWT_SECRET, PORT
+   npm run dev
+
+3. **Setup Frontend**
+   cd ../sosialisasi-frontend/fe-sosialisasi
+   npm install
+   # Buat file .env dan isi: NEXT_PUBLIC_API_URL
+   npm run dev
