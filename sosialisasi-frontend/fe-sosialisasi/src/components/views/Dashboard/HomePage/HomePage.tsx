@@ -422,7 +422,7 @@ const HomePage = () => {
                 </p>
               )}
 
-              {suggestions.length > 0 && (
+              {suggestions.length > 5 && (
                 <h4 className="mt-2 cursor-pointer text-center text-sm font-semibold text-[#5568FE] transition-colors hover:text-[#5568FE]/80 lg:text-base">
                   Lihat Lebih Banyak
                 </h4>
