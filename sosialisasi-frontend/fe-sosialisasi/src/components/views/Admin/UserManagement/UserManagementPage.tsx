@@ -38,9 +38,65 @@ const UserManagement = () => {
   if (isLoadingUsers && users.length === 0) {
     return (
       <DashboardLayout>
-        <p className="pt-8 text-center text-gray-500">
-          Memuat data pengguna...
-        </p>
+        <div className="flex w-full flex-row gap-4 px-[2rem] sm:gap-6 sm:px-4 lg:flex-row lg:gap-8">
+          <div className="flex w-full max-w-7xl flex-col gap-4 sm:gap-6">
+            <div className="flex items-center justify-between px-6 py-4">
+              <div className="h-5 w-40 animate-pulse rounded bg-gray-200" />
+              <div className="h-4 w-32 animate-pulse rounded bg-gray-100" />
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <th key={i} className="px-6 py-3">
+                        <div className="h-3 w-24 animate-pulse rounded bg-gray-200" />
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+
+                <tbody className="divide-y divide-gray-200">
+                  {Array.from({ length: 6 }).map((_, index) => (
+                    <tr key={index}>
+                      {/* Pengguna */}
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 animate-pulse rounded-full bg-gray-200" />
+                          <div>
+                            <div className="h-4 w-32 animate-pulse rounded bg-gray-200" />
+                            <div className="mt-2 h-3 w-40 animate-pulse rounded bg-gray-100" />
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Universitas */}
+                      <td className="px-6 py-4">
+                        <div className="h-4 w-28 animate-pulse rounded bg-gray-200" />
+                      </td>
+
+                      {/* Status */}
+                      <td className="px-6 py-4">
+                        <div className="h-6 w-20 animate-pulse rounded-full bg-gray-200" />
+                      </td>
+
+                      {/* Tanggal */}
+                      <td className="px-6 py-4">
+                        <div className="h-4 w-24 animate-pulse rounded bg-gray-200" />
+                      </td>
+
+                      {/* Switch */}
+                      <td className="px-6 py-4">
+                        <div className="h-6 w-12 animate-pulse rounded-full bg-gray-200" />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </DashboardLayout>
     );
   }

@@ -47,8 +47,8 @@ const ContentManagement = () => {
   if (isLoadingPosts) {
     return (
       <DashboardLayout>
-        <div className="px-[2rem] pt-8">
-          <div className="rounded-lg bg-white shadow-sm">
+        <div className="flex w-full flex-row gap-4 px-[2rem] sm:gap-6 sm:px-4 lg:flex-row lg:gap-8">
+          <div className="flex w-full max-w-7xl flex-col gap-4 sm:gap-6">
             <div className="px-6 py-4">
               <div className="h-5 w-40 animate-pulse rounded bg-gray-200" />
             </div>
