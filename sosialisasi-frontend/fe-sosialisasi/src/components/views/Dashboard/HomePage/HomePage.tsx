@@ -17,6 +17,7 @@ const BUTTON_TOPICS = [
 const HomePage = () => {
   const router = useRouter();
   const [connectingUserId, setConnectingUserId] = useState<string | null>(null);
+  const [showMoreModal, setShowMoreModal] = useState(false);
 
   const {
     posts,
@@ -379,7 +380,7 @@ const HomePage = () => {
             </h1>
             <div className="flex flex-col gap-4 lg:gap-6">
               {suggestions.length > 0 ? (
-                suggestions.map((user: any) => (
+                suggestions.slice(0, 3).map((user: any) => (
                   <div
                     key={user._id}
                     className="flex flex-row items-center gap-3 lg:gap-4"
@@ -422,8 +423,11 @@ const HomePage = () => {
                 </p>
               )}
 
-              {suggestions.length > 5 && (
-                <h4 className="mt-2 cursor-pointer text-center text-sm font-semibold text-[#5568FE] transition-colors hover:text-[#5568FE]/80 lg:text-base">
+              {suggestions.length > 3 && (
+                <h4
+                  onClick={() => setShowMoreModal(true)}
+                  className="mt-2 cursor-pointer text-center text-sm font-semibold text-[#5568FE] transition-colors hover:text-[#5568FE]/80 lg:text-base"
+                >
                   Lihat Lebih Banyak
                 </h4>
               )}
@@ -475,6 +479,52 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+      {showMoreModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="w-full max-w-md rounded-2xl bg-white p-5 shadow-lg">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-bold">Semua Saran Koneksi</h2>
+              <button
+                onClick={() => setShowMoreModal(false)}
+                className="text-gray-500 hover:text-gray-800"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="flex max-h-[400px] flex-col gap-4 overflow-y-auto">
+              {suggestions.map((user: any) => (
+                <div key={user._id} className="flex items-center gap-3">
+                  <img
+                    src={
+                      user.profilePicture.startsWith("http")
+                        ? user.profilePicture
+                        : `${environment.CONSTANT_URL}${user.profilePicture}`
+                    }
+                    alt={user.fullName}
+                    className="h-10 w-10 rounded-full object-cover"
+                  />
+                  <div className="flex-1">
+                    <h3 className="text-sm font-medium">{user.fullName}</h3>
+                    <p className="text-xs text-gray-500">
+                      {user.jurusan || user.status}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => onConnectClick(user._id)}
+                    disabled={isConnecting && connectingUserId === user._id}
+                    className="rounded-lg bg-[#5568FE] px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-60"
+                  >
+                    {isConnecting && connectingUserId === user._id
+                      ? "Loading..."
+                      : "Berkoneksi"}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 };
