@@ -4,17 +4,20 @@ import Image from "next/image";
 import CommentSection from "./CommentSectionPage";
 import { useRouter } from "next/router";
 import environment from "@/config/environment";
+import { useState } from "react";
 
 const BUTTON_TOPICS = [
   "Sistem Informasi",
   "Universitas Airlangga",
   "Magang",
   "Lomba",
-  "Penelitian",
+  "Pilemon",
 ];
 
 const HomePage = () => {
   const router = useRouter();
+  const [connectingUserId, setConnectingUserId] = useState<string | null>(null);
+
   const {
     posts,
     users,
@@ -35,6 +38,7 @@ const HomePage = () => {
     handleInputChange,
     handleSendComment,
     handleShare,
+    isConnecting,
   } = useHomePage();
 
   const handleTopicClick = (topic: string) => {
@@ -43,6 +47,11 @@ const HomePage = () => {
     } else {
       setSearchTerm(topic);
     }
+  };
+
+  const onConnectClick = (userId: string) => {
+    setConnectingUserId(userId);
+    handleConnect(userId);
   };
 
   if (isLoadingPosts) {
@@ -137,7 +146,7 @@ const HomePage = () => {
 
   return (
     <DashboardLayout showSearch>
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-2 sm:gap-6 sm:px-4 lg:flex-row lg:gap-8 mt-5">
+      <div className="mx-auto mt-5 flex w-full max-w-7xl flex-col gap-4 px-2 sm:gap-6 sm:px-4 lg:flex-row lg:gap-8">
         <div className="flex w-full flex-col gap-4 sm:gap-6 lg:max-w-5xl">
           <div className="mx-auto flex flex-wrap justify-start gap-2 sm:gap-3">
             {BUTTON_TOPICS.map((topic, index) => {
@@ -393,10 +402,17 @@ const HomePage = () => {
                       </p>
                     </div>
                     <button
-                      onClick={() => handleConnect(user._id)}
-                      className="flex-shrink-0 rounded-lg bg-[#5568FE] px-2 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#5568FE]/90 lg:px-3 lg:py-2 lg:text-sm"
+                      onClick={() => onConnectClick(user._id)}
+                      disabled={isConnecting && connectingUserId === user._id}
+                      className="flex items-center justify-center gap-2 rounded-lg bg-[#5568FE] px-2 py-1.5 text-xs font-semibold text-white transition hover:bg-[#5568FE]/90 disabled:opacity-70"
                     >
-                      Berkoneksi
+                      {isConnecting && connectingUserId === user._id && (
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      )}
+
+                      {isConnecting && connectingUserId === user._id
+                        ? "Loading..."
+                        : "Berkoneksi"}
                     </button>
                   </div>
                 ))
