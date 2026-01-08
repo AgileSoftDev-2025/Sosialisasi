@@ -30,18 +30,18 @@ export const SIDEBAR_ITEMS_ADMIN = [
     key: "dashboard",
     label: "Dashboard",
     href: "/admin/dashboard",
-    icon: "fa-solid fa-home",
+    icon: "fa-solid fa-gauge",
   },
   {
     key: "content-management",
     label: "Content Management",
     href: "/admin/content-management",
-    icon: "fa-solid fa-message",
+    icon: "fa-solid fa-folder-open",
   },
   {
     key: "user-management",
     label: "User Management",
     href: "/admin/user-management",
-    icon: "fa-solid fa-gear",
+    icon: "fa-solid fa-user-group",
   },
 ];
