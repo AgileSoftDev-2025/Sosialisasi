@@ -47,9 +47,57 @@ const ContentManagement = () => {
   if (isLoadingPosts) {
     return (
       <DashboardLayout>
-        <p className="pt-8 text-center text-gray-500">
-          {isSearching ? "Mencari..." : "Menunggu posts..."}
-        </p>
+        <div className="px-[2rem] pt-8">
+          <div className="rounded-lg bg-white shadow-sm">
+            <div className="px-6 py-4">
+              <div className="h-5 w-40 animate-pulse rounded bg-gray-200" />
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <th key={i} className="px-6 py-3">
+                        <div className="h-3 w-20 animate-pulse rounded bg-gray-200" />
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+
+                <tbody className="divide-y divide-gray-200">
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <tr key={index}>
+                      <td className="px-6 py-4">
+                        <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
+                        <div className="mt-2 h-3 w-24 animate-pulse rounded bg-gray-100" />
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200" />
+                          <div className="h-4 w-24 animate-pulse rounded bg-gray-200" />
+                        </div>
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <div className="h-4 w-28 animate-pulse rounded bg-gray-200" />
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <div className="h-4 w-24 animate-pulse rounded bg-gray-200" />
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <div className="h-6 w-6 animate-pulse rounded bg-gray-200" />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </DashboardLayout>
     );
   }
